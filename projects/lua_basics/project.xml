@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Project>
+  <Startup>
+  </Startup>
+  <ActiveDevice>Keithley 2612A</ActiveDevice>
+  <Files>
+    <File Name="lua_basics.lua" />
+    <File Name="main.lua" />
+  </Files>
+</Project>
