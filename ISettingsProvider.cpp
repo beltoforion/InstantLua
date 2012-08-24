@@ -1,1 +1,1 @@
-#include "isettingsprovider.h"
+#include "ISettingsProvider.h"

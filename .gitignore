@@ -42,8 +42,8 @@ local.properties
 *.sln.docstates
 
 # Build results
-[Dd]ebug/
-[Rr]elease/
+build/[Dd]ebug/
+build/[Rr]elease/
 *_i.c
 *_p.c
 *.ilk
@@ -62,7 +62,10 @@ local.properties
 *.vspscc
 .builds
 *.dotCover
+
+# qt lib
 moc_*
+*.pro.user
 
 ## TODO: If you have NuGet Package Restore enabled, uncomment this
 #packages/
