@@ -1,7 +1,7 @@
 #ifndef IFILEOBSERVER_H
 #define IFILEOBSERVER_H
 
-#include "fwddecl.h"
+#include "FwdDecl.h"
 
 //-------------------------------------------------------------------------------------------------
 class IFileObserver

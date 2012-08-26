@@ -15,7 +15,6 @@ QCommandPrompt::QCommandPrompt(QWidget *parent)
     ,m_pTimerQueue(new QTimer(this))
     ,m_font()
     ,m_mtxLineQueue()
-//    ,m_pCompleter()
     ,m_nHistPos(0)
     ,m_nMaxLines(200)
     ,m_nMaxHist(5)
@@ -230,9 +229,17 @@ void QCommandPrompt::keyPressEvent(QKeyEvent *e)
 
     case Qt::Key_Home:
         {
-          QTextCursor tc = textCursor();
-          tc.setPosition(m_nPromptPos, QTextCursor::MoveAnchor);
-          setTextCursor(tc);
+            QTextCursor tc = textCursor();
+            int nPos = tc.position();
+
+            Qt::KeyboardModifiers mod = e->modifiers();
+            if (mod & Qt::ShiftModifier)
+                tc.setPosition(m_nPromptPos, QTextCursor::KeepAnchor);
+            else
+                tc.setPosition(m_nPromptPos, QTextCursor::MoveAnchor);
+
+            setTextCursor(tc);
+
         }
         break;
 

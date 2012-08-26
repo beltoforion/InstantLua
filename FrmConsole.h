@@ -3,7 +3,7 @@
 
 #include <QWidget>
 #include <QVector>
-
+#include "QCommandPrompt.h"
 #include "ISettingsProvider.h"
 
 

@@ -10,7 +10,6 @@
 #ifndef UI_FRMCONSOLE_H
 #define UI_FRMCONSOLE_H
 
-#include <QCommandPrompt.h>
 #include <QtCore/QVariant>
 #include <QtGui/QAction>
 #include <QtGui/QApplication>

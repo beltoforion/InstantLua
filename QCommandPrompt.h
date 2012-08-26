@@ -52,7 +52,6 @@ private:
     QTimer *m_pTimerQueue;
     QFont m_font;
     QMutex m_mtxLineQueue;
-//    QCompleter *m_pCompleter;
 
     int m_nHistPos;
     int m_nMaxLines;
