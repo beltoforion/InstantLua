@@ -407,7 +407,8 @@ void QsciScintillaBase::handleSelection()
 // Handle key presses.
 void QsciScintillaBase::keyPressEvent(QKeyEvent *e)
 {
-    unsigned key, modifiers = 0;
+    unsigned key = 0,
+             modifiers = 0;
     QByteArray utf8;
 
     if (e->modifiers() & Qt::ShiftModifier)
@@ -498,6 +499,22 @@ void QsciScintillaBase::keyPressEvent(QKeyEvent *e)
     case Qt::Key_Menu:
         key = SCK_MENU;
         break;
+
+    // <ibg 20120827>
+    // Bugfix: STRG + "+" does not work on a german keyboard. For some reason
+    //         the keycode ']' is sent instead of the '+'. This may not be the
+    //         right place to fix this but it solves my immediate problem.
+    case Qt::Key_BracketRight:
+        if (modifiers == SCMOD_CTRL)
+        {
+            key = '+'; // 43
+        }
+        else
+        {
+            key = e->key();
+        }
+        break;
+    // </ibg>
 
     default:
         // See if the input was a single ASCII key.  If so it will be passed to
