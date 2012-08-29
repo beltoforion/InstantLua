@@ -8,6 +8,7 @@
 //--- Luanda framework ----------------------------------------------------------------------------
 #include "IFileObserver.h"
 #include "ISettingsProvider.h"
+#include "FwdDecl.h"
 
 
 namespace Ui {
@@ -42,6 +43,7 @@ public:
 private:
     Ui::FrmProjectExplorer *ui;
     QDir m_dirProjects;
+    QSharedPointer<ScriptOutline> m_pScriptOutline;
 
     void updateOutline(const IFile *pFile);
 };

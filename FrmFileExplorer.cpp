@@ -86,7 +86,6 @@ void FrmFileExplorer::notifyFileLoad(const IFile *pFile)
     int i = getTabIndex(pFile);
     if (i>=0)
     {
-//        ui->tcProject->setTabIcon(i, QIcon(":/images/res/file_ok.ico"));
         ui->tcProject->setTabIcon(i, QIcon(":/images/res/ok.ico"));
     }
 }

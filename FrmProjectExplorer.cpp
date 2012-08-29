@@ -9,6 +9,7 @@
 //--- Luanda framework ----------------------------------------------------------------------------
 #include "IFile.h"
 #include "Exceptions.h"
+#include "Prototypes.h"
 
 //-------------------------------------------------------------------------------------------------
 FrmProjectExplorer::FrmProjectExplorer(QWidget *parent)
@@ -104,10 +105,12 @@ void FrmProjectExplorer::notifyFileModified(const IFile *pFile)
 
 void FrmProjectExplorer::updateOutline(const IFile *pFile)
 {
+    ui->tvOutline->clear();
+    ui->tvOutline->setRootIsDecorated(true);
+    m_pScriptOutline.clear();
+
     if (pFile==NULL)
         return;
-
-    ui->tvOutline->clear();
 
     QTreeWidgetItem* itHeader = new QTreeWidgetItem();
     itHeader->setText(0, QString("Function overview (") + pFile->getName() + ")");
@@ -123,6 +126,8 @@ void FrmProjectExplorer::updateOutline(const IFile *pFile)
                             QRegExp::RegExp);
     if (!regex.isValid())
         throw InternalError("Can't create outline: Invalid regular expression.");
+
+    m_pScriptOutline = QSharedPointer<ScriptOutline>(new ScriptOutline(pFile->getName()));
 
     // Heraussuchen der Funktionsdefinitionen
     for (int i=0; i<vLines.size(); ++i)
@@ -140,25 +145,11 @@ void FrmProjectExplorer::updateOutline(const IFile *pFile)
         QString sMatch   = regex.cap(0);
         QString sFunName = regex.cap(1);
         QString sFunArgs = regex.cap(2);
-//      QString sRest    = regex.cap(3);
-
-
-//        AddFunctionToOutline(sFunName, sFunArgs);
-//        QTreeWidgetItem itFunction = GetFunctionNode(sFunName);
-
-//        AddFunctionToOutline(sFunName, sFunArgs, ui->tvOutline->invisibleRootItem());
-
-        ui->tvOutline->invisibleRootItem()->addChild(new QTreeWidgetItem((QTreeWidget*)0, QStringList(sFunName)));
+        m_pScriptOutline->addFunction(sFunName, sFunArgs);
         qDebug() << "function " << sFunName << "(" << sFunArgs << ")";
     }
-}
 
-//-------------------------------------------------------------------------------------------------
-void AddFunctionToOutline(const QStringList &vNames,
-                          const QString &sArgs,
-                          QTreeWidgetItem *itParent)
-{
-    //QStringList vFunTok = sName.split(".");
-
-
+    QTreeWidgetItem *pOutline = m_pScriptOutline->toTreeItem();
+    ui->tvOutline->invisibleRootItem()->addChild(pOutline);
+    ui->tvOutline->expandAll();
 }

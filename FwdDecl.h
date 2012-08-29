@@ -13,7 +13,11 @@ class IFile;
 class IFileObserver;
 class IProject;
 
+class LanguageToken;
+class ScriptOutline;
+
 //--- Qt lib --------------------------------------------------------------------------------------
 class QTimer;
+class QTreeWidgetItem;
 
 #endif // FWDDECL_H

@@ -19,19 +19,6 @@ LanguageToken::LanguageToken(const QString& sName)
 {}
 
 //-------------------------------------------------------------------------------------------------
-LanguageToken::LanguageToken(LanguageToken *pParent,
-                             const QString& sName)
-    :m_vChilds()
-    ,m_sName(sName)
-    ,m_pParent(NULL)
-{
-    if (pParent!=NULL)
-    {
-//        pParent->addChild();
-    }
-}
-
-//-------------------------------------------------------------------------------------------------
 LanguageToken::~LanguageToken()
 {
     for (int i=0; i<m_vChilds.size(); ++i)
@@ -65,12 +52,6 @@ LanguageToken* LanguageToken::getParent()
 }
 
 //-------------------------------------------------------------------------------------------------
-const LanguageToken* LanguageToken::getParent() const
-{
-    return m_pParent;
-}
-
-//-------------------------------------------------------------------------------------------------
 void LanguageToken::setLine(int nLine)
 {
     m_nLine = nLine;
@@ -83,9 +64,15 @@ int LanguageToken::getLine() const
 }
 
 //-------------------------------------------------------------------------------------------------
+const QVector<LanguageToken*>& LanguageToken::getChilds() const
+{
+    return m_vChilds;
+}
+
+//-------------------------------------------------------------------------------------------------
 void LanguageToken::add(LanguageToken *pToken)
 {
-    if (pToken==NULL || m_vChilds.indexOf(pToken)==-1)
+    if (pToken==NULL || m_vChilds.indexOf(pToken)!=-1)
         return;
 
     LanguageToken *pParent = pToken->getParent();
@@ -111,6 +98,60 @@ void LanguageToken::remove(LanguageToken *pToken)
 }
 
 //-------------------------------------------------------------------------------------------------
+LanguageToken* LanguageToken::find(const QString &sName)
+{
+    for (int i=0; i<m_vChilds.size(); ++i)
+    {
+        if (m_vChilds[i]->getName()==sName)
+            return m_vChilds[i];
+    }
+
+    return NULL;
+}
+
+//-------------------------------------------------------------------------------------------------
+void LanguageToken::addFunction(const QString &sName, const QString &sArg)
+{
+    if (sName.isEmpty() || sName.isNull())
+        return;
+
+    int i = sName.indexOf('.');
+    if (i==sName.length()-1)
+        return;
+
+    if (i==-1)
+    {
+        add(new FunctionDefinition(sName, sArg));
+    }
+    else
+    {
+        QString aClass = sName.left(i);
+        QString sSec = sName.mid(i+1);
+
+        LanguageToken *pClass = find(aClass);
+        if (pClass==NULL)
+            add(new ClassDefinition(aClass, sSec, sArg));
+        else
+            pClass->addFunction(sSec, sArg);
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
+QTreeWidgetItem* LanguageToken::toTreeItem()
+{
+    QTreeWidgetItem *pSelf = new QTreeWidgetItem();
+    pSelf->setText(0, m_sName);
+    pSelf->setIcon(0, m_icon);
+
+    for (int i=0; i<m_vChilds.size(); ++i)
+    {
+        pSelf->addChild(m_vChilds[i]->toTreeItem());
+    }
+
+    return pSelf;
+}
+
+//-------------------------------------------------------------------------------------------------
 //
 //
 // class Script
@@ -118,9 +159,11 @@ void LanguageToken::remove(LanguageToken *pToken)
 //
 //-------------------------------------------------------------------------------------------------
 
-Script::Script(const QString &sName)
+ScriptOutline::ScriptOutline(const QString &sName)
     :LanguageToken(sName)
-{}
+{
+    m_icon = QIcon(":/outline/res/text-x-preview.ico");
+}
 
 //-------------------------------------------------------------------------------------------------
 //
@@ -130,10 +173,14 @@ Script::Script(const QString &sName)
 //
 //-------------------------------------------------------------------------------------------------
 
-ClassDefinition::ClassDefinition(LanguageToken *pParent,
-                                 const QString &sName)
-    :LanguageToken(pParent, sName)
-{}
+ClassDefinition::ClassDefinition(const QString &sName,
+                                 const QString &sRest,
+                                 const QString &sArg)
+    :LanguageToken(sName)
+{
+    m_icon = QIcon(":/outline/res/code-class.ico");
+    addFunction(sRest, sArg);
+}
 
 //-------------------------------------------------------------------------------------------------
 //
@@ -143,9 +190,10 @@ ClassDefinition::ClassDefinition(LanguageToken *pParent,
 //
 //-------------------------------------------------------------------------------------------------
 
-FunctionDefinition::FunctionDefinition(LanguageToken *pParent,
-                                       const QString &sName,
+FunctionDefinition::FunctionDefinition(const QString &sName,
                                        const QString &sArgs)
-    :LanguageToken(pParent, sName)
+    :LanguageToken(sName)
     ,m_sArgs(sArgs)
-{}
+{
+    m_icon = QIcon(":/outline/res/code-function.ico");
+}

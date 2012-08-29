@@ -350,8 +350,8 @@ HEADERS  += \
     Utils.h \
     Exceptions.h \
     QCommandPrompt.h \
-    QFileExplorerTabBar.h \
-    LanguageTokens.h
+    Prototypes.h \
+    QFileExplorerTabBar.h
 
 FORMS    += \
     DlgSettings.ui \

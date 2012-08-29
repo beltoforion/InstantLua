@@ -15,6 +15,7 @@
         <file>res/konsole.png</file>
         <file>res/ok.ico</file>
         <file>res/warning.ico</file>
+        <file>res/text-x-preview.ico</file>
     </qresource>
     <qresource prefix="/run_and_debug">
         <file>res/debug-step-into.ico</file>
@@ -33,5 +34,11 @@
         <file>res/debug-step-into.png</file>
         <file>res/debug-step-out.png</file>
         <file>res/debug-step-over.png</file>
+    </qresource>
+    <qresource prefix="/outline">
+        <file>res/code-class.ico</file>
+        <file>res/code-function.ico</file>
+        <file>res/code-variable.ico</file>
+        <file>res/text-x-preview.ico</file>
     </qresource>
 </RCC>
