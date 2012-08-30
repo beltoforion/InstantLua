@@ -41,6 +41,7 @@ public:
     void activate();
     void load();
     void save();
+    void navigateToLine(int nLine) const;
 
     bool wasModified() const;
     void setModified(bool bStat)        ;

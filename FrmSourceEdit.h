@@ -26,6 +26,7 @@ public:
     virtual void notifyFileModified(const IFile *pFile);
     virtual void notifyFileLoad(const IFile *pFile);
     virtual void notifyBeforeFileSave(IFile *pFile);
+    virtual void notifyFileLineSelected(const IFile *pFile, int nLine);
 
     // von Widget reimplementiert
     virtual void mousePressEvent(QMouseEvent * event);
@@ -34,6 +35,7 @@ public:
     IFile::ptr_type getFile();
     void updateFileBuffer();
     void updateFromSettings();
+//    void markLine(int nLine);
 
 private slots:
 
@@ -57,9 +59,14 @@ private:
     // Marker
     int m_nMarkerBreakPoint;
     int m_nMarkerCIP;
+    int m_nMarkerLine;
+
+    QVector<int> m_vMarkedLines;
 
     // Indikatoren
     int m_nNumberIndicator;
+
+    void clearMarkedLines();
 };
 
 #endif // FRMSOURCEEDIT_H

@@ -24,7 +24,7 @@ public:
     void setParent(LanguageToken *pToken);
     LanguageToken* getParent();
 
-    void addFunction(const QString &sName, const QString &sArg);
+    void addFunction(const QString &sName, const QString &sArg, int nLine);
     QTreeWidgetItem* toTreeItem() ;
 
 protected:
@@ -55,7 +55,8 @@ class ClassDefinition : public LanguageToken
 public:
     ClassDefinition(const QString &sName,
                     const QString &sRest,
-                    const QString &sArg);
+                    const QString &sArg,
+                    int nLine);
 };
 
 
@@ -64,7 +65,8 @@ class FunctionDefinition : public LanguageToken
 {
 public:
     FunctionDefinition(const QString &sName,
-                       const QString &sArgs);
+                       const QString &sArgs,
+                       int nLine);
 
     QString m_sArgs;
 };

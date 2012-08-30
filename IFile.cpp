@@ -54,6 +54,20 @@ void IFile::activate()
     }
 }
 
+
+//-------------------------------------------------------------------------------------------------
+void IFile::navigateToLine(int nLine) const
+{
+    if (hasObservers())
+    {
+        obs_list::const_iterator it = m_observer.begin();
+        for ( ; it!=m_observer.end(); ++it)
+        {
+            (*it)->notifyFileLineSelected(this, nLine);
+        }
+    }
+}
+
 //-------------------------------------------------------------------------------------------------
 void IFile::load()
 {

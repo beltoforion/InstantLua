@@ -39,12 +39,18 @@ public:
     virtual void notifyFileLoad(const IFile *pFile);
     virtual void notifyBeforeFileSave(IFile *pFile);
     virtual void notifyFileModified(const IFile *pFile);
+    virtual void notifyFileLineSelected(const IFile *pFile, int nLine);
+
+private slots:
+    void on_tvOutline_itemSelectionChanged();
 
 private:
     Ui::FrmProjectExplorer *ui;
     QDir m_dirProjects;
     QSharedPointer<ScriptOutline> m_pScriptOutline;
+    const IFile *m_pActiveFile;
 
+    void initOutline();
     void updateOutline(const IFile *pFile);
 };
 

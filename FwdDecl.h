@@ -19,5 +19,6 @@ class ScriptOutline;
 //--- Qt lib --------------------------------------------------------------------------------------
 class QTimer;
 class QTreeWidgetItem;
+class QModelIndex;
 
 #endif // FWDDECL_H

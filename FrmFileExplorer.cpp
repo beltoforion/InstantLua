@@ -8,8 +8,9 @@
 #include <Qlist>
 #include <QUrl>
 #include <QFileInfo>
+#include <QDebug>
 
-//--- Luanda frameworj ----------------------------------------------------------------------------
+//--- Luanda framework ----------------------------------------------------------------------------
 #include "FrmSourceEdit.h"
 #include "FileLua.h"
 #include "Settings.h"
@@ -97,7 +98,6 @@ void FrmFileExplorer::notifyBeforeFileSave(IFile *pFile)
     int i = getTabIndex(pFile);
     if (i>=0)
     {
-//        ui->tcProject->setTabIcon(i, QIcon(":/images/res/file_ok.ico"));
         ui->tcProject->setTabIcon(i, QIcon(":/images/res/ok.ico"));
     }
 }
@@ -108,9 +108,22 @@ void FrmFileExplorer::notifyFileModified(const IFile *pFile)
     int i = getTabIndex(pFile);
     if (i>=0)
     {
-//        ui->tcProject->setTabIcon(i, QIcon(":/images/res/file_save.ico"));
         ui->tcProject->setTabIcon(i, QIcon(":/images/res/warning.ico"));
     }
+}
+
+//-------------------------------------------------------------------------------------------------
+void FrmFileExplorer::notifyFileLineSelected(const IFile *pFile, int nLine)
+{
+    // Tabsheet mit dem File raussuchen und Zeile markieren
+    int i = getTabIndex(pFile);
+    if (i>=0)
+    {
+        ui->tcProject->setCurrentIndex(i);
+//        FrmSourceEdit *pEdit = static_cast<FrmSourceEdit*>(ui->tcProject->widget(i));
+//        pEdit->markLine(nLine);
+    }
+    qDebug() << "FrmFileExplorer::notifyFileLineSelected:" << QString::number(nLine) << "\n";
 }
 
 //-------------------------------------------------------------------------------------------------

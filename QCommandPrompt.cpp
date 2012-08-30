@@ -230,8 +230,6 @@ void QCommandPrompt::keyPressEvent(QKeyEvent *e)
     case Qt::Key_Home:
         {
             QTextCursor tc = textCursor();
-            int nPos = tc.position();
-
             Qt::KeyboardModifiers mod = e->modifiers();
             if (mod & Qt::ShiftModifier)
                 tc.setPosition(m_nPromptPos, QTextCursor::KeepAnchor);

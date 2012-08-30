@@ -42,6 +42,7 @@ public:
     virtual void notifyFileLoad(const IFile *pFile);
     virtual void notifyBeforeFileSave(IFile *pFile);
     virtual void notifyFileModified(const IFile *pFile);
+    virtual void notifyFileLineSelected(const IFile *pFile, int nLine);
 
 private:
     Ui::FrmFileExplorer *ui;

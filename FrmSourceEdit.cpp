@@ -20,6 +20,7 @@ FrmSourceEdit::FrmSourceEdit(FrmFileExplorer *pParent, IFile::ptr_type pFile)
     ,m_pFileExplorer(pParent)
     ,m_nMarkerBreakPoint(0)
     ,m_nMarkerCIP(0)
+    ,m_nMarkerLine(0)
     ,m_nNumberIndicator(0)
 {
     try
@@ -149,6 +150,9 @@ FrmSourceEdit::FrmSourceEdit(FrmFileExplorer *pParent, IFile::ptr_type pFile)
         m_pSrcEdit->setMarkerForegroundColor(QColor("black"), m_nMarkerCIP);
         m_pSrcEdit->setMarkerBackgroundColor(QColor("green"), m_nMarkerCIP);
 
+        m_nMarkerLine = m_pSrcEdit->markerDefine(QsciScintilla::Background);
+        m_pSrcEdit->setMarkerBackgroundColor(QColor(180, 255, 180), m_nMarkerLine);
+
         // Indikatoren
         m_nNumberIndicator = m_pSrcEdit->indicatorDefine(QsciScintilla::StrikeIndicator /*RoundBoxIndicator*/);
 
@@ -236,7 +240,7 @@ void FrmSourceEdit::tabChange(int idx)
 //-------------------------------------------------------------------------------------------------
 void FrmSourceEdit::notifyFileActivate(const IFile *pFile)
 {
-    // nichts zu tun...
+    clearMarkedLines();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -263,6 +267,24 @@ void FrmSourceEdit::notifyBeforeFileSave(IFile *pFile)
         QString sLine = m_pSrcEdit->text(i);
         pFile->addLine(sLine);
     }
+}
+
+//-------------------------------------------------------------------------------------------------
+void FrmSourceEdit::notifyFileLineSelected(const IFile *pFile, int nLine)
+{
+    clearMarkedLines();
+    qDebug() << "FrmSourceEdit::notifyFileLineSelected:" << QString::number(nLine) << "\n";
+
+    if (nLine<0)
+        return;
+
+    m_pSrcEdit->lines();
+    m_pSrcEdit->markerAdd(nLine, m_nMarkerLine);
+    m_pSrcEdit->setCursorPosition(nLine, 0);
+    m_pSrcEdit->ensureCursorVisible();
+    m_vMarkedLines.push_back(nLine);
+
+//    repaint();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -301,6 +323,32 @@ void FrmSourceEdit::updateFromSettings()
 
     m_pSrcEdit->lexer()->setFont(QFont("Courier New", settings.getFontSize()));
     m_pSrcEdit->setTabWidth(settings.getTabIndent());
+}
+
+//-------------------------------------------------------------------------------------------------
+/** \brief Hervorheben einer Bestimmten Zeile.
+*/
+/*
+void FrmSourceEdit::markLine(int nLine)
+{
+    clearMarkedLines();
+
+    if (nLine<0)
+        return;
+
+    m_pSrcEdit->markerAdd(nLine, m_nMarkerLine);
+    m_pSrcEdit->ensureLineVisible(nLine);
+    m_vMarkedLines.push_back(nLine);
+}
+*/
+//-------------------------------------------------------------------------------------------------
+void FrmSourceEdit::clearMarkedLines()
+{
+    for (int i=0; i<m_vMarkedLines.size(); ++i)
+    {
+        m_pSrcEdit->markerDelete(m_vMarkedLines[i], m_nMarkerLine);
+    }
+    m_vMarkedLines.clear();
 }
 
 
