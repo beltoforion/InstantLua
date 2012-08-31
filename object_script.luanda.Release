@@ -216,6 +216,7 @@ INPUT(
 ./build\release\.obj\QCommandPrompt.o
 ./build\release\.obj\Prototypes.o
 ./build\release\.obj\QFileExplorerTabBar.o
+./build\release\.obj\QGradientPanel.o
 ./build\release\.obj\moc_SciClasses.o
 ./build\release\.obj\moc_qsciscintillabase.o
 ./build\release\.obj\moc_qsciscintilla.o
@@ -267,5 +268,6 @@ INPUT(
 ./build\release\.obj\moc_DlgAbout.o
 ./build\release\.obj\moc_FrmConsole.o
 ./build\release\.obj\moc_QCommandPrompt.o
+./build\release\.obj\moc_QGradientPanel.o
 ./build\release\.obj\qrc_luanda.o
 );

@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'DlgSettings.ui'
 **
-** Created: Sat 25. Aug 00:46:52 2012
+** Created: Fri 31. Aug 22:00:09 2012
 **      by: Qt User Interface Compiler version 4.7.4
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -86,13 +86,18 @@ public:
         widget = new QWidget(DlgSettings);
         widget->setObjectName(QString::fromUtf8("widget"));
         widget->setMinimumSize(QSize(0, 60));
-        widget->setStyleSheet(QString::fromUtf8("background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(20, 20, 100, 255), stop:1 rgba(255, 255, 255, 255));\n"
+        widget->setStyleSheet(QString::fromUtf8("color: white;\n"
+"background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #88d, stop: 0.1 #99e, stop: 0.49 #77c, stop: 0.5 #66b, stop: 1 #77c);\n"
+"border: 1px solid gray;\n"
+"/*border-radius: 7;*/\n"
+"/*\n"
+"background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(20, 20, 100, 255), stop:1 rgba(255, 255, 255, 255));\n"
 "color:rgb(255, 255, 255);\n"
 "padding: 1px;\n"
 "border-style: solid;\n"
 "border: 1px solid gray;\n"
 "border-radius: 4px;\n"
-""));
+"*/"));
         lbCaption = new QLabel(widget);
         lbCaption->setObjectName(QString::fromUtf8("lbCaption"));
         lbCaption->setGeometry(QRect(67, 8, 175, 35));

@@ -25,6 +25,9 @@ FrmFileExplorer::FrmFileExplorer(QWidget *parent, IFileObserver *pProjectExplore
     assert(m_pProjectExplorer!=NULL);
 
     ui->setupUi(this);
+    ui->paCaption->setCaption("Source Code");
+    ui->paCaption->setIcon(QPixmap(":/images/res/tab-duplicate-3.png"));
+
     setAcceptDrops(true);
 }
 
@@ -78,6 +81,7 @@ void FrmFileExplorer::notifyFileActivate(const IFile *pFile)
     if (i>=0)
     {
         ui->tcProject->setCurrentIndex(i);
+        ui->paCaption->setInfo(1, QString("File: ") + pFile->path());
     }
 }
 
@@ -303,4 +307,10 @@ void FrmFileExplorer::on_tcProject_currentChanged(QWidget *tabPage)
     IFile::ptr_type pFile = pEdit->getFile();
     if (!pFile.isNull())
         pFile->activate();
+}
+
+//-------------------------------------------------------------------------------------------------
+void FrmFileExplorer::setCursorInfo(int nLine, int nIndex)
+{
+    ui->paCaption->setInfo(0, tr("Line: %1, Column: %2").arg(nLine).arg(nIndex));
 }

@@ -16,6 +16,7 @@
         <file>res/ok.ico</file>
         <file>res/warning.ico</file>
         <file>res/text-x-preview.ico</file>
+        <file>res/tab-duplicate-3.png</file>
     </qresource>
     <qresource prefix="/run_and_debug">
         <file>res/debug-step-into.ico</file>

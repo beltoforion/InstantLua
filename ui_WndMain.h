@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'WndMain.ui'
 **
-** Created: Sat 25. Aug 00:46:52 2012
+** Created: Fri 31. Aug 23:34:08 2012
 **      by: Qt User Interface Compiler version 4.7.4
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -135,7 +135,7 @@ public:
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
         horizontalLayout_2 = new QHBoxLayout(centralWidget);
         horizontalLayout_2->setSpacing(6);
-        horizontalLayout_2->setContentsMargins(11, 11, 11, 11);
+        horizontalLayout_2->setContentsMargins(1, 1, 1, 1);
         horizontalLayout_2->setObjectName(QString::fromUtf8("horizontalLayout_2"));
         frmMain = new QFrame(centralWidget);
         frmMain->setObjectName(QString::fromUtf8("frmMain"));

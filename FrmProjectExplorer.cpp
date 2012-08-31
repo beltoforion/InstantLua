@@ -20,6 +20,8 @@ FrmProjectExplorer::FrmProjectExplorer(QWidget *parent)
     ,m_pActiveFile(NULL)
 {
     ui->setupUi(this);
+    ui->paCaption->setColorScheme(QGradientPanel::csBLUE);
+    ui->paCaption->setCaption(tr("Explorer"));
 
     initOutline();
 }
@@ -43,7 +45,7 @@ void FrmProjectExplorer::initOutline()
     ui->tvOutline->header()->setStretchLastSection(false);
     ui->tvOutline->header()->setResizeMode(0, QHeaderView::Stretch);
     ui->tvOutline->header()->setResizeMode(1, QHeaderView::ResizeToContents);
-    ui->tvOutline->setAlternatingRowColors(true);
+//    ui->tvOutline->setAlternatingRowColors(true);
 }
 
 //-------------------------------------------------------------------------------------------------

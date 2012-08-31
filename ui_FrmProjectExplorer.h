@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'FrmProjectExplorer.ui'
 **
-** Created: Sat 25. Aug 00:46:52 2012
+** Created: Fri 31. Aug 23:26:25 2012
 **      by: Qt User Interface Compiler version 4.7.4
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -17,12 +17,12 @@
 #include <QtGui/QFrame>
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QHeaderView>
-#include <QtGui/QLabel>
 #include <QtGui/QSplitter>
 #include <QtGui/QTabWidget>
 #include <QtGui/QTreeWidget>
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QWidget>
+#include "QGradientPanel.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -33,7 +33,7 @@ public:
     QSplitter *spExplorer;
     QFrame *frame;
     QVBoxLayout *verticalLayout;
-    QLabel *lbCapExplorer;
+    QGradientPanel *paCaption;
     QTabWidget *tabCommands;
     QWidget *tsOutline;
     QHBoxLayout *horizontalLayout_2;
@@ -64,26 +64,15 @@ public:
         frame->setFrameShape(QFrame::StyledPanel);
         frame->setFrameShadow(QFrame::Raised);
         verticalLayout = new QVBoxLayout(frame);
-        verticalLayout->setSpacing(5);
+        verticalLayout->setSpacing(2);
         verticalLayout->setContentsMargins(0, 0, 0, 0);
         verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
-        lbCapExplorer = new QLabel(frame);
-        lbCapExplorer->setObjectName(QString::fromUtf8("lbCapExplorer"));
-        QFont font;
-        font.setPointSize(12);
-        lbCapExplorer->setFont(font);
-        lbCapExplorer->setAutoFillBackground(false);
-        lbCapExplorer->setStyleSheet(QString::fromUtf8("background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 112, 255), stop:1 rgba(220, 240, 220, 255));\n"
-"color: rgb(255, 255, 255);\n"
-"padding: 1px;\n"
-"border-style: solid;\n"
-"border: 1px solid gray;\n"
-"border-radius: 2px;"));
-        lbCapExplorer->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
-        lbCapExplorer->setMargin(3);
-        lbCapExplorer->setIndent(5);
+        paCaption = new QGradientPanel(frame);
+        paCaption->setObjectName(QString::fromUtf8("paCaption"));
+        paCaption->setMinimumSize(QSize(0, 25));
+        paCaption->setStyleSheet(QString::fromUtf8(""));
 
-        verticalLayout->addWidget(lbCapExplorer);
+        verticalLayout->addWidget(paCaption);
 
         tabCommands = new QTabWidget(frame);
         tabCommands->setObjectName(QString::fromUtf8("tabCommands"));
@@ -95,9 +84,20 @@ public:
         horizontalLayout_2->setObjectName(QString::fromUtf8("horizontalLayout_2"));
         tvOutline = new QTreeWidget(tsOutline);
         QTreeWidgetItem *__qtreewidgetitem = new QTreeWidgetItem();
+        __qtreewidgetitem->setText(1, QString::fromUtf8("2"));
         __qtreewidgetitem->setText(0, QString::fromUtf8("1"));
         tvOutline->setHeaderItem(__qtreewidgetitem);
         tvOutline->setObjectName(QString::fromUtf8("tvOutline"));
+        tvOutline->setStyleSheet(QString::fromUtf8(""));
+        tvOutline->setAlternatingRowColors(true);
+        tvOutline->setIndentation(15);
+        tvOutline->setRootIsDecorated(true);
+        tvOutline->setAllColumnsShowFocus(false);
+        tvOutline->setColumnCount(2);
+        tvOutline->header()->setVisible(true);
+        tvOutline->header()->setMinimumSectionSize(20);
+        tvOutline->header()->setProperty("showSortIndicator", QVariant(true));
+        tvOutline->header()->setStretchLastSection(false);
 
         horizontalLayout_2->addWidget(tvOutline);
 
@@ -124,7 +124,6 @@ public:
     void retranslateUi(QWidget *FrmProjectExplorer)
     {
         FrmProjectExplorer->setWindowTitle(QApplication::translate("FrmProjectExplorer", "Form", 0, QApplication::UnicodeUTF8));
-        lbCapExplorer->setText(QApplication::translate("FrmProjectExplorer", "Explorer", 0, QApplication::UnicodeUTF8));
         tabCommands->setTabText(tabCommands->indexOf(tsOutline), QApplication::translate("FrmProjectExplorer", "Outline", 0, QApplication::UnicodeUTF8));
         tabCommands->setTabText(tabCommands->indexOf(tab), QApplication::translate("FrmProjectExplorer", "Seite", 0, QApplication::UnicodeUTF8));
     } // retranslateUi

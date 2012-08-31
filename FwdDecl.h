@@ -20,5 +20,6 @@ class ScriptOutline;
 class QTimer;
 class QTreeWidgetItem;
 class QModelIndex;
+class QIcon;
 
 #endif // FWDDECL_H

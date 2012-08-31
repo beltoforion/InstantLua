@@ -12,7 +12,7 @@ FrmConsole::FrmConsole(QWidget *parent)
     ui->setupUi(this);
 
     ui->edConsole->setPrompt("Lua", ">");
-
+    ui->paCaption->setCaption("Console");
     splashScreen();
 }
 

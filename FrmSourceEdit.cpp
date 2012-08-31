@@ -218,7 +218,7 @@ void FrmSourceEdit::marginClicked(int nMargin, int nLine, Qt::KeyboardModifiers 
 //-------------------------------------------------------------------------------------------------
 void FrmSourceEdit::cursorMoved(int nLine, int nIndex)
 {
-    qDebug() << "cursorMoved(" << nLine << "," << nIndex << ")";
+    m_pFileExplorer->setCursorInfo(nLine, nIndex);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -278,7 +278,6 @@ void FrmSourceEdit::notifyFileLineSelected(const IFile *pFile, int nLine)
     if (nLine<0)
         return;
 
-    m_pSrcEdit->lines();
     m_pSrcEdit->markerAdd(nLine, m_nMarkerLine);
     m_pSrcEdit->setCursorPosition(nLine, 0);
     m_pSrcEdit->ensureCursorVisible();

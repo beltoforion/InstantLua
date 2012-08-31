@@ -14,6 +14,21 @@ DEFINES += _CRT_SECURE_NO_WARNINGS \
     QT \
     SCI_LEXER
 
+# set up custom build directory
+CONFIG(debug, debug|release) {
+    DESTDIR = ./build/debug
+    OBJECTS_DIR = ./build/debug/.obj
+    MOC_DIR = ./build/debug/.moc
+    RCC_DIR = ./build/debug/.rcc
+#    UI_DIR = ./build/debug/.ui
+} else {
+    DESTDIR = ./build/release
+    OBJECTS_DIR = ./build/release/.obj
+    MOC_DIR = ./build/release/.moc
+    RCC_DIR = ./build/release/.rcc
+#    UI_DIR = ./build/release/.ui
+}
+
 SOURCES += main.cpp\
     3rdparty/lua-5.2.0/src/lzio.c \
     3rdparty/lua-5.2.0/src/lvm.c \
@@ -230,7 +245,8 @@ SOURCES += main.cpp\
     Exceptions.cpp \
     QCommandPrompt.cpp \
     Prototypes.cpp \
-    QFileExplorerTabBar.cpp
+    QFileExplorerTabBar.cpp \
+    QGradientPanel.cpp
 
 HEADERS  += \
     3rdparty/QScintilla-gpl-2.6.2/Qt4Qt5/ListBoxQt.h \
@@ -351,7 +367,8 @@ HEADERS  += \
     Exceptions.h \
     QCommandPrompt.h \
     Prototypes.h \
-    QFileExplorerTabBar.h
+    QFileExplorerTabBar.h \
+    QGradientPanel.h
 
 FORMS    += \
     DlgSettings.ui \
@@ -360,7 +377,8 @@ FORMS    += \
     FrmInfo.ui \
     FrmProjectExplorer.ui \
     DlgAbout.ui \
-    FrmConsole.ui
+    FrmConsole.ui \
+    QGradientPanel.ui
 
 INCLUDEPATH += $$PWD/3rdparty/QScintilla-gpl-2.6.2/Qt4Qt5 \
     $$PWD/3rdparty/QScintilla-gpl-2.6.2/include \
@@ -388,17 +406,4 @@ release {
 RESOURCES += \
     luanda.qrc
 
-# set up custom build directory
-CONFIG(debug, debug|release) {
-    DESTDIR = ./build/debug
-    OBJECTS_DIR = ./build/debug/.obj
-    MOC_DIR = ./build/debug/.moc
-    RCC_DIR = ./build/debug/.rcc
-    UI_DIR = ./build/debug/.ui
-} else {
-    DESTDIR = ./build/release
-    OBJECTS_DIR = ./build/release/.obj
-    MOC_DIR = ./build/release/.moc
-    RCC_DIR = ./build/release/.rcc
-    UI_DIR = ./build/release/.ui
-}
+

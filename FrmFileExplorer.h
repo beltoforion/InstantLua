@@ -31,6 +31,7 @@ public:
 
     void dropEvent(QDropEvent *evt);
     void dragEnterEvent(QDragEnterEvent *event);
+    void setCursorInfo(int nLine, int nIndex);
 
     // ISettingsprovider
     virtual void writeSettings(QSettings &settings);
@@ -43,6 +44,7 @@ public:
     virtual void notifyBeforeFileSave(IFile *pFile);
     virtual void notifyFileModified(const IFile *pFile);
     virtual void notifyFileLineSelected(const IFile *pFile, int nLine);
+
 
 private:
     Ui::FrmFileExplorer *ui;

@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'FrmFileExplorer.ui'
 **
-** Created: Sat 25. Aug 00:46:52 2012
+** Created: Fri 31. Aug 23:37:35 2012
 **      by: Qt User Interface Compiler version 4.7.4
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -16,10 +16,10 @@
 #include <QtGui/QButtonGroup>
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QHeaderView>
-#include <QtGui/QLabel>
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QWidget>
-#include "fileexplorertabwidget.h"
+#include "FileExplorerTabWidget.h"
+#include "QGradientPanel.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -30,7 +30,7 @@ public:
     QAction *actionClose_All_But_This;
     QHBoxLayout *horizontalLayout;
     QVBoxLayout *verticalLayout;
-    QLabel *lbCaption;
+    QGradientPanel *paCaption;
     FileExplorerTabWidget *tcProject;
 
     void setupUi(QWidget *FrmFileExplorer)
@@ -50,29 +50,20 @@ public:
         actionClose_All_But_This->setIcon(icon1);
         horizontalLayout = new QHBoxLayout(FrmFileExplorer);
         horizontalLayout->setSpacing(0);
-        horizontalLayout->setContentsMargins(0, 0, 0, 0);
         horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
+        horizontalLayout->setContentsMargins(0, 1, 0, 0);
         verticalLayout = new QVBoxLayout();
-        verticalLayout->setSpacing(5);
+        verticalLayout->setSpacing(2);
 #ifndef Q_OS_MAC
         verticalLayout->setContentsMargins(0, 0, 0, 0);
 #endif
         verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
-        lbCaption = new QLabel(FrmFileExplorer);
-        lbCaption->setObjectName(QString::fromUtf8("lbCaption"));
-        QFont font;
-        font.setPointSize(12);
-        lbCaption->setFont(font);
-        lbCaption->setStyleSheet(QString::fromUtf8("background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 112, 255), stop:1 rgba(220, 240, 220, 255));\n"
-"color: rgb(255, 255, 255);\n"
-"padding: 1px;\n"
-"border-style: solid;\n"
-"border: 1px solid gray;\n"
-"border-radius: 2px;"));
-        lbCaption->setMargin(3);
-        lbCaption->setIndent(5);
+        paCaption = new QGradientPanel(FrmFileExplorer);
+        paCaption->setObjectName(QString::fromUtf8("paCaption"));
+        paCaption->setMinimumSize(QSize(0, 25));
+        paCaption->setAutoFillBackground(false);
 
-        verticalLayout->addWidget(lbCaption);
+        verticalLayout->addWidget(paCaption);
 
         tcProject = new FileExplorerTabWidget(FrmFileExplorer);
         tcProject->setObjectName(QString::fromUtf8("tcProject"));
@@ -99,7 +90,6 @@ public:
         FrmFileExplorer->setWindowTitle(QApplication::translate("FrmFileExplorer", "Form", 0, QApplication::UnicodeUTF8));
         actionClose->setText(QApplication::translate("FrmFileExplorer", "Close", 0, QApplication::UnicodeUTF8));
         actionClose_All_But_This->setText(QApplication::translate("FrmFileExplorer", "Close All But This", 0, QApplication::UnicodeUTF8));
-        lbCaption->setText(QApplication::translate("FrmFileExplorer", "File Explorer", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 
 };
