@@ -6,9 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>584</width>
-    <height>40</height>
+    <width>793</width>
+    <height>38</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>Form</string>
@@ -31,13 +37,13 @@ border-radius: 4;
     <number>10</number>
    </property>
    <property name="topMargin">
-    <number>3</number>
+    <number>2</number>
    </property>
    <property name="rightMargin">
     <number>0</number>
    </property>
    <property name="bottomMargin">
-    <number>3</number>
+    <number>2</number>
    </property>
    <item>
     <widget class="QLabel" name="lbCaption">
@@ -49,7 +55,7 @@ border-radius: 4;
      </property>
      <property name="font">
       <font>
-       <pointsize>14</pointsize>
+       <pointsize>13</pointsize>
       </font>
      </property>
      <property name="styleSheet">
@@ -104,10 +110,24 @@ background-position: none;</string>
        <property name="text">
         <string>Line1</string>
        </property>
+       <property name="margin">
+        <number>0</number>
+       </property>
       </widget>
      </item>
      <item>
       <widget class="QLabel" name="lbInfo2">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>8</pointsize>
+        </font>
+       </property>
        <property name="styleSheet">
         <string notr="true">border-style: none;
 background-color: none;
@@ -115,7 +135,7 @@ background-image: none;
 background-position: none;</string>
        </property>
        <property name="text">
-        <string>Line2</string>
+        <string>Line2................................................................................................</string>
        </property>
       </widget>
      </item>

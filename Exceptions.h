@@ -34,4 +34,12 @@ struct InternalError : Exception
     InternalError(QString sMsg);
     virtual ~InternalError() throw();
 };
+
+//-------------------------------------------------------------------------------------------------
+struct LuaException : Exception
+{
+    LuaException(QString sMsg);
+    virtual ~LuaException() throw();
+};
+
 #endif

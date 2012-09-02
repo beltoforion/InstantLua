@@ -20,6 +20,10 @@
 #include "DlgSettings.h"
 #include "DlgAbout.h"
 
+//--- Lua bindings --------------------------------------------------------------------------------
+#include "luabind/LuaContext.h"
+
+
 namespace Ui {
     class WndMain;
 }
@@ -47,6 +51,8 @@ private:
     QSplitter *m_pspLeft;
     QSplitter *m_pspMain;
 
+    LuaContext m_lua;
+
     enum { MaxRecentFiles = 5 };
     QAction *m_recentFileActs[MaxRecentFiles];
     QMenu *m_menuRecentFiles;
@@ -71,6 +77,7 @@ private slots:
     void openRecentFile();
     void on_actionOpenProject_triggered();
     void on_actionOpenFile_triggered();
+    void on_actionRun_triggered();
 };
 
 #endif // WND_MAIN_H

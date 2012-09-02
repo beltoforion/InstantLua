@@ -56,6 +56,15 @@ void QGradientPanel::setColorScheme(EColorScheme eScheme)
                                         "border-style: solid;\n"
                                         "border-radius: 4;\n\n"));
         break;
+
+    case csRED:
+        setStyleSheet(QString::fromUtf8("color: white;\n"
+                                        "background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #d88, stop: 0.1 #fee, stop: 0.49 #b87, stop: 0.5 #b66, stop: 1 #ca8);\n"
+                                        "border-width: 1px;\n"
+                                        "border-color: #000;\n"
+                                        "border-style: solid;\n"
+                                        "border-radius: 4;\n\n"));
+        break;
     }
 }
 

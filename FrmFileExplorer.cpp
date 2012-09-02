@@ -81,7 +81,7 @@ void FrmFileExplorer::notifyFileActivate(const IFile *pFile)
     if (i>=0)
     {
         ui->tcProject->setCurrentIndex(i);
-        ui->paCaption->setInfo(1, QString("File: ") + pFile->path());
+        ui->paCaption->setInfo(1, QString("File: %1    ").arg(pFile->path()));
     }
 }
 
@@ -312,5 +312,5 @@ void FrmFileExplorer::on_tcProject_currentChanged(QWidget *tabPage)
 //-------------------------------------------------------------------------------------------------
 void FrmFileExplorer::setCursorInfo(int nLine, int nIndex)
 {
-    ui->paCaption->setInfo(0, tr("Line: %1, Column: %2").arg(nLine).arg(nIndex));
+    ui->paCaption->setInfo(0, tr("Line: %1, Column: %2  ").arg(nLine).arg(nIndex));
 }

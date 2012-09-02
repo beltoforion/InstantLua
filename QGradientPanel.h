@@ -19,7 +19,8 @@ public:
     //---------------------------------------------------------------------------------------------
     enum EColorScheme
     {
-        csBLUE = 0
+        csBLUE = 0,
+        csRED  = 1
     };
 
     explicit QGradientPanel(QWidget *parent = 0);

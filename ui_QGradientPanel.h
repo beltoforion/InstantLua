@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'QGradientPanel.ui'
 **
-** Created: Fri 31. Aug 23:33:09 2012
+** Created: Sun 2. Sep 18:13:45 2012
 **      by: Qt User Interface Compiler version 4.7.4
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -36,7 +36,12 @@ public:
     {
         if (QGradientPanel->objectName().isEmpty())
             QGradientPanel->setObjectName(QString::fromUtf8("QGradientPanel"));
-        QGradientPanel->resize(584, 40);
+        QGradientPanel->resize(793, 38);
+        QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+        sizePolicy.setHorizontalStretch(0);
+        sizePolicy.setVerticalStretch(0);
+        sizePolicy.setHeightForWidth(QGradientPanel->sizePolicy().hasHeightForWidth());
+        QGradientPanel->setSizePolicy(sizePolicy);
         QGradientPanel->setStyleSheet(QString::fromUtf8("color: white;\n"
 "background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #88d, stop: 0.1 #eef, stop: 0.49 #78b, stop: 0.5 #66b, stop: 1 #8ac);\n"
 "border-width: 1px;\n"
@@ -48,12 +53,12 @@ public:
         horizontalLayout_2 = new QHBoxLayout(QGradientPanel);
         horizontalLayout_2->setSpacing(0);
         horizontalLayout_2->setObjectName(QString::fromUtf8("horizontalLayout_2"));
-        horizontalLayout_2->setContentsMargins(10, 3, 0, 3);
+        horizontalLayout_2->setContentsMargins(10, 2, 0, 2);
         lbCaption = new QLabel(QGradientPanel);
         lbCaption->setObjectName(QString::fromUtf8("lbCaption"));
         lbCaption->setMinimumSize(QSize(0, 0));
         QFont font;
-        font.setPointSize(14);
+        font.setPointSize(13);
         lbCaption->setFont(font);
         lbCaption->setStyleSheet(QString::fromUtf8("border-style: none;\n"
 "background-color: none;\n"
@@ -64,11 +69,11 @@ public:
 
         lbImage = new QLabel(QGradientPanel);
         lbImage->setObjectName(QString::fromUtf8("lbImage"));
-        QSizePolicy sizePolicy(QSizePolicy::Maximum, QSizePolicy::Minimum);
-        sizePolicy.setHorizontalStretch(0);
-        sizePolicy.setVerticalStretch(0);
-        sizePolicy.setHeightForWidth(lbImage->sizePolicy().hasHeightForWidth());
-        lbImage->setSizePolicy(sizePolicy);
+        QSizePolicy sizePolicy1(QSizePolicy::Maximum, QSizePolicy::Minimum);
+        sizePolicy1.setHorizontalStretch(0);
+        sizePolicy1.setVerticalStretch(0);
+        sizePolicy1.setHeightForWidth(lbImage->sizePolicy().hasHeightForWidth());
+        lbImage->setSizePolicy(sizePolicy1);
         lbImage->setStyleSheet(QString::fromUtf8("border-style: none;\n"
 "background-color: none;\n"
 "background-image: none;\n"
@@ -87,11 +92,20 @@ public:
 "background-color: none;\n"
 "background-image: none;\n"
 "background-position: none;"));
+        lbInfo1->setMargin(0);
 
         verticalLayout->addWidget(lbInfo1);
 
         lbInfo2 = new QLabel(QGradientPanel);
         lbInfo2->setObjectName(QString::fromUtf8("lbInfo2"));
+        QSizePolicy sizePolicy2(QSizePolicy::Fixed, QSizePolicy::Preferred);
+        sizePolicy2.setHorizontalStretch(0);
+        sizePolicy2.setVerticalStretch(0);
+        sizePolicy2.setHeightForWidth(lbInfo2->sizePolicy().hasHeightForWidth());
+        lbInfo2->setSizePolicy(sizePolicy2);
+        QFont font1;
+        font1.setPointSize(8);
+        lbInfo2->setFont(font1);
         lbInfo2->setStyleSheet(QString::fromUtf8("border-style: none;\n"
 "background-color: none;\n"
 "background-image: none;\n"
@@ -114,7 +128,7 @@ public:
         lbCaption->setText(QApplication::translate("QGradientPanel", "Caption", 0, QApplication::UnicodeUTF8));
         lbImage->setText(QString());
         lbInfo1->setText(QApplication::translate("QGradientPanel", "Line1", 0, QApplication::UnicodeUTF8));
-        lbInfo2->setText(QApplication::translate("QGradientPanel", "Line2", 0, QApplication::UnicodeUTF8));
+        lbInfo2->setText(QApplication::translate("QGradientPanel", "Line2................................................................................................", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 
 };

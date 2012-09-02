@@ -28,7 +28,6 @@ QCommandPrompt::QCommandPrompt(QWidget *parent)
     setTabChangesFocus(false);                 // tab will be needed for auto completion
     setLineWrapMode(QPlainTextEdit::NoWrap);
 
-
     m_pTimerQueue->setSingleShot(false);
     m_pTimerQueue->start(m_nTimerInterval);
     connect(m_pTimerQueue, SIGNAL(timeout()), this, SLOT(writeQueue()));
@@ -211,6 +210,7 @@ void QCommandPrompt::keyPressEvent(QKeyEvent *e)
             }
 
             addLine(getPrompt() + sCmd.trimmed());
+            emit commandInput(sCmd);
             bProcessed = true;
         }
         break;

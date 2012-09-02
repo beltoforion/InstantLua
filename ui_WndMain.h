@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'WndMain.ui'
 **
-** Created: Fri 31. Aug 23:34:08 2012
+** Created: Sun 2. Sep 22:32:04 2012
 **      by: Qt User Interface Compiler version 4.7.4
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -15,12 +15,12 @@
 #include <QtGui/QApplication>
 #include <QtGui/QButtonGroup>
 #include <QtGui/QFrame>
-#include <QtGui/QHBoxLayout>
 #include <QtGui/QHeaderView>
 #include <QtGui/QMainWindow>
 #include <QtGui/QMenu>
 #include <QtGui/QMenuBar>
 #include <QtGui/QToolBar>
+#include <QtGui/QVBoxLayout>
 #include <QtGui/QWidget>
 
 QT_BEGIN_NAMESPACE
@@ -44,7 +44,7 @@ public:
     QAction *actionActionStepOut;
     QAction *actionStop;
     QWidget *centralWidget;
-    QHBoxLayout *horizontalLayout_2;
+    QVBoxLayout *verticalLayout;
     QFrame *frmMain;
     QMenuBar *menuBar;
     QMenu *menuFile;
@@ -133,16 +133,16 @@ public:
         actionStop->setIcon(icon12);
         centralWidget = new QWidget(WndMain);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
-        horizontalLayout_2 = new QHBoxLayout(centralWidget);
-        horizontalLayout_2->setSpacing(6);
-        horizontalLayout_2->setContentsMargins(1, 1, 1, 1);
-        horizontalLayout_2->setObjectName(QString::fromUtf8("horizontalLayout_2"));
+        verticalLayout = new QVBoxLayout(centralWidget);
+        verticalLayout->setSpacing(6);
+        verticalLayout->setContentsMargins(1, 1, 1, 1);
+        verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
         frmMain = new QFrame(centralWidget);
         frmMain->setObjectName(QString::fromUtf8("frmMain"));
         frmMain->setFrameShape(QFrame::StyledPanel);
         frmMain->setFrameShadow(QFrame::Raised);
 
-        horizontalLayout_2->addWidget(frmMain);
+        verticalLayout->addWidget(frmMain);
 
         WndMain->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(WndMain);
@@ -160,8 +160,10 @@ public:
         mainToolBar = new QToolBar(WndMain);
         mainToolBar->setObjectName(QString::fromUtf8("mainToolBar"));
         mainToolBar->setEnabled(true);
+        mainToolBar->setStyleSheet(QString::fromUtf8(""));
         mainToolBar->setIconSize(QSize(48, 48));
         WndMain->addToolBar(Qt::TopToolBarArea, mainToolBar);
+        WndMain->insertToolBarBreak(mainToolBar);
 
         menuBar->addAction(menuFile->menuAction());
         menuBar->addAction(menuSettings->menuAction());

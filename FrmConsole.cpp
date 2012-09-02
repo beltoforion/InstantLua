@@ -2,17 +2,23 @@
 #include "ui_FrmConsole.h"
 
 #include "Settings.h"
+#include "Exceptions.h"
+#include "IInterpreter.h"
 
 
 //-------------------------------------------------------------------------------------------------
 FrmConsole::FrmConsole(QWidget *parent)
     :QWidget(parent)
     ,ui(new Ui::FrmConsole)
+    ,m_pLua(NULL)
 {
     ui->setupUi(this);
 
     ui->edConsole->setPrompt("Lua", ">");
     ui->paCaption->setCaption("Console");
+    ui->paCaption->setColorScheme(QGradientPanel::csBLUE);
+
+    connect(ui->edConsole, SIGNAL(commandInput(QString)), this, SLOT(executeCommand(QString)));
     splashScreen();
 }
 
@@ -39,11 +45,10 @@ void FrmConsole::splashScreen()
     ui->edConsole->addLine("");
 }
 
-
 //-------------------------------------------------------------------------------------------------
-void FrmConsole::AddLine(const QString &sLine, ELineOptions eOptions)
+void FrmConsole::bindToInterpreter(IInterpreter *pInterpreter)
 {
-    ui->edConsole->appendPlainText(sLine);
+    m_pLua = pInterpreter;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -59,6 +64,34 @@ void FrmConsole::updateFromSettings()
 {
     const Settings &settings = Settings::Instance();
     ui->edConsole->setFontSize(settings.getFontSize());
+}
+
+//-------------------------------------------------------------------------------------------------
+void FrmConsole::executeCommand(const QString &sCmd)
+{
+    try
+    {
+        if (m_pLua==NULL)
+        {
+            ui->edConsole->addLine(QString("Can't execute: %1 because no interpreter is bound to the console").arg(sCmd));
+        }
+        else
+        {
+            m_pLua->execute(sCmd);
+        }
+    }
+    catch(Exception &exc)
+    {
+        ui->edConsole->addLine(exc.getMessage());
+    }
+    catch(std::exception &exc)
+    {
+        ui->edConsole->addLine(exc.what());
+    }
+    catch(...)
+    {
+        ui->edConsole->addLine("Internal error: FrmConsole::executeCommand");
+    }
 }
 
 

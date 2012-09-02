@@ -38,7 +38,8 @@ public:
     void addLine(QString sText);
 
 signals:
-    
+    void commandInput(const QString &sCmd);
+
 public slots:
     void writeQueue();
 

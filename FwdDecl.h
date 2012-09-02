@@ -12,6 +12,7 @@ class MainWindow;
 class IFile;
 class IFileObserver;
 class IProject;
+class IInterpreter;
 
 class LanguageToken;
 class ScriptOutline;

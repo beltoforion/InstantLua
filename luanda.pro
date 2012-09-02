@@ -246,7 +246,11 @@ SOURCES += main.cpp\
     QCommandPrompt.cpp \
     Prototypes.cpp \
     QFileExplorerTabBar.cpp \
-    QGradientPanel.cpp
+    QGradientPanel.cpp \
+    QSelection.cpp \
+    luabind/LuaValues.cpp \
+    luabind/LuaContext.cpp \
+    luabind/ILuaValue.cpp
 
 HEADERS  += \
     3rdparty/QScintilla-gpl-2.6.2/Qt4Qt5/ListBoxQt.h \
@@ -368,7 +372,37 @@ HEADERS  += \
     QCommandPrompt.h \
     Prototypes.h \
     QFileExplorerTabBar.h \
-    QGradientPanel.h
+    QGradientPanel.h \
+    QSelection.h \
+    luabind/LuaValues.h \
+    luabind/LuaContext.h \
+    luabind/ILuaValue.h \
+    3rdparty/lua-5.2.0/src/lzio.h \
+    3rdparty/lua-5.2.0/src/lvm.h \
+    3rdparty/lua-5.2.0/src/lundump.h \
+    3rdparty/lua-5.2.0/src/lualib.h \
+    3rdparty/lua-5.2.0/src/luaconf.h \
+    3rdparty/lua-5.2.0/src/lua.hpp \
+    3rdparty/lua-5.2.0/src/lua.h \
+    3rdparty/lua-5.2.0/src/ltm.h \
+    3rdparty/lua-5.2.0/src/ltable.h \
+    3rdparty/lua-5.2.0/src/lstring.h \
+    3rdparty/lua-5.2.0/src/lstate.h \
+    3rdparty/lua-5.2.0/src/lparser.h \
+    3rdparty/lua-5.2.0/src/lopcodes.h \
+    3rdparty/lua-5.2.0/src/lobject.h \
+    3rdparty/lua-5.2.0/src/lmem.h \
+    3rdparty/lua-5.2.0/src/llimits.h \
+    3rdparty/lua-5.2.0/src/llex.h \
+    3rdparty/lua-5.2.0/src/lgc.h \
+    3rdparty/lua-5.2.0/src/lfunc.h \
+    3rdparty/lua-5.2.0/src/ldo.h \
+    3rdparty/lua-5.2.0/src/ldebug.h \
+    3rdparty/lua-5.2.0/src/lctype.h \
+    3rdparty/lua-5.2.0/src/lcode.h \
+    3rdparty/lua-5.2.0/src/lauxlib.h \
+    3rdparty/lua-5.2.0/src/lapi.h \
+    IInterpreter.h
 
 FORMS    += \
     DlgSettings.ui \
@@ -378,12 +412,14 @@ FORMS    += \
     FrmProjectExplorer.ui \
     DlgAbout.ui \
     FrmConsole.ui \
-    QGradientPanel.ui
+    QGradientPanel.ui \
+    QSelection.ui
 
 INCLUDEPATH += $$PWD/3rdparty/QScintilla-gpl-2.6.2/Qt4Qt5 \
     $$PWD/3rdparty/QScintilla-gpl-2.6.2/include \
     $$PWD/3rdparty/QScintilla-gpl-2.6.2/src \
-    $$PWD/3rdparty/QScintilla-gpl-2.6.2/lexlib
+    $$PWD/3rdparty/QScintilla-gpl-2.6.2/lexlib \
+    $$PWD/3rdparty/lua-5.2.0/src
 
 CONFIG += thread release
 

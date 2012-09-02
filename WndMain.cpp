@@ -26,6 +26,7 @@ WndMain::WndMain(QWidget *parent)
     ,m_projects()
     ,m_pspLeft(NULL)
     ,m_pspMain(NULL)
+    ,m_lua()
 {
     ui->setupUi(this);
 
@@ -43,6 +44,8 @@ WndMain::WndMain(QWidget *parent)
     m_pDlgAbout = new DlgAbout(this);
 
     // Konsole einrichten
+    m_pFrmConsole->bindToInterpreter(&m_lua);
+
     //m_pFrmConsole->SetPrompt("Luanda");
 
     // Linkes Splitterfenster
@@ -288,3 +291,8 @@ void WndMain::updateRecentFileActions()
 }
 
 
+
+void WndMain::on_actionRun_triggered()
+{
+    m_lua.init();
+}

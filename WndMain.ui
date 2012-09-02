@@ -14,7 +14,7 @@
    <string>Instant Lua</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QHBoxLayout" name="horizontalLayout_2">
+   <layout class="QVBoxLayout" name="verticalLayout">
     <property name="margin">
      <number>1</number>
     </property>
@@ -78,6 +78,9 @@
    <property name="enabled">
     <bool>true</bool>
    </property>
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
    <property name="iconSize">
     <size>
      <width>48</width>
@@ -88,7 +91,7 @@
     <enum>TopToolBarArea</enum>
    </attribute>
    <attribute name="toolBarBreak">
-    <bool>false</bool>
+    <bool>true</bool>
    </attribute>
    <addaction name="actionOpenFile"/>
    <addaction name="actionPreferences"/>
