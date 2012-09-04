@@ -15,6 +15,7 @@ QCommandPrompt::QCommandPrompt(QWidget *parent)
     ,m_pTimerQueue(new QTimer(this))
     ,m_font()
     ,m_mtxLineQueue()
+    ,m_colDefault(Qt::darkBlue)
     ,m_nHistPos(0)
     ,m_nMaxLines(200)
     ,m_nMaxHist(5)
@@ -132,13 +133,14 @@ void QCommandPrompt::setFontSize(int nSize)
 }
 
 //-------------------------------------------------------------------------------------------------
-void QCommandPrompt::addLine(QString sText)
+void QCommandPrompt::addLine(QString sText, QColor col)
 {
     if (m_bIsMuted)
         return;
 
     QMutexLocker lock(&m_mtxLineQueue);
-    m_vLineQueue.enqueue(sText);
+
+    m_vLineQueue.enqueue(qMakePair(sText, col));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -148,8 +150,8 @@ void QCommandPrompt::writeQueue()
     int nNum = std::min(m_nBlockSize, m_vLineQueue.count());
     for (int i=0; i<nNum; ++i)
     {
-        QString sLine = m_vLineQueue.dequeue();
-        write(sLine);
+        QPair<QString, QColor> p = m_vLineQueue.dequeue();
+        write(p.first, p.second);
     }
 }
 
@@ -158,16 +160,29 @@ void QCommandPrompt::writeQueue()
 
   Am Ende der Ausgabe wird immer ein Newline + Prompt ausgegeben!
 */
-void QCommandPrompt::write(QString sMsg)
+void QCommandPrompt::write(QString sMsg, QColor col)
 {
-    // Überprüfen, ob die Zeile mit einem Propmt anfängt
+    // Überprüfen, ob die Zeile mit einem Prompt anfängt
     QTextCursor tc = textCursor();
     tc.movePosition(QTextCursor::StartOfLine);
     tc.select(QTextCursor::LineUnderCursor);
     tc.removeSelectedText();
     setTextCursor(tc);
 
-    insertPlainText(sMsg + "\n" + m_sPrompt);
+    // old: simple text
+//    insertPlainText(sMsg + "\n" + m_sPrompt);
+    // colored version
+    QBrush brush(Qt::SolidPattern);
+    brush.setColor(col);
+
+    QTextCharFormat fmt;
+    fmt.setForeground(brush);
+    tc.insertText(sMsg + "\n", fmt);
+
+    brush.setColor(m_colDefault);
+    fmt.setForeground(brush);
+    tc.insertText(m_sPrompt, fmt);
+
     m_nPromptPos = tc.position();
 
     ensureCursorVisible();
@@ -188,8 +203,6 @@ void QCommandPrompt::clearLineExceptPrompt()
 //-------------------------------------------------------------------------------------------------
 void QCommandPrompt::keyPressEvent(QKeyEvent *e)
 {
-    bool bProcessed = false;
-
     // Wenn Enter gedrückt wird, wird die Eingabe als Kommando interpretiert
     switch(e->key())
     {
@@ -209,9 +222,17 @@ void QCommandPrompt::keyPressEvent(QKeyEvent *e)
                 m_nHistPos = m_vHistory.size() - 1;
             }
 
-            addLine(getPrompt() + sCmd.trimmed());
-            emit commandInput(sCmd);
-            bProcessed = true;
+            sCmd = sCmd.trimmed();
+            if (!sCmd.isEmpty())
+            {
+                addLine(getPrompt() + sCmd.trimmed());
+                emit commandInput(sCmd);
+            }
+
+            // Textcursor ans Ende versetzen
+            QTextCursor tc = textCursor();
+            tc.movePosition(QTextCursor::End);
+            setTextCursor(tc);
         }
         break;
 

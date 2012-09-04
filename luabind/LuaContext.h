@@ -4,14 +4,12 @@
 //--- Standard includes ---------------------------------------------------------------------------
 #include <string>
 
+//--- QT Lib includes -----------------------------------------------------------------------------
+#include <QString>
+
 //--- LUA includes --------------------------------------------------------------------------------
-extern "C"
-{
 #include "lauxlib.h"
 #include "lualib.h"
-}
-
-#include <QString>
 
 //-------------------------------------------------------------------------------------------------
 #include "ILuaValue.h"
@@ -26,7 +24,8 @@ public:
   virtual ~LuaContext();
 
   void init();
-  
+  void checkLuaError(int errc);
+
   // IInterpreter interface
   virtual void execute(const QString &sCmd);
 

@@ -18,6 +18,12 @@ const QString& Exception::getMessage() const throw()
 }
 
 //-------------------------------------------------------------------------------------------------
+void Exception::setMessage(const QString &sMsg)
+{
+    m_sMsg = sMsg;
+}
+
+//-------------------------------------------------------------------------------------------------
 const char* Exception::what() const throw()
 {
     return "";
@@ -59,8 +65,31 @@ InternalError::~InternalError() throw()
 
 LuaException::LuaException(QString sMsg)
     :Exception(sMsg)
-{}
+    ,m_sModule()
+    ,m_nLine(-1)
+{
+    // todo: tokenizer to cut string into three parts
+    int i1 = sMsg.indexOf(':', 0);
+    int i2 = sMsg.indexOf(':', i1+1);
+    if (i1!=-1 && i2!=-1)
+    {
+        m_nLine = sMsg.mid(i1+1, i2-i1-1).toInt();
+        m_sMsg  = sMsg.mid(i2+1, sMsg.length()-i2-1).trimmed();
+    }
+}
 
 //-------------------------------------------------------------------------------------------------
 LuaException::~LuaException() throw()
 {}
+
+//-------------------------------------------------------------------------------------------------
+int LuaException::getLine() const
+{
+    return m_nLine;
+}
+
+//-------------------------------------------------------------------------------------------------
+const QString& LuaException::getModule() const
+{
+    return m_sModule;
+}

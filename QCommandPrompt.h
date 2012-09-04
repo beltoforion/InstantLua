@@ -35,7 +35,7 @@ public:
     void clearHistory();
     QString getLastInput() const;
 
-    void addLine(QString sText);
+    void addLine(QString sText, QColor col = Qt::darkBlue /*black*/);
 
 signals:
     void commandInput(const QString &sCmd);
@@ -49,10 +49,11 @@ private:
     QString m_sPromptChar;
     QString m_sLastInput;       ///< Der letzte user input, wird mit RETURN zurückgesetzt
     QStringList m_vHistory;
-    QQueue<QString> m_vLineQueue;
+    QQueue< QPair<QString, QColor> > m_vLineQueue;
     QTimer *m_pTimerQueue;
     QFont m_font;
     QMutex m_mtxLineQueue;
+    const QColor m_colDefault;
 
     int m_nHistPos;
     int m_nMaxLines;
@@ -64,7 +65,7 @@ private:
 
     bool m_bIsMuted;
 
-    void write(QString sText);
+    void write(QString sText, QColor col = Qt::black);
     void clearLineExceptPrompt();
     void keyPressEvent(QKeyEvent *event);
 };

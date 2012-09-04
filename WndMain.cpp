@@ -73,6 +73,8 @@ WndMain::WndMain(QWidget *parent)
     s.addProvider(m_pFrmConsole);
     s.addProvider(m_pDlgSettings);
     s.readSettings();
+
+    m_lua.init();
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -66,19 +66,65 @@ void LuaContext::execute(const QString &sCmd)
 }
 
 //-------------------------------------------------------------------------------------------------
+void LuaContext::checkLuaError(int errc)
+{
+    if (!errc)
+        return;
+
+    int nStackSize = lua_gettop(m_luaState);
+    if (nStackSize>=1)
+    {
+        QString sErr = lua_tostring(m_luaState, -1);
+        lua_pop(m_luaState, 1);
+        throw LuaException(sErr);
+    }
+    else
+        throw LuaException("Lua error (no details available)");
+}
+
+//-------------------------------------------------------------------------------------------------
 void LuaContext::doString(const QString &sLuaCode, const QString &sChunkName)
 {
     if (m_luaState==NULL)
         throw LuaException(QString("Can't execute Lua code fragment \"%1\": Lua state is not initialized").arg(sLuaCode));
 
-    int errc = 0;
-    errc  = luaL_loadbuffer(m_luaState,
-                            sLuaCode.toAscii(),
-                            sLuaCode.size(),
-                            sChunkName.toAscii());
-    errc |= doCall(0, 1);
-    if (errc)
-        throw LuaException("Can't load LUA chunk");
+    checkLuaError(luaL_loadbuffer(m_luaState,
+                                  sLuaCode.toAscii(),
+                                  sLuaCode.size(),
+                                  sChunkName.toAscii()));
+
+    checkLuaError(lua_pcall(m_luaState, 0, 0, 0));
+}
+
+//-------------------------------------------------------------------------------------------------
+int LuaContext::doCall(int nArg, int clear)
+{
+  int nBase = lua_gettop(m_luaState) - nArg; // function index
+
+  int status = lua_pcall(m_luaState, nArg, (clear ? 0 : LUA_MULTRET), nBase);
+  QString sErr = lua_tostring(m_luaState, -1);
+
+  // force a complete garbage collection in case of errors
+  if (status != 0)
+    lua_gc(m_luaState, LUA_GCCOLLECT, 0);
+/*
+
+//  lua_pushcfunction(m_luaState, traceback);  // push traceback function
+  lua_insert(m_luaState, nBase);             // put it under chunk and args
+
+  signal(SIGINT, laction);
+  int status = lua_pcall(L, narg, (clear ? 0 : LUA_MULTRET), base);
+  signal(SIGINT, SIG_DFL);
+
+  lua_remove(m_luaState, base);  // remove traceback function
+
+  // force a complete garbage collection in case of errors
+  if (status != 0)
+    lua_gc(m_luaState, LUA_GCCOLLECT, 0);
+
+  return status;
+*/
+  return 0;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -132,31 +178,7 @@ LuaContext& LuaContext::operator>>(ILuaValue &arg)
   return *this;
 }
 
-//-------------------------------------------------------------------------------------------------
-int LuaContext::doCall(int nArg, int clear)
-{
-  int nBase = lua_gettop(m_luaState) - nArg; // function index
 
-  int status = lua_pcall(m_luaState, nArg, (clear ? 0 : LUA_MULTRET), nBase);
-/*
-
-//  lua_pushcfunction(m_luaState, traceback);  // push traceback function
-  lua_insert(m_luaState, nBase);             // put it under chunk and args
-
-  signal(SIGINT, laction);
-  int status = lua_pcall(L, narg, (clear ? 0 : LUA_MULTRET), base);
-  signal(SIGINT, SIG_DFL);
-
-  lua_remove(m_luaState, base);  // remove traceback function
-
-  // force a complete garbage collection in case of errors
-  if (status != 0)
-    lua_gc(m_luaState, LUA_GCCOLLECT, 0);
-
-  return status;
-*/
-  return 0;
-}
 
 //-------------------------------------------------------------------------------------------------
 /** \brief Loads a file as a lua chunk. 

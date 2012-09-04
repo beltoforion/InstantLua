@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'QGradientPanel.ui'
 **
-** Created: Sun 2. Sep 18:13:45 2012
+** Created: Mon 3. Sep 22:39:06 2012
 **      by: Qt User Interface Compiler version 4.7.4
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!

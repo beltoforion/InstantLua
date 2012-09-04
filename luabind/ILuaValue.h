@@ -1,11 +1,8 @@
 #ifndef ILUA_VALUE_H
 #define ILUA_VALUE_H
 
-extern "C"
-{
 #include "lua.h"
 #include "lualib.h"
-}
 
 //-------------------------------------------------------------------------------------------------
 class ILuaValue

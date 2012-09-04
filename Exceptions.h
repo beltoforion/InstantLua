@@ -16,7 +16,10 @@ public:
     // std::exception implementation
     virtual const char* what() const throw();
 
-private:
+protected:
+    void setMessage(const QString &sMsg);
+
+protected:
     QString m_sMsg;
 };
 
@@ -40,6 +43,13 @@ struct LuaException : Exception
 {
     LuaException(QString sMsg);
     virtual ~LuaException() throw();
+
+    int getLine() const;
+    const QString& getModule() const;
+
+private:
+    QString m_sModule;
+    int m_nLine;
 };
 
 #endif

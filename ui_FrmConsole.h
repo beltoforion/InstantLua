@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'FrmConsole.ui'
 **
-** Created: Sun 2. Sep 22:42:39 2012
+** Created: Tue 4. Sep 23:50:26 2012
 **      by: Qt User Interface Compiler version 4.7.4
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!

@@ -82,15 +82,15 @@ void FrmConsole::executeCommand(const QString &sCmd)
     }
     catch(Exception &exc)
     {
-        ui->edConsole->addLine(exc.getMessage());
+        ui->edConsole->addLine(exc.getMessage(), Qt::red);
     }
     catch(std::exception &exc)
     {
-        ui->edConsole->addLine(exc.what());
+        ui->edConsole->addLine(exc.what(), Qt::red);
     }
     catch(...)
     {
-        ui->edConsole->addLine("Internal error: FrmConsole::executeCommand");
+        ui->edConsole->addLine("Internal error: FrmConsole::executeCommand", Qt::red);
     }
 }
 

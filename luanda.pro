@@ -4,9 +4,12 @@
 #
 #-------------------------------------------------
 
+
 QT       += core gui
 
-#QMAKE_CXXFLAGS += -std=gnu++0x
+# Lua sollte nicht mit gcc compiliert werden!
+
+QMAKE_CC = g++
 
 TARGET = luanda
 TEMPLATE = app
@@ -30,38 +33,38 @@ CONFIG(debug, debug|release) {
 }
 
 SOURCES += main.cpp\
-    3rdparty/lua-5.2.0/src/lzio.c \
-    3rdparty/lua-5.2.0/src/lvm.c \
-    3rdparty/lua-5.2.0/src/lundump.c \
-    3rdparty/lua-5.2.0/src/ltm.c \
-    3rdparty/lua-5.2.0/src/ltablib.c \
-    3rdparty/lua-5.2.0/src/ltable.c \
-    3rdparty/lua-5.2.0/src/lstrlib.c \
-    3rdparty/lua-5.2.0/src/lstring.c \
-    3rdparty/lua-5.2.0/src/lstate.c \
-    3rdparty/lua-5.2.0/src/lparser.c \
-    3rdparty/lua-5.2.0/src/loslib.c \
-    3rdparty/lua-5.2.0/src/lopcodes.c \
-    3rdparty/lua-5.2.0/src/lobject.c \
-    3rdparty/lua-5.2.0/src/loadlib.c \
-    3rdparty/lua-5.2.0/src/lmem.c \
-    3rdparty/lua-5.2.0/src/lmathlib.c \
-    3rdparty/lua-5.2.0/src/llex.c \
-    3rdparty/lua-5.2.0/src/liolib.c \
-    3rdparty/lua-5.2.0/src/linit.c \
-    3rdparty/lua-5.2.0/src/lgc.c \
-    3rdparty/lua-5.2.0/src/lfunc.c \
-    3rdparty/lua-5.2.0/src/ldump.c \
-    3rdparty/lua-5.2.0/src/ldo.c \
-    3rdparty/lua-5.2.0/src/ldebug.c \
-    3rdparty/lua-5.2.0/src/ldblib.c \
-    3rdparty/lua-5.2.0/src/lctype.c \
-    3rdparty/lua-5.2.0/src/lcorolib.c \
-    3rdparty/lua-5.2.0/src/lcode.c \
-    3rdparty/lua-5.2.0/src/lbitlib.c \
-    3rdparty/lua-5.2.0/src/lbaselib.c \
-    3rdparty/lua-5.2.0/src/lauxlib.c \
-    3rdparty/lua-5.2.0/src/lapi.c \
+    3rdparty/lua-5.2.1/src/lzio.c \
+    3rdparty/lua-5.2.1/src/lvm.c \
+    3rdparty/lua-5.2.1/src/lundump.c \
+    3rdparty/lua-5.2.1/src/ltm.c \
+    3rdparty/lua-5.2.1/src/ltablib.c \
+    3rdparty/lua-5.2.1/src/ltable.c \
+    3rdparty/lua-5.2.1/src/lstrlib.c \
+    3rdparty/lua-5.2.1/src/lstring.c \
+    3rdparty/lua-5.2.1/src/lstate.c \
+    3rdparty/lua-5.2.1/src/lparser.c \
+    3rdparty/lua-5.2.1/src/loslib.c \
+    3rdparty/lua-5.2.1/src/lopcodes.c \
+    3rdparty/lua-5.2.1/src/lobject.c \
+    3rdparty/lua-5.2.1/src/loadlib.c \
+    3rdparty/lua-5.2.1/src/lmem.c \
+    3rdparty/lua-5.2.1/src/lmathlib.c \
+    3rdparty/lua-5.2.1/src/llex.c \
+    3rdparty/lua-5.2.1/src/liolib.c \
+    3rdparty/lua-5.2.1/src/linit.c \
+    3rdparty/lua-5.2.1/src/lgc.c \
+    3rdparty/lua-5.2.1/src/lfunc.c \
+    3rdparty/lua-5.2.1/src/ldump.c \
+    3rdparty/lua-5.2.1/src/ldo.c \
+    3rdparty/lua-5.2.1/src/ldebug.c \
+    3rdparty/lua-5.2.1/src/ldblib.c \
+    3rdparty/lua-5.2.1/src/lctype.c \
+    3rdparty/lua-5.2.1/src/lcorolib.c \
+    3rdparty/lua-5.2.1/src/lcode.c \
+    3rdparty/lua-5.2.1/src/lbitlib.c \
+    3rdparty/lua-5.2.1/src/lbaselib.c \
+    3rdparty/lua-5.2.1/src/lauxlib.c \
+    3rdparty/lua-5.2.1/src/lapi.c \
     3rdparty/QScintilla-gpl-2.6.2/Qt4Qt5/ScintillaQt.cpp \
     3rdparty/QScintilla-gpl-2.6.2/Qt4Qt5/SciClasses.cpp \
     3rdparty/QScintilla-gpl-2.6.2/Qt4Qt5/qscistyledtext.cpp \
@@ -377,31 +380,31 @@ HEADERS  += \
     luabind/LuaValues.h \
     luabind/LuaContext.h \
     luabind/ILuaValue.h \
-    3rdparty/lua-5.2.0/src/lzio.h \
-    3rdparty/lua-5.2.0/src/lvm.h \
-    3rdparty/lua-5.2.0/src/lundump.h \
-    3rdparty/lua-5.2.0/src/lualib.h \
-    3rdparty/lua-5.2.0/src/luaconf.h \
-    3rdparty/lua-5.2.0/src/lua.hpp \
-    3rdparty/lua-5.2.0/src/lua.h \
-    3rdparty/lua-5.2.0/src/ltm.h \
-    3rdparty/lua-5.2.0/src/ltable.h \
-    3rdparty/lua-5.2.0/src/lstring.h \
-    3rdparty/lua-5.2.0/src/lstate.h \
-    3rdparty/lua-5.2.0/src/lparser.h \
-    3rdparty/lua-5.2.0/src/lopcodes.h \
-    3rdparty/lua-5.2.0/src/lobject.h \
-    3rdparty/lua-5.2.0/src/lmem.h \
-    3rdparty/lua-5.2.0/src/llimits.h \
-    3rdparty/lua-5.2.0/src/llex.h \
-    3rdparty/lua-5.2.0/src/lgc.h \
-    3rdparty/lua-5.2.0/src/lfunc.h \
-    3rdparty/lua-5.2.0/src/ldo.h \
-    3rdparty/lua-5.2.0/src/ldebug.h \
-    3rdparty/lua-5.2.0/src/lctype.h \
-    3rdparty/lua-5.2.0/src/lcode.h \
-    3rdparty/lua-5.2.0/src/lauxlib.h \
-    3rdparty/lua-5.2.0/src/lapi.h \
+    3rdparty/lua-5.2.1/src/lzio.h \
+    3rdparty/lua-5.2.1/src/lvm.h \
+    3rdparty/lua-5.2.1/src/lundump.h \
+    3rdparty/lua-5.2.1/src/lualib.h \
+    3rdparty/lua-5.2.1/src/luaconf.h \
+    3rdparty/lua-5.2.1/src/lua.hpp \
+    3rdparty/lua-5.2.1/src/lua.h \
+    3rdparty/lua-5.2.1/src/ltm.h \
+    3rdparty/lua-5.2.1/src/ltable.h \
+    3rdparty/lua-5.2.1/src/lstring.h \
+    3rdparty/lua-5.2.1/src/lstate.h \
+    3rdparty/lua-5.2.1/src/lparser.h \
+    3rdparty/lua-5.2.1/src/lopcodes.h \
+    3rdparty/lua-5.2.1/src/lobject.h \
+    3rdparty/lua-5.2.1/src/lmem.h \
+    3rdparty/lua-5.2.1/src/llimits.h \
+    3rdparty/lua-5.2.1/src/llex.h \
+    3rdparty/lua-5.2.1/src/lgc.h \
+    3rdparty/lua-5.2.1/src/lfunc.h \
+    3rdparty/lua-5.2.1/src/ldo.h \
+    3rdparty/lua-5.2.1/src/ldebug.h \
+    3rdparty/lua-5.2.1/src/lctype.h \
+    3rdparty/lua-5.2.1/src/lcode.h \
+    3rdparty/lua-5.2.1/src/lauxlib.h \
+    3rdparty/lua-5.2.1/src/lapi.h \
     IInterpreter.h
 
 FORMS    += \
@@ -419,7 +422,7 @@ INCLUDEPATH += $$PWD/3rdparty/QScintilla-gpl-2.6.2/Qt4Qt5 \
     $$PWD/3rdparty/QScintilla-gpl-2.6.2/include \
     $$PWD/3rdparty/QScintilla-gpl-2.6.2/src \
     $$PWD/3rdparty/QScintilla-gpl-2.6.2/lexlib \
-    $$PWD/3rdparty/lua-5.2.0/src
+    $$PWD/3rdparty/lua-5.2.1/src
 
 CONFIG += thread release
 
