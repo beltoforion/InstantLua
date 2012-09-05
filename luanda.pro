@@ -253,7 +253,8 @@ SOURCES += main.cpp\
     QSelection.cpp \
     luabind/LuaValues.cpp \
     luabind/LuaContext.cpp \
-    luabind/ILuaValue.cpp
+    luabind/ILuaValue.cpp \
+    QConsoleStreamBuffer.cpp
 
 HEADERS  += \
     3rdparty/QScintilla-gpl-2.6.2/Qt4Qt5/ListBoxQt.h \
@@ -405,7 +406,9 @@ HEADERS  += \
     3rdparty/lua-5.2.1/src/lcode.h \
     3rdparty/lua-5.2.1/src/lauxlib.h \
     3rdparty/lua-5.2.1/src/lapi.h \
-    IInterpreter.h
+    IInterpreter.h \
+    QConsoleStreamBuffer.h \
+    IConsole.h
 
 FORMS    += \
     DlgSettings.ui \

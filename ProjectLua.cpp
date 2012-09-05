@@ -68,15 +68,15 @@ void ProjectLua::scanDir(QDir dir)
 
 
 //-------------------------------------------------------------------------------------------------
-void ProjectLua::AddFile(const string_type &sFileName)
+void ProjectLua::addFile(const QString &sFileName)
 {}
 
 //-------------------------------------------------------------------------------------------------
-void ProjectLua::DeleteFile(const string_type &sFileName)
+void ProjectLua::deleteFile(const QString &sFileName)
 {}
 
 //-------------------------------------------------------------------------------------------------
-void ProjectLua::Open(const string_type &sProject)
+void ProjectLua::open(const QString &sProject)
 {}
 
 //-------------------------------------------------------------------------------------------------
@@ -86,7 +86,7 @@ void importFromDirectory(QString sPath)
 }
 
 //-------------------------------------------------------------------------------------------------
-string_type ProjectLua::GetName() const
+QString ProjectLua::getName() const
 {
     return "";
 }

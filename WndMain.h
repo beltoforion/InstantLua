@@ -19,6 +19,7 @@
 #include "FrmInfo.h"
 #include "DlgSettings.h"
 #include "DlgAbout.h"
+#include "QConsoleStreamBuffer.h"
 
 //--- Lua bindings --------------------------------------------------------------------------------
 #include "luabind/LuaContext.h"
@@ -78,6 +79,10 @@ private slots:
     void on_actionOpenProject_triggered();
     void on_actionOpenFile_triggered();
     void on_actionRun_triggered();
+
+private:
+    std::streambuf *m_pConsoleStreamBuf;
+    std::streambuf *m_pOriginalStreamBuf;
 };
 
 #endif // WND_MAIN_H

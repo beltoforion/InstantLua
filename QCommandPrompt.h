@@ -5,13 +5,16 @@
 #include <QStringList>
 #include <QQueue>
 #include <QMutex>
-//#include <QCompleter>
+
+#include "IConsole.h"
+
 
 class QTimer;
 
 
 //-------------------------------------------------------------------------------------------------
-class QCommandPrompt : public QPlainTextEdit
+class QCommandPrompt : public QPlainTextEdit,
+                       public IConsole
 {
     Q_OBJECT
 
@@ -35,7 +38,9 @@ public:
     void clearHistory();
     QString getLastInput() const;
 
-    void addLine(QString sText, QColor col = Qt::darkBlue /*black*/);
+    // IConsole Interface
+    virtual void addLine(QString sText, QColor col);
+    virtual void addLine(QString sText);
 
 signals:
     void commandInput(const QString &sCmd);

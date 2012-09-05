@@ -94,4 +94,10 @@ void FrmConsole::executeCommand(const QString &sCmd)
     }
 }
 
+//-------------------------------------------------------------------------------------------------
+IConsole* FrmConsole::getIConsole()
+{
+    return ui->edConsole;
+}
+
 

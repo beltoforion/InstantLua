@@ -2,6 +2,8 @@
 #define IPROJECT_H
 
 #include "Types.h"
+#include <QString>
+
 
 //-------------------------------------------------------------------------------------------------
 /** \brief Eine Klasse, die ein Projekt repräsentiert.
@@ -15,10 +17,10 @@ public:
     IProject();
     virtual ~IProject();
 
-    virtual void AddFile(const string_type &sFileName) = 0;
-    virtual void DeleteFile(const string_type &sFileName) = 0;
-    virtual void Open(const string_type &sProject) = 0;
-    virtual string_type GetName() const = 0;
+    virtual void addFile(const QString &sFileName) = 0;
+    virtual void deleteFile(const QString &sFileName) = 0;
+    virtual void open(const QString &sProject) = 0;
+    virtual QString getName() const = 0;
 };
 
 #endif // IPROJECT_H

@@ -221,6 +221,7 @@ INPUT(
 ./build\debug\.obj\LuaValues.o
 ./build\debug\.obj\LuaContext.o
 ./build\debug\.obj\ILuaValue.o
+./build\debug\.obj\QConsoleStreamBuffer.o
 ./build\debug\.obj\moc_SciClasses.o
 ./build\debug\.obj\moc_qsciscintillabase.o
 ./build\debug\.obj\moc_qsciscintilla.o

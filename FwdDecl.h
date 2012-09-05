@@ -13,6 +13,7 @@ class IFile;
 class IFileObserver;
 class IProject;
 class IInterpreter;
+class IConsole;
 
 class LanguageToken;
 class ScriptOutline;

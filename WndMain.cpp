@@ -1,6 +1,8 @@
 #include "WndMain.h"
 #include "ui_WndMain.h"
 
+#include <iostream>
+
 //--- QTlib includes ------------------------------------------------------------------------------
 #include <QSplitter.h>
 #include <QSettings>
@@ -27,8 +29,10 @@ WndMain::WndMain(QWidget *parent)
     ,m_pspLeft(NULL)
     ,m_pspMain(NULL)
     ,m_lua()
+    ,m_pConsoleStreamBuf(NULL)
 {
     ui->setupUi(this);
+
 
     // Explorer Fenster anlegen, die Reihenfolge ist wichtig, da gegenseitige Abhängigkeiten
     // bestehen!
@@ -74,6 +78,10 @@ WndMain::WndMain(QWidget *parent)
     s.addProvider(m_pDlgSettings);
     s.readSettings();
 
+    // Umleiten der Standardausgabe in die Konsole, speichern des Originalstreams
+    m_pConsoleStreamBuf  = new console_streambuf(m_pFrmConsole->getIConsole());
+    m_pOriginalStreamBuf = std::cout.rdbuf(m_pConsoleStreamBuf);
+
     m_lua.init();
 }
 
@@ -81,6 +89,10 @@ WndMain::WndMain(QWidget *parent)
 WndMain::~WndMain()
 {
     delete ui;
+    delete m_pConsoleStreamBuf;
+
+    // Restore original cout stream buffer
+    std::cout.rdbuf(m_pOriginalStreamBuf);
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -38,6 +38,8 @@ public:
     virtual void readSettings(QSettings &settings);
     virtual void updateFromSettings();
 
+    IConsole* getIConsole();
+
 private slots:
     void executeCommand(const QString &sCmd);
 

@@ -22,10 +22,10 @@ public:
     void loadFromFile(const QString &sFileName);
 
     // IProject implementation
-    virtual void AddFile(const string_type &sFileName);
-    virtual void DeleteFile(const string_type &sFileName);
-    virtual void Open(const string_type &sProject);
-    virtual string_type GetName() const;
+    virtual void addFile(const QString &sFileName);
+    virtual void deleteFile(const QString &sFileName);
+    virtual void open(const QString &sProject);
+    virtual QString getName() const;
 
 private:
     QString m_sProjectFile;

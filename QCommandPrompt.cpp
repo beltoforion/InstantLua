@@ -133,6 +133,12 @@ void QCommandPrompt::setFontSize(int nSize)
 }
 
 //-------------------------------------------------------------------------------------------------
+void QCommandPrompt::addLine(QString sText)
+{
+    addLine(sText, Qt::black);
+}
+
+//-------------------------------------------------------------------------------------------------
 void QCommandPrompt::addLine(QString sText, QColor col)
 {
     if (m_bIsMuted)
@@ -170,7 +176,8 @@ void QCommandPrompt::write(QString sMsg, QColor col)
     setTextCursor(tc);
 
     // old: simple text
-//    insertPlainText(sMsg + "\n" + m_sPrompt);
+    insertPlainText(sMsg + "\n" + m_sPrompt);
+/*
     // colored version
     QBrush brush(Qt::SolidPattern);
     brush.setColor(col);
@@ -182,7 +189,7 @@ void QCommandPrompt::write(QString sMsg, QColor col)
     brush.setColor(m_colDefault);
     fmt.setForeground(brush);
     tc.insertText(m_sPrompt, fmt);
-
+*/
     m_nPromptPos = tc.position();
 
     ensureCursorVisible();
