@@ -1,4 +1,5 @@
 #include "LuaContext.h"
+#include <QString>
 
 //--- Standard includes ---------------------------------------------------------------------------
 #include "Exceptions.h"
@@ -22,6 +23,32 @@ LuaContext::~LuaContext()
     lua_close(m_luaState);
     m_luaState = NULL;
   }
+}
+
+//-------------------------------------------------------------------------------------------------
+QString LuaContext::getVersion() const
+{
+    return QString("Lua %1.%2.%3").arg(LUA_VERSION_MAJOR)
+                                  .arg(LUA_VERSION_MINOR)
+                                  .arg(LUA_VERSION_RELEASE);
+
+/*
+#define LUA_VERSION_MAJOR	"5"
+#define LUA_VERSION_MINOR	"2"
+#define LUA_VERSION_NUM		502
+#define LUA_VERSION_RELEASE	"1"
+
+#define LUA_VERSION	"Lua " LUA_VERSION_MAJOR "." LUA_VERSION_MINOR
+#define LUA_RELEASE	LUA_VERSION "." LUA_VERSION_RELEASE
+#define LUA_COPYRIGHT	LUA_RELEASE "  Copyright (C) 1994-2012 Lua.org, PUC-Rio"
+#define LUA_AUTHORS	"R. Ierusalimschy, L. H. de Figueiredo, W. Celes"
+*/
+}
+
+//-------------------------------------------------------------------------------------------------
+QString LuaContext::getCopyright() const
+{
+    return QString(LUA_COPYRIGHT"\n"LUA_AUTHORS);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -94,6 +121,7 @@ void LuaContext::doString(const QString &sLuaCode, const QString &sChunkName)
                                   sChunkName.toAscii()));
 
     checkLuaError(lua_pcall(m_luaState, 0, 0, 0));
+//    std::cout << lua_gettop(m_luaState) << std::flush;
 }
 
 //-------------------------------------------------------------------------------------------------

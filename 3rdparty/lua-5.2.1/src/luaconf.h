@@ -213,7 +213,7 @@
 #include <stdio.h>
 //#define luai_writestring(s,l)	fwrite((s), sizeof(char), (l), stdout)
 //#define luai_writeline()	(luai_writestring("\n", 1), fflush(stdout))
-#define luai_writestring(s,l)	std::cout << s;
+#define luai_writestring(s,l)	std::cout << s << std::flush;
 #define luai_writeline()	    std::cout << std::endl;
 #endif
 

@@ -20,6 +20,7 @@
 #include "DlgSettings.h"
 #include "DlgAbout.h"
 #include "QConsoleStreamBuffer.h"
+#include "QLuaThread.h"
 
 //--- Lua bindings --------------------------------------------------------------------------------
 #include "luabind/LuaContext.h"
@@ -52,7 +53,7 @@ private:
     QSplitter *m_pspLeft;
     QSplitter *m_pspMain;
 
-    LuaContext m_lua;
+    QLuaThread *m_thLua;
 
     enum { MaxRecentFiles = 5 };
     QAction *m_recentFileActs[MaxRecentFiles];
@@ -69,16 +70,25 @@ private:
     virtual void readSettings(QSettings &settings);
     virtual void updateFromSettings();
 
+signals:
+    void doFile(const IFile *pFile);
+
 private slots:
+    void openRecentFile();
+
+    void on_lua_syntaxCheckDone();
+    void on_lua_executionFinished();
+    void on_lua_functionCall();
+
     void on_actionConsole_triggered();
     void on_actionPreferences_triggered();
     void on_actionQuit_triggered();
     void on_actionSave_triggered();
     void on_actionAbout_triggered();
-    void openRecentFile();
     void on_actionOpenProject_triggered();
     void on_actionOpenFile_triggered();
     void on_actionRun_triggered();
+
 
 private:
     std::streambuf *m_pConsoleStreamBuf;

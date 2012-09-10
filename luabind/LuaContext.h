@@ -26,6 +26,9 @@ public:
   void init();
   void checkLuaError(int errc);
 
+  QString getVersion() const;
+  QString getCopyright() const;
+
   // IInterpreter interface
   virtual void execute(const QString &sCmd);
 

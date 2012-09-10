@@ -47,7 +47,6 @@ QCommandPrompt::QCommandPrompt(QWidget *parent)
 */
 
     document()->setMaximumBlockCount(m_nMaxLines);
-    write("");
 }
 
 //-------------------------------------------------------------------------------------------------

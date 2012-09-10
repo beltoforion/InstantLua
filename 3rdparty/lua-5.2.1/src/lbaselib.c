@@ -38,7 +38,7 @@ static int luaB_print (lua_State *L) {
     luai_writestring(s, l);
     lua_pop(L, 1);  /* pop result */
   }
-  luai_writeline();
+  //luai_writeline();
   return 0;
 }
 

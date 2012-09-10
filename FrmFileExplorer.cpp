@@ -56,6 +56,17 @@ int FrmFileExplorer::getTabIndex(const IFile *pFile)
 }
 
 //-------------------------------------------------------------------------------------------------
+/** \brief Zurückgeben des Zeigers auf das File, dessen Tabsheet derzeit der Aktive ist. */
+IFile* FrmFileExplorer::getActiveFile() const
+{
+    FrmSourceEdit *pEdit = dynamic_cast<FrmSourceEdit*>(ui->tcProject->currentWidget());
+    if (pEdit!=NULL)
+        return pEdit->getFile().data();
+    else
+        return NULL;
+}
+
+//-------------------------------------------------------------------------------------------------
 /** \brief Abspeichern aller offenen Dateien.
     \param bModifiedOnly Wenn dieses Flag gesetzt ist werden nur die Modifizierten Dateien
            gespeichert

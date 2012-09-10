@@ -28,7 +28,7 @@ WndMain::WndMain(QWidget *parent)
     ,m_projects()
     ,m_pspLeft(NULL)
     ,m_pspMain(NULL)
-    ,m_lua()
+    ,m_thLua(new QLuaThread(this))
     ,m_pConsoleStreamBuf(NULL)
 {
     ui->setupUi(this);
@@ -48,7 +48,7 @@ WndMain::WndMain(QWidget *parent)
     m_pDlgAbout = new DlgAbout(this);
 
     // Konsole einrichten
-    m_pFrmConsole->bindToInterpreter(&m_lua);
+//    m_pFrmConsole->bindToInterpreter(&m_lua);
 
     //m_pFrmConsole->SetPrompt("Luanda");
 
@@ -82,7 +82,20 @@ WndMain::WndMain(QWidget *parent)
     m_pConsoleStreamBuf  = new console_streambuf(m_pFrmConsole->getIConsole());
     m_pOriginalStreamBuf = std::cout.rdbuf(m_pConsoleStreamBuf);
 
-    m_lua.init();
+    // Starten des Lua threads
+    m_thLua->start();
+    m_thLua->bindToConsole(m_pFrmConsole->getIConsole());
+
+    connect(m_thLua, SIGNAL(luaSyntaxCheckDone()), this, SLOT(on_lua_syntaxCheckDone()));
+    connect(m_thLua, SIGNAL(luaExecutionFinished()), this, SLOT(on_lua_executionFinished()));
+    connect(m_thLua, SIGNAL(luaFunctionCall()), this, SLOT(on_lua_functionCall()));
+
+    // Kommandoeingabe in der Konsole direkt zur Ausführung an den Lua Thread weiter geben
+    connect(m_pFrmConsole->getConsole(), SIGNAL(commandInput(const QString&)),
+            m_thLua, SLOT(on_doString(const QString&)));
+
+    connect(this, SIGNAL(doFile(const IFile*)), m_thLua, SLOT(on_doFile(const IFile*)));
+
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -275,6 +288,20 @@ void WndMain::on_actionConsole_triggered()
 }
 
 //-------------------------------------------------------------------------------------------------
+/** \brief Lua Thread ist fertif mit einem Syntaxcheck. */
+void WndMain::on_lua_syntaxCheckDone()
+{
+
+}
+//-------------------------------------------------------------------------------------------------
+void WndMain::on_lua_executionFinished()
+{}
+
+//-------------------------------------------------------------------------------------------------
+void WndMain::on_lua_functionCall()
+{}
+
+//-------------------------------------------------------------------------------------------------
 void WndMain::openRecentFile()
 {
     QAction *action = qobject_cast<QAction *>(sender());
@@ -304,9 +331,16 @@ void WndMain::updateRecentFileActions()
         m_recentFileActs[j]->setVisible(false);
 }
 
-
-
+//-------------------------------------------------------------------------------------------------
 void WndMain::on_actionRun_triggered()
 {
-    m_lua.init();
+    if (m_thLua==NULL)
+        return;
+
+    // Aktives File heraussuchen
+    const IFile *pFile = m_pFrmFileExplorer->getActiveFile();
+    if (pFile!=NULL)
+    {
+        emit doFile(pFile);
+    }
 }

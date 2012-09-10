@@ -33,6 +33,8 @@ public:
     void dragEnterEvent(QDragEnterEvent *event);
     void setCursorInfo(int nLine, int nIndex);
 
+    IFile* getActiveFile() const;
+
     // ISettingsprovider
     virtual void writeSettings(QSettings &settings);
     virtual void readSettings(QSettings &settings);

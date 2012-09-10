@@ -13,15 +13,16 @@
 // It was modified in order to redirect the standard output to a QCommandPrompt
 // object
 //
-// Modifications made by me (Ingo Berg):
+// Modifications made by me (20120906; Ingo Berg):
 //
 // - class is no longer in namespace std
 // - comments changed into doxygen format
-// - Dependencies from Windows API removed
+// - Dependencies from Windows API removed and replaced
+//   with corresponding qt lib functions
 // - function definitions moved into class definition
-// -
-// original Copyright Message:
 //
+// original Copyright Message (verbatim):
+
 /*\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\
 \ editlog_stream.h,  Use C++ std-library to write into a Windows Edit-Control
 /
@@ -45,9 +46,9 @@ template <class E, class T = std::char_traits<E>, int BUF_SIZE = 512 >
 class basic_editstreambuf : public std::basic_streambuf<E, T>
 {
 public:
-    typedef typename std::basic_streambuf< E, T>::int_type int_type;
-    typedef typename std::basic_streambuf< E, T>::char_type char_type;
-    typedef typename std::basic_streambuf< E, T>::traits_type traits_type;
+    typedef typename std::basic_streambuf<E, T>::int_type int_type;
+    typedef typename std::basic_streambuf<E, T>::char_type char_type;
+    typedef typename std::basic_streambuf<E, T>::traits_type traits_type;
 
     //---------------------------------------------------------------------------------------------
     basic_editstreambuf(IConsole *pConsole)

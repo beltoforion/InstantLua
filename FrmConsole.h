@@ -29,7 +29,7 @@ public:
     };
 
     explicit FrmConsole(QWidget *parent = 0);
-    ~FrmConsole();
+    virtual ~FrmConsole();
 
     void bindToInterpreter(IInterpreter *pInterpreter);
 
@@ -39,14 +39,10 @@ public:
     virtual void updateFromSettings();
 
     IConsole* getIConsole();
-
-private slots:
-    void executeCommand(const QString &sCmd);
+    QCommandPrompt* getConsole();
 
 private:
     Ui::FrmConsole *ui;
-    IInterpreter *m_pLua;
-    void splashScreen();
 };
 
 #endif // FRMDEBUG_H

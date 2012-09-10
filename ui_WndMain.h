@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'WndMain.ui'
 **
-** Created: Mon 3. Sep 22:39:06 2012
+** Created: Mon 10. Sep 20:38:39 2012
 **      by: Qt User Interface Compiler version 4.7.4
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -163,7 +163,6 @@ public:
         mainToolBar->setStyleSheet(QString::fromUtf8(""));
         mainToolBar->setIconSize(QSize(48, 48));
         WndMain->addToolBar(Qt::TopToolBarArea, mainToolBar);
-        WndMain->insertToolBarBreak(mainToolBar);
 
         menuBar->addAction(menuFile->menuAction());
         menuBar->addAction(menuSettings->menuAction());
