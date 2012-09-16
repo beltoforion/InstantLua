@@ -38,10 +38,10 @@ public:
 
     virtual QString path() const = 0;
 
-    void activate();
+    void activate() const;
     void load();
     void save();
-    void navigateToLine(int nLine) const;
+    void navigateToLine(int nLine, ETextMarker eMarker) const;
 
     bool wasModified() const;
     void setModified(bool bStat)        ;

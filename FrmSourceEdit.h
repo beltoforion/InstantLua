@@ -9,6 +9,8 @@
 #include "IFile.h"
 #include "IFileObserver.h"
 #include "FrmFileExplorer.h"
+#include "Types.h"
+
 
 //-------------------------------------------------------------------------------------------------
 class FrmSourceEdit : public QWidget,
@@ -26,16 +28,17 @@ public:
     virtual void notifyFileModified(const IFile *pFile);
     virtual void notifyFileLoad(const IFile *pFile);
     virtual void notifyBeforeFileSave(IFile *pFile);
-    virtual void notifyFileLineSelected(const IFile *pFile, int nLine);
+    virtual void notifyFileLineSelected(const IFile *pFile, int nLine, ETextMarker eMarker);
 
     // von Widget reimplementiert
     virtual void mousePressEvent(QMouseEvent * event);
 
     // eigene Funktionen
     IFile::ptr_type getFile();
-    void updateFileBuffer();
     void updateFromSettings();
-//    void markLine(int nLine);
+
+signals:
+    void checkFile(IFile*);
 
 private slots:
 
@@ -60,13 +63,17 @@ private:
     int m_nMarkerBreakPoint;
     int m_nMarkerCIP;
     int m_nMarkerLine;
+    int m_nMarkerError;
 
     QVector<int> m_vMarkedLines;
+    int m_nErrorLine;
 
     // Indikatoren
     int m_nNumberIndicator;
 
     void clearMarkedLines();
+    void updateFile(bool bModifiedFlag);
+    void deleteMarker(ETextMarker eMarker);
 };
 
 #endif // FRMSOURCEEDIT_H

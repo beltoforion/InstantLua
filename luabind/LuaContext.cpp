@@ -115,13 +115,25 @@ void LuaContext::doString(const QString &sLuaCode, const QString &sChunkName)
     if (m_luaState==NULL)
         throw LuaException(QString("Can't execute Lua code fragment \"%1\": Lua state is not initialized").arg(sLuaCode));
 
+//    checkLuaError(luaL_loadbuffer(m_luaState,
+//                                  sLuaCode.toAscii(),
+//                                  sLuaCode.size(),
+//                                  sChunkName.toAscii()));
+    syntaxCheck(sLuaCode, sChunkName);
+
+    checkLuaError(lua_pcall(m_luaState, 0, 0, 0));
+}
+
+//-------------------------------------------------------------------------------------------------
+void LuaContext::syntaxCheck(const QString &sLuaCode, const QString &sChunkName)
+{
+    if (m_luaState==NULL)
+        throw LuaException(QString("Can't execute Lua code fragment \"%1\": Lua state is not initialized").arg(sLuaCode));
+
     checkLuaError(luaL_loadbuffer(m_luaState,
                                   sLuaCode.toAscii(),
                                   sLuaCode.size(),
                                   sChunkName.toAscii()));
-
-    checkLuaError(lua_pcall(m_luaState, 0, 0, 0));
-//    std::cout << lua_gettop(m_luaState) << std::flush;
 }
 
 //-------------------------------------------------------------------------------------------------

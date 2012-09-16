@@ -133,7 +133,9 @@ void LanguageToken::addFunction(const QString &sName,
 
         LanguageToken *pClass = find(aClass);
         if (pClass==NULL)
+        {
             add(new ClassDefinition(aClass, sSec, sArg, nLine));
+        }
         else
             pClass->addFunction(sSec, sArg, nLine);
     }
@@ -209,5 +211,6 @@ FunctionDefinition::FunctionDefinition(const QString &sName,
     ,m_sArgs(sArgs)
 {
     m_icon = QIcon(":/outline/res/code-function.ico");
-    m_nLine = nLine;
+
+    setLine(nLine);
 }

@@ -13,7 +13,7 @@
 #include "FileLua.h"
 #include "DlgSettings.h"
 #include "ProjectLua.h"
-
+#include "Exceptions.h"
 
 //-------------------------------------------------------------------------------------------------
 WndMain::WndMain(QWidget *parent)
@@ -94,7 +94,12 @@ WndMain::WndMain(QWidget *parent)
     connect(m_pFrmConsole->getConsole(), SIGNAL(commandInput(const QString&)),
             m_thLua, SLOT(on_doString(const QString&)));
 
-    connect(this, SIGNAL(doFile(const IFile*)), m_thLua, SLOT(on_doFile(const IFile*)));
+    connect(m_pFrmFileExplorer, SIGNAL(checkFile(const IFile*)), m_thLua, SLOT(on_checkFile(const IFile*)));
+
+    connect(this, SIGNAL(doFile(IFile*)), m_thLua, SLOT(on_doFile(IFile*)));
+
+    connect(m_thLua, SIGNAL(luaError(const LuaException&)),
+            this, SLOT(on_lua_scriptError(const LuaException&)));
 
 }
 
@@ -302,6 +307,17 @@ void WndMain::on_lua_functionCall()
 {}
 
 //-------------------------------------------------------------------------------------------------
+void WndMain::on_lua_scriptError(const LuaException &exc)
+{
+    const IFile *pFile = exc.getFile();
+    if (pFile==NULL)
+        return;
+
+    pFile->activate();
+    pFile->navigateToLine(exc.getLine(), tmERROR);
+}
+
+//-------------------------------------------------------------------------------------------------
 void WndMain::openRecentFile()
 {
     QAction *action = qobject_cast<QAction *>(sender());
@@ -338,9 +354,10 @@ void WndMain::on_actionRun_triggered()
         return;
 
     // Aktives File heraussuchen
-    const IFile *pFile = m_pFrmFileExplorer->getActiveFile();
+    IFile *pFile = m_pFrmFileExplorer->getActiveFile();
     if (pFile!=NULL)
     {
+        // Notification absenden
         emit doFile(pFile);
     }
 }

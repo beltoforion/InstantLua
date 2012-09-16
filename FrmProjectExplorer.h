@@ -39,7 +39,7 @@ public:
     virtual void notifyFileLoad(const IFile *pFile);
     virtual void notifyBeforeFileSave(IFile *pFile);
     virtual void notifyFileModified(const IFile *pFile);
-    virtual void notifyFileLineSelected(const IFile *pFile, int nLine);
+    virtual void notifyFileLineSelected(const IFile *pFile, int nLine, ETextMarker eMarker);
 
 private slots:
     void on_tvOutline_itemSelectionChanged();

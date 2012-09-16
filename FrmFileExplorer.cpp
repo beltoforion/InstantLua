@@ -56,6 +56,21 @@ int FrmFileExplorer::getTabIndex(const IFile *pFile)
 }
 
 //-------------------------------------------------------------------------------------------------
+FrmSourceEdit*  FrmFileExplorer::getSourceEdit(const IFile *pFile)
+{
+    for (int i=0; i<ui->tcProject->count(); ++i)
+    {
+      FrmSourceEdit *pEdit = static_cast<FrmSourceEdit*>(ui->tcProject->widget(i));
+      if (pEdit->getFile().data()==pFile)
+      {
+          return pEdit;
+      }
+    }
+
+    return NULL;
+}
+
+//-------------------------------------------------------------------------------------------------
 /** \brief Zurückgeben des Zeigers auf das File, dessen Tabsheet derzeit der Aktive ist. */
 IFile* FrmFileExplorer::getActiveFile() const
 {
@@ -118,26 +133,30 @@ void FrmFileExplorer::notifyBeforeFileSave(IFile *pFile)
 }
 
 //-------------------------------------------------------------------------------------------------
+/** \brief Auswählen des Tabsheets mit dem Lua Files. */
 void FrmFileExplorer::notifyFileModified(const IFile *pFile)
 {
+    if (pFile==NULL)
+        return;
+
     int i = getTabIndex(pFile);
-    if (i>=0)
-    {
-        ui->tcProject->setTabIcon(i, QIcon(":/images/res/warning.ico"));
-    }
+    if (i<0)
+        return;
+
+    ui->tcProject->setTabIcon(i, QIcon(":/images/res/warning.ico"));
+    emit checkFile(pFile);
 }
 
 //-------------------------------------------------------------------------------------------------
-void FrmFileExplorer::notifyFileLineSelected(const IFile *pFile, int nLine)
+void FrmFileExplorer::notifyFileLineSelected(const IFile *pFile, int nLine, ETextMarker eMarker)
 {
     // Tabsheet mit dem File raussuchen und Zeile markieren
     int i = getTabIndex(pFile);
     if (i>=0)
     {
         ui->tcProject->setCurrentIndex(i);
-//        FrmSourceEdit *pEdit = static_cast<FrmSourceEdit*>(ui->tcProject->widget(i));
-//        pEdit->markLine(nLine);
     }
+
     qDebug() << "FrmFileExplorer::notifyFileLineSelected:" << QString::number(nLine) << "\n";
 }
 
@@ -325,3 +344,4 @@ void FrmFileExplorer::setCursorInfo(int nLine, int nIndex)
 {
     ui->paCaption->setInfo(0, tr("Line: %1, Column: %2  ").arg(nLine).arg(nIndex));
 }
+

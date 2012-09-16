@@ -30,17 +30,18 @@ signals:
     void luaSyntaxCheckDone();
     void luaExecutionFinished();
     void luaFunctionCall();
+    void luaError(const LuaException &exc);
 
 public slots:
 
     // Ausführung von Lua-Code
     void on_doString(const QString &script);
-    void on_doFile(const IFile *pFile);
+    void on_doFile(IFile *pFile);
     void on_doProject(const IProject *pProject);
 
     // Syntaxüberprüfung
-//    void doFileSyntaxCheck(IFile *pFile);
-//    void doProjectSyntaxCheck(IFile *pProject);
+    void on_checkFile(const IFile *pFile);
+    void on_checkProject(const IProject *pProject);
 
 private:
     IConsole *m_pConsole;

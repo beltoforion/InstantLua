@@ -33,6 +33,7 @@ public:
   virtual void execute(const QString &sCmd);
 
   void doString(const QString &sLuaCode, const QString &sChunkName);
+  void syntaxCheck(const QString &sLuaCode, const QString &sChunkName);
   int doCall(int nArg, int clear);
 
   LuaContext& GenPCall(const std::string &sLuaCode);

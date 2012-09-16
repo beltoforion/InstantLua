@@ -67,6 +67,7 @@ LuaException::LuaException(QString sMsg)
     :Exception(sMsg)
     ,m_sModule()
     ,m_nLine(-1)
+    ,m_pFile(NULL)
 {
     // todo: tokenizer to cut string into three parts
     int i1 = sMsg.indexOf(':', 0);
@@ -86,6 +87,18 @@ LuaException::~LuaException() throw()
 int LuaException::getLine() const
 {
     return m_nLine;
+}
+
+//-------------------------------------------------------------------------------------------------
+const IFile* LuaException::getFile() const
+{
+    return m_pFile;
+}
+
+//-------------------------------------------------------------------------------------------------
+void LuaException::setFile(const IFile *pFile)
+{
+    m_pFile = pFile;
 }
 
 //-------------------------------------------------------------------------------------------------

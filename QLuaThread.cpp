@@ -1,5 +1,6 @@
 #include "QLuaThread.h"
 #include <QMutexLocker>
+#include <QTextStream>
 
 #include <iostream>
 #include "Exceptions.h"
@@ -61,7 +62,7 @@ void QLuaThread::on_doString(const QString &sCmd)
 }
 
 //-------------------------------------------------------------------------------------------------
-void QLuaThread::on_doFile(const IFile *pFile)
+void QLuaThread::on_doFile(IFile *pFile)
 {
     if (m_pConsole==NULL || pFile==NULL)
         return;
@@ -76,7 +77,16 @@ void QLuaThread::on_doFile(const IFile *pFile)
         }
 
         m_lua.doString(sScript, pFile->getName());
+    }
+    catch(LuaException &exc)
+    {
+        exc.setFile(pFile);
 
+        QString sMsg = QString("%1 in Line %2").arg(exc.getMessage())
+                                               .arg(exc.getLine());
+        m_pConsole->addLine(sMsg, Qt::red);
+
+        emit luaError(exc);
     }
     catch(Exception &exc)
     {
@@ -94,6 +104,72 @@ void QLuaThread::on_doFile(const IFile *pFile)
 
 //-------------------------------------------------------------------------------------------------
 void QLuaThread::on_doProject(const IProject *pProject)
+{
+    if (m_pConsole==NULL || pProject==NULL)
+        return;
+
+    try
+    {
+        //m_lua.execute(sCmd);
+    }
+    catch(Exception &exc)
+    {
+        m_pConsole->addLine(exc.getMessage(), Qt::red);
+    }
+    catch(std::exception &exc)
+    {
+        m_pConsole->addLine(exc.what(), Qt::red);
+    }
+    catch(...)
+    {
+        m_pConsole->addLine("Internal error: FrmConsole::executeCommand", Qt::red);
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
+void QLuaThread::on_checkFile(const IFile *pFile)
+{
+    if (m_pConsole==NULL || pFile==NULL)
+        return;
+
+    try
+    {
+        QVector<QString> vLines = pFile->getLines();
+        QString sScript;
+        for (int i=0; i<vLines.size(); ++i)
+        {
+            sScript += vLines[i];
+        }
+
+        m_lua.syntaxCheck(sScript, pFile->getName());
+
+    }
+    catch(LuaException &exc)
+    {
+        exc.setFile(pFile);
+
+        QString sMsg = QString("%1 in Line %2").arg(exc.getMessage())
+                                               .arg(exc.getLine());
+        m_pConsole->addLine(sMsg, Qt::red);
+
+        emit luaError(exc);
+    }
+    catch(Exception &exc)
+    {
+        m_pConsole->addLine(exc.getMessage(), Qt::red);
+    }
+    catch(std::exception &exc)
+    {
+        m_pConsole->addLine(exc.what(), Qt::red);
+    }
+    catch(...)
+    {
+        m_pConsole->addLine("Internal error: FrmConsole::executeCommand", Qt::red);
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
+void QLuaThread::on_checkProject(const IProject *pProject)
 {
     if (m_pConsole==NULL || pProject==NULL)
         return;

@@ -44,6 +44,9 @@ std::size_t FileLua::getNumLines() const
 }
 
 //-------------------------------------------------------------------------------------------------
+/** \brief Löscht den zwischengepufferten Dateiinhalt.
+
+*/
 void FileLua::clear()
 {
     m_vLines.clear();

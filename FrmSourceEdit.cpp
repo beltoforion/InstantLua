@@ -21,6 +21,9 @@ FrmSourceEdit::FrmSourceEdit(FrmFileExplorer *pParent, IFile::ptr_type pFile)
     ,m_nMarkerBreakPoint(0)
     ,m_nMarkerCIP(0)
     ,m_nMarkerLine(0)
+    ,m_nMarkerError(0)
+    ,m_vMarkedLines()
+    ,m_nErrorLine(-1)
     ,m_nNumberIndicator(0)
 {
     try
@@ -153,6 +156,9 @@ FrmSourceEdit::FrmSourceEdit(FrmFileExplorer *pParent, IFile::ptr_type pFile)
         m_nMarkerLine = m_pSrcEdit->markerDefine(QsciScintilla::Background);
         m_pSrcEdit->setMarkerBackgroundColor(QColor(180, 255, 180), m_nMarkerLine);
 
+        m_nMarkerError = m_pSrcEdit->markerDefine(QsciScintilla::Background);
+        m_pSrcEdit->setMarkerBackgroundColor(QColor(255, 180, 180), m_nMarkerError);
+
         // Indikatoren
         m_nNumberIndicator = m_pSrcEdit->indicatorDefine(QsciScintilla::StrikeIndicator /*RoundBoxIndicator*/);
 
@@ -174,16 +180,41 @@ FrmSourceEdit::~FrmSourceEdit()
 //-------------------------------------------------------------------------------------------------
 void FrmSourceEdit::fileModified(bool bStat)
 {
-    m_pFile->setModified(true);
+    updateFile(true);
 }
 
 //-------------------------------------------------------------------------------------------------
 void FrmSourceEdit::textChanged()
 {
+    updateFile(true);
+
     // Stellenweise hat fileModified nicht mehr getriggert, Grund unbekannt...
     // textChanged sollte immer triggern
-    m_pFile->setModified(true);
     qDebug() << "textChanged()";
+}
+
+//-------------------------------------------------------------------------------------------------
+/** \brief Synchronisiert den Inhalt der Scintilla Komponente mit dem zwischengepufferten Inhalt
+           in m_pFile.
+
+    Das Modified flag von m_pFile wird gesetzt.
+*/
+void FrmSourceEdit::updateFile(bool bSetModifiedFlag)
+{
+    if (m_pFile==NULL)
+        return;
+
+    int nLines = m_pSrcEdit->lines();
+    m_pFile->clear();
+    for (int i=0; i<nLines; ++i)
+    {
+        m_pFile->addLine(m_pSrcEdit->text(i));
+    }
+
+    if (bSetModifiedFlag)
+    {
+        m_pFile->setModified(true);
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -240,10 +271,11 @@ void FrmSourceEdit::tabChange(int idx)
 //-------------------------------------------------------------------------------------------------
 void FrmSourceEdit::notifyFileActivate(const IFile *pFile)
 {
-    clearMarkedLines();
+    deleteMarker(tmHIGHLIGHT);
 }
 
 //-------------------------------------------------------------------------------------------------
+/** \brief Aktualisieren des angezeigten Dateiinhaltes. */
 void FrmSourceEdit::notifyFileLoad(const IFile *pFile)
 {
     std::size_t sz = pFile->getNumLines();
@@ -256,34 +288,77 @@ void FrmSourceEdit::notifyFileLoad(const IFile *pFile)
 }
 
 //-------------------------------------------------------------------------------------------------
-/** \brief Übernimmt die Änderungen aus dem Editfeld in den internen Filebuffer.
-*/
 void FrmSourceEdit::notifyBeforeFileSave(IFile *pFile)
+{}
+
+//-------------------------------------------------------------------------------------------------
+/** \brief Markieren einer bestimmten Zeile.
+    \param pFile File in dem die Zeile markiert werden soll
+    \param nLine Zeilenindex (einsbasiert)
+*/
+void FrmSourceEdit::notifyFileLineSelected(const IFile *pFile, int nLine, ETextMarker eMarker)
 {
-    int nLines = m_pSrcEdit->lines();
-    pFile->clear();
-    for (int i=0; i<nLines; ++i)
+    deleteMarker(tmHIGHLIGHT);
+
+    qDebug() << "FrmSourceEdit::notifyFileLineSelected:" << QString::number(nLine) << "\n";
+
+    int nLineIdx = nLine - 1;
+    if (nLineIdx<0)
+        return;
+
+    m_pSrcEdit->setCursorPosition(nLineIdx, 0);
+    m_pSrcEdit->ensureCursorVisible();
+
+    switch(eMarker)
     {
-        QString sLine = m_pSrcEdit->text(i);
-        pFile->addLine(sLine);
+    case tmHIGHLIGHT:
+        // es können mehrere Zeilen hervorgehoben sein
+        m_pSrcEdit->markerAdd(nLineIdx, m_nMarkerLine);
+        m_vMarkedLines.push_back(nLineIdx);
+        break;
+
+    case tmERROR:
+        // Alte Fehlermarkierung löschen
+        if (m_nErrorLine!=-1)
+        {
+            m_pSrcEdit->markerDelete(m_nErrorLine, m_nMarkerError);
+        }
+
+        // Es kann nur eine Zeile als Fehler markiert sein
+        m_pSrcEdit->markerAdd(nLineIdx, m_nMarkerError);
+        m_nErrorLine = nLineIdx;
+        break;
+
+    case tmBREAKPOINT:
+    default:
+        break;
     }
+
 }
 
 //-------------------------------------------------------------------------------------------------
-void FrmSourceEdit::notifyFileLineSelected(const IFile *pFile, int nLine)
+void FrmSourceEdit::deleteMarker(ETextMarker eMarker)
 {
-    clearMarkedLines();
-    qDebug() << "FrmSourceEdit::notifyFileLineSelected:" << QString::number(nLine) << "\n";
+    int flags = (int)eMarker;
 
-    if (nLine<0)
-        return;
+    // Errormarker entfernen
+    if ( (flags & tmERROR) != 0)
+    {
+        if (m_nErrorLine!=-1)
+        {
+            m_pSrcEdit->markerDelete(m_nErrorLine, m_nMarkerError);
+        }
+    }
 
-    m_pSrcEdit->markerAdd(nLine, m_nMarkerLine);
-    m_pSrcEdit->setCursorPosition(nLine, 0);
-    m_pSrcEdit->ensureCursorVisible();
-    m_vMarkedLines.push_back(nLine);
-
-//    repaint();
+    // Highlights entfernen
+    if ( (flags & tmHIGHLIGHT) != 0)
+    {
+        for (int i=0; i<m_vMarkedLines.size(); ++i)
+        {
+            m_pSrcEdit->markerDelete(m_vMarkedLines[i], m_nMarkerLine);
+        }
+        m_vMarkedLines.clear();
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -296,12 +371,8 @@ void FrmSourceEdit::mousePressEvent(QMouseEvent * event)
 //-------------------------------------------------------------------------------------------------
 void FrmSourceEdit::notifyFileModified(const IFile *pFile)
 {
-    if (pFile->wasModified())
-    {
-    }
-    else
-    {
-    }
+    // Diese Komponente löst den Event aus, der Inhalt von pFile
+    // wurde bereite in updateFile aktualisiert.
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -324,30 +395,5 @@ void FrmSourceEdit::updateFromSettings()
     m_pSrcEdit->setTabWidth(settings.getTabIndent());
 }
 
-//-------------------------------------------------------------------------------------------------
-/** \brief Hervorheben einer Bestimmten Zeile.
-*/
-/*
-void FrmSourceEdit::markLine(int nLine)
-{
-    clearMarkedLines();
-
-    if (nLine<0)
-        return;
-
-    m_pSrcEdit->markerAdd(nLine, m_nMarkerLine);
-    m_pSrcEdit->ensureLineVisible(nLine);
-    m_vMarkedLines.push_back(nLine);
-}
-*/
-//-------------------------------------------------------------------------------------------------
-void FrmSourceEdit::clearMarkedLines()
-{
-    for (int i=0; i<m_vMarkedLines.size(); ++i)
-    {
-        m_pSrcEdit->markerDelete(m_vMarkedLines[i], m_nMarkerLine);
-    }
-    m_vMarkedLines.clear();
-}
 
 

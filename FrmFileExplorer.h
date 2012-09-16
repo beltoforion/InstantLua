@@ -45,7 +45,7 @@ public:
     virtual void notifyFileLoad(const IFile *pFile);
     virtual void notifyBeforeFileSave(IFile *pFile);
     virtual void notifyFileModified(const IFile *pFile);
-    virtual void notifyFileLineSelected(const IFile *pFile, int nLine);
+    virtual void notifyFileLineSelected(const IFile *pFile, int nLine, ETextMarker eMarker);
 
 
 private:
@@ -55,6 +55,10 @@ private:
     IFile* findFile(const QString &sPath);
 
     int getTabIndex(const IFile *pFile);
+    FrmSourceEdit* getSourceEdit(const IFile *pFile);
+
+signals:
+    void checkFile(const IFile *pFile);
 
 private slots:
     void on_actionClose_All_But_This_triggered();

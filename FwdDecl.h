@@ -6,6 +6,7 @@ class ProjectLua;
 class FileLua;
 class FrmFileExplorer;
 class FrmProjectExplorer;
+class FrmSourceEdit;
 class MainWindow;
 
 //-------------------------------------------------------------------------------------------------
@@ -17,6 +18,8 @@ class IConsole;
 
 class LanguageToken;
 class ScriptOutline;
+
+class LuaException;
 
 //--- Qt lib --------------------------------------------------------------------------------------
 class QTimer;

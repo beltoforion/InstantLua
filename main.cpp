@@ -1,5 +1,6 @@
 #include <QtGui/QApplication>
 #include <QMessageBox>
+#include <QSplashScreen>
 #include "WndMain.h"
 #include "Exceptions.h"
 
@@ -13,8 +14,16 @@ int main(int argc, char *argv[])
         a.setOrganizationDomain("beltoforion.de");
         a.setApplicationName("luanda");
 
+        QSplashScreen *splash = new QSplashScreen;
+        splash->setPixmap(QPixmap(":/images/res/splash.png"));
+        splash->show();
+
         WndMain w;
-        w.show();
+        //w.show();
+
+        QTimer::singleShot(2500, splash, SLOT(close()));
+        QTimer::singleShot(2500, &w, SLOT(show()));
+
         return a.exec();
     }
     catch(Exception &exc)

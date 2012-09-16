@@ -33,11 +33,13 @@ protected:
     QString m_sName;
     QIcon m_icon;
     LanguageToken *m_pParent;
-    int m_nLine;
 
     void add(LanguageToken *pItem);
     void remove(LanguageToken *pItem);
     LanguageToken* find(const QString &sName);
+
+private:
+    int m_nLine;
 };
 
 

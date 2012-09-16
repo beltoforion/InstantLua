@@ -16,7 +16,7 @@ void IFile::setModified(bool bStat)
     bool bOld = m_bModified;
     m_bModified = bStat;
 
-    if (bOld!=m_bModified && hasObservers())
+    if (/*bOld!=m_bModified &&*/ hasObservers())
     {
         // Meldung über Änderung am File an alle Observer absetzen
         obs_list::iterator it = m_observer.begin();
@@ -42,29 +42,31 @@ void IFile::saveImpl()
 {}
 
 //-------------------------------------------------------------------------------------------------
-void IFile::activate()
+void IFile::activate() const
 {
-    if (hasObservers())
+    if (!hasObservers())
+        return;
+
+    obs_list::const_iterator it = m_observer.begin();
+    for ( ; it!=m_observer.end(); ++it)
     {
-        obs_list::iterator it = m_observer.begin();
-        for ( ; it!=m_observer.end(); ++it)
-        {
-            (*it)->notifyFileActivate(this);
-        }
+        (*it)->notifyFileActivate(this);
     }
 }
 
 
 //-------------------------------------------------------------------------------------------------
-void IFile::navigateToLine(int nLine) const
+/** \brief Anzeigen und gegebenenfalls markieren einer bestimmten Zeile.
+*/
+void IFile::navigateToLine(int nLine, ETextMarker eMarker) const
 {
-    if (hasObservers())
+    if (!hasObservers())
+        return;
+
+    obs_list::const_iterator it = m_observer.begin();
+    for ( ; it!=m_observer.end(); ++it)
     {
-        obs_list::const_iterator it = m_observer.begin();
-        for ( ; it!=m_observer.end(); ++it)
-        {
-            (*it)->notifyFileLineSelected(this, nLine);
-        }
+        (*it)->notifyFileLineSelected(this, nLine, eMarker);
     }
 }
 
@@ -88,13 +90,13 @@ void IFile::load()
 //-------------------------------------------------------------------------------------------------
 void IFile::save()
 {
-    if (hasObservers())
+    if (!hasObservers())
+        return;
+
+    obs_list::iterator it = m_observer.begin();
+    for ( ; it!=m_observer.end(); ++it)
     {
-        obs_list::iterator it = m_observer.begin();
-        for ( ; it!=m_observer.end(); ++it)
-        {
-            (*it)->notifyBeforeFileSave(this);
-        }
+        (*it)->notifyBeforeFileSave(this);
     }
 
     saveImpl();

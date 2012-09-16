@@ -121,7 +121,7 @@ void FrmProjectExplorer::notifyFileModified(const IFile *pFile)
 {}
 
 //-------------------------------------------------------------------------------------------------
-void FrmProjectExplorer::notifyFileLineSelected(const IFile *pFile, int nLine)
+void FrmProjectExplorer::notifyFileLineSelected(const IFile *pFile, int nLine, ETextMarker eMarker)
 {}
 
 //-------------------------------------------------------------------------------------------------
@@ -130,22 +130,6 @@ void FrmProjectExplorer::notifyFileLineSelected(const IFile *pFile, int nLine)
 //
 //-------------------------------------------------------------------------------------------------
 
-/*
-void FrmProjectExplorer::resizeEvent(QResizeEvent* event)
-{
-    if (event!=NULL)
-    {
-        QWidget::resizeEvent(event);
-    }
-
-    int nTreeWidth = ui->tvOutline->width();
-    ui->tvOutline->header()->resizeSection(0, nTreeWidth*0.7);
-    ui->tvOutline->header()->resizeSection(1, nTreeWidth*0.3);
-    ui->tvOutline->header()->setResizeMode(0, );
-}
-*/
-
-//-------------------------------------------------------------------------------------------------
 void FrmProjectExplorer::updateOutline(const IFile *pFile)
 {
     ui->tvOutline->clear();
@@ -183,7 +167,10 @@ void FrmProjectExplorer::updateOutline(const IFile *pFile)
         QString sMatch   = regex.cap(0);
         QString sFunName = regex.cap(1);
         QString sFunArgs = regex.cap(2);
-        m_pScriptOutline->addFunction(sFunName, sFunArgs, i);
+
+        // aktualisieren der Outline, mit einsbasierten indizes
+        m_pScriptOutline->addFunction(sFunName, sFunArgs, i+1);
+
         qDebug() << "function " << sFunName << "(" << sFunArgs << ")";
     }
 
@@ -204,7 +191,7 @@ void FrmProjectExplorer::on_tvOutline_itemSelectionChanged()
         QVariant data = items[0]->data(1, Qt::DisplayRole);
         if (data.isValid())
         {
-            m_pActiveFile->navigateToLine(data.toInt());
+            m_pActiveFile->navigateToLine(data.toInt(), tmHIGHLIGHT);
         }
     }
 }

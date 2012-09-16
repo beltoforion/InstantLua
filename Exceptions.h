@@ -4,6 +4,8 @@
 #include <stdexcept>
 #include <QString>
 
+#include "FwdDecl.h"
+
 //-------------------------------------------------------------------------------------------------
 class Exception : public std::exception
 {
@@ -45,11 +47,15 @@ struct LuaException : Exception
     virtual ~LuaException() throw();
 
     int getLine() const;
+    const IFile* getFile() const;
     const QString& getModule() const;
+
+    void setFile(const IFile *pFile);
 
 private:
     QString m_sModule;
     int m_nLine;
+    const IFile *m_pFile;
 };
 
 #endif

@@ -71,7 +71,8 @@ private:
     virtual void updateFromSettings();
 
 signals:
-    void doFile(const IFile *pFile);
+    void doFile(IFile *pFile);
+
 
 private slots:
     void openRecentFile();
@@ -79,6 +80,7 @@ private slots:
     void on_lua_syntaxCheckDone();
     void on_lua_executionFinished();
     void on_lua_functionCall();
+    void on_lua_scriptError(const LuaException &exc);
 
     void on_actionConsole_triggered();
     void on_actionPreferences_triggered();
