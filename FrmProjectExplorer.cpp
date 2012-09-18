@@ -8,13 +8,15 @@
 
 //--- Luanda framework ----------------------------------------------------------------------------
 #include "IFile.h"
+#include "IMainFrame.h"
 #include "Exceptions.h"
 #include "Prototypes.h"
 
 //-------------------------------------------------------------------------------------------------
-FrmProjectExplorer::FrmProjectExplorer(QWidget *parent)
-    :QWidget(parent)
+FrmProjectExplorer::FrmProjectExplorer(IMainFrame *pWndMain)
+    :QWidget(pWndMain->asWidget())
     ,ui(new Ui::FrmProjectExplorer)
+    ,m_pWndMain(pWndMain)
     ,m_dirProjects()
     ,m_pScriptOutline()
     ,m_pActiveFile(NULL)

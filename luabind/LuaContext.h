@@ -13,11 +13,10 @@
 
 //-------------------------------------------------------------------------------------------------
 #include "ILuaValue.h"
-#include "IInterpreter.h"
 
 
 //-------------------------------------------------------------------------------------------------
-class LuaContext : public IInterpreter
+class LuaContext
 {
 public:
   LuaContext();

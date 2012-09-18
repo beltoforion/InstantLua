@@ -407,10 +407,11 @@ HEADERS  += \
     3rdparty/lua-5.2.1/src/lcode.h \
     3rdparty/lua-5.2.1/src/lauxlib.h \
     3rdparty/lua-5.2.1/src/lapi.h \
-    IInterpreter.h \
     QConsoleStreamBuffer.h \
     IConsole.h \
-    QLuaThread.h
+    QLuaThread.h \
+    IMainFrame.h \
+    IScriptEngine.h
 
 FORMS    += \
     DlgSettings.ui \

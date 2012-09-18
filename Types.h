@@ -2,7 +2,6 @@
 #define TYPES_H
 
 
-
 /** \brief Enumerator for indicating relative or absolute paths.
 */
 enum EPathBase

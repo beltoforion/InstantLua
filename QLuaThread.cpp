@@ -9,12 +9,16 @@
 
 
 //-------------------------------------------------------------------------------------------------
-QLuaThread::QLuaThread(QObject *parent)
+QLuaThread::QLuaThread(QObject *parent, IConsole *pConsole)
     :QThread(parent)
     ,m_pConsole(NULL)
     ,m_mtxTasks()
 {
+    bindToConsole(pConsole);
+
     setTerminationEnabled(false);
+
+    connect(this, SIGNAL(checkSyntax(const IFile*)), SLOT(on_checkFile(const IFile*)));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -25,12 +29,6 @@ QLuaThread::~QLuaThread()
 void QLuaThread::bindToConsole(IConsole *pConsole)
 {
     m_pConsole = pConsole;
-}
-
-//-------------------------------------------------------------------------------------------------
-void QLuaThread::addTask()
-{
-    QMutexLocker lock(&m_mtxTasks);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -127,6 +125,18 @@ void QLuaThread::on_doProject(const IProject *pProject)
 }
 
 //-------------------------------------------------------------------------------------------------
+/** \brief Anstossen eines Syntax checks.
+
+    Der Check wird in dieser Klasse ausgeführt allerdings über Signal/Slot
+    in den Hauptthread verlagert.
+*/
+void QLuaThread::doSyntaxCheck(const IFile *pFile)
+{
+    if (pFile!=NULL)
+        emit checkSyntax(pFile);
+}
+
+//-------------------------------------------------------------------------------------------------
 void QLuaThread::on_checkFile(const IFile *pFile)
 {
     if (m_pConsole==NULL || pFile==NULL)
@@ -203,14 +213,17 @@ void QLuaThread::run()
 //-------------------------------------------------------------------------------------------------
 void QLuaThread::splashScreen()
 {
-    m_pConsole->addLine(tr(" _____           _              _     _                  "));
-    m_pConsole->addLine(tr("|_   _|         | |            | |   | |                 "));
-    m_pConsole->addLine(tr("  | |  _ __  ___| |_ __ _ _ __ | |_  | |    _   _  __ _  "));
-    m_pConsole->addLine(tr("  | | | '_ \\/ __| __/ _` | '_ \\| __| | |   | | | |/ _` |"));
-    m_pConsole->addLine(tr(" _| |_| | | \\__ \\ || (_| | | | | |_  | |___| |_| | (_| |"));
-    m_pConsole->addLine(tr("|_____|_| |_|___/\\__\\__,_|_| |_|\\__| |______\\__,_|\\__,_|"));
-    m_pConsole->addLine(tr(" (C) 2012 Ingo Berg    http://instant_lua.beltoforion.de"));
-    m_pConsole->addLine(tr(""));
+    if (m_pConsole==NULL)
+        return;
+
+    m_pConsole->addLine(" _____           _              _     _                  ");
+    m_pConsole->addLine("|_   _|         | |            | |   | |                 ");
+    m_pConsole->addLine("  | |  _ __  ___| |_ __ _ _ __ | |_  | |    _   _  __ _  ");
+    m_pConsole->addLine("  | | | '_ \\/ __| __/ _` | '_ \\| __| | |   | | | |/ _` |");
+    m_pConsole->addLine(" _| |_| | | \\__ \\ || (_| | | | | |_  | |___| |_| | (_| |");
+    m_pConsole->addLine("|_____|_| |_|___/\\__\\__,_|_| |_|\\__| |______\\__,_|\\__,_|");
+    m_pConsole->addLine(" (C) 2012 Ingo Berg    http://instant_lua.beltoforion.de");
+    m_pConsole->addLine("");
     m_pConsole->addLine(m_lua.getCopyright());
-    m_pConsole->addLine(tr(""));
+    m_pConsole->addLine("");
 }

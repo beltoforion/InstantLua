@@ -11,18 +11,19 @@
 #include <QDebug>
 
 //--- Luanda framework ----------------------------------------------------------------------------
+#include "IMainFrame.h"
+#include "IScriptEngine.h"
 #include "FrmSourceEdit.h"
 #include "FileLua.h"
 #include "Settings.h"
 #include "QFileExplorerTabBar.h"
 
 //-------------------------------------------------------------------------------------------------
-FrmFileExplorer::FrmFileExplorer(QWidget *parent, IFileObserver *pProjectExplorer)
-    :QWidget(parent)
+FrmFileExplorer::FrmFileExplorer(IMainFrame *pWndMain)
+    :QWidget(pWndMain->asWidget())
     ,ui(new Ui::FrmFileExplorer)
-    ,m_pProjectExplorer(pProjectExplorer)
+    ,m_pWndMain(pWndMain)
 {
-    assert(m_pProjectExplorer!=NULL);
 
     ui->setupUi(this);
     ui->paCaption->setCaption("Source Code");
@@ -136,7 +137,7 @@ void FrmFileExplorer::notifyBeforeFileSave(IFile *pFile)
 /** \brief Auswählen des Tabsheets mit dem Lua Files. */
 void FrmFileExplorer::notifyFileModified(const IFile *pFile)
 {
-    if (pFile==NULL)
+    if (pFile==NULL || m_pWndMain==NULL || m_pWndMain->getScriptEngine()==NULL)
         return;
 
     int i = getTabIndex(pFile);
@@ -144,7 +145,8 @@ void FrmFileExplorer::notifyFileModified(const IFile *pFile)
         return;
 
     ui->tcProject->setTabIcon(i, QIcon(":/images/res/warning.ico"));
-    emit checkFile(pFile);
+
+    m_pWndMain->getScriptEngine()->doSyntaxCheck(pFile);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -203,7 +205,7 @@ void FrmFileExplorer::addFile(IFile::ptr_type pFile)
 
         // Hinzufügen der File observer
         pFile->attachObserver(pSrcEdit);
-        pFile->attachObserver(m_pProjectExplorer);
+        pFile->attachObserver(m_pWndMain->getProjectExplorer());
         pFile->attachObserver(this);
 
         int idx = ui->tcProject->addTab(pSrcEdit, pFile->getName());

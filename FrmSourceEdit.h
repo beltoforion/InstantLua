@@ -50,10 +50,6 @@ private slots:
     void marginClicked(int margin, int line, Qt::KeyboardModifiers state);
     void textChanged();
 
-    // andere
-    void tabCloseRequest(int);
-    void tabChange(int);
-
 private:
     QsciScintilla *m_pSrcEdit;
     IFile::ptr_type m_pFile;

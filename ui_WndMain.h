@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'WndMain.ui'
 **
-** Created: Mon 10. Sep 20:38:39 2012
+** Created: Tue 18. Sep 18:40:23 2012
 **      by: Qt User Interface Compiler version 4.7.4
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!

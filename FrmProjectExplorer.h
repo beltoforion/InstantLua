@@ -23,7 +23,7 @@ class FrmProjectExplorer : public QWidget
     Q_OBJECT
 
 public:
-    explicit FrmProjectExplorer(QWidget *parent = 0);
+    explicit FrmProjectExplorer(IMainFrame *wndMain = 0);
     ~FrmProjectExplorer();
 
     const QDir& getProjectPath() const;
@@ -46,6 +46,7 @@ private slots:
 
 private:
     Ui::FrmProjectExplorer *ui;
+    IMainFrame *m_pWndMain;
     QDir m_dirProjects;
     QSharedPointer<ScriptOutline> m_pScriptOutline;
     const IFile *m_pActiveFile;

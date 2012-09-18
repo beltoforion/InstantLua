@@ -28,29 +28,23 @@ WndMain::WndMain(QWidget *parent)
     ,m_projects()
     ,m_pspLeft(NULL)
     ,m_pspMain(NULL)
-    ,m_thLua(new QLuaThread(this))
+    ,m_thLua(NULL)
     ,m_pConsoleStreamBuf(NULL)
 {
     ui->setupUi(this);
-
 
     // Explorer Fenster anlegen, die Reihenfolge ist wichtig, da gegenseitige Abhängigkeiten
     // bestehen!
     m_pFrmExplorer = new FrmProjectExplorer(this);
     m_pFrmExplorer->setMaximumWidth(300);
 
-    m_pFrmFileExplorer = new FrmFileExplorer(this, m_pFrmExplorer);
+    m_pFrmFileExplorer = new FrmFileExplorer(this);
 
     // Weitere Frames und Dialoge
     m_pFrmInfo = new FrmInfo(this);
     m_pFrmConsole = new FrmConsole(this);
     m_pDlgSettings = new DlgSettings(this);
     m_pDlgAbout = new DlgAbout(this);
-
-    // Konsole einrichten
-//    m_pFrmConsole->bindToInterpreter(&m_lua);
-
-    //m_pFrmConsole->SetPrompt("Luanda");
 
     // Linkes Splitterfenster
     m_pspLeft = new QSplitter(Qt::Vertical, this);
@@ -83,12 +77,12 @@ WndMain::WndMain(QWidget *parent)
     m_pOriginalStreamBuf = std::cout.rdbuf(m_pConsoleStreamBuf);
 
     // Starten des Lua threads
+    m_thLua = new QLuaThread(this, m_pFrmConsole->getIConsole());
+//    m_thLua->attach(this);
+//    m_thLua->attach(m_pFrmFileExplorer);
+//    m_thLua->attach(m_pFrmExplorer);
+//    m_thLua->attach(m_pFrmConsole);
     m_thLua->start();
-    m_thLua->bindToConsole(m_pFrmConsole->getIConsole());
-
-    connect(m_thLua, SIGNAL(luaSyntaxCheckDone()), this, SLOT(on_lua_syntaxCheckDone()));
-    connect(m_thLua, SIGNAL(luaExecutionFinished()), this, SLOT(on_lua_executionFinished()));
-    connect(m_thLua, SIGNAL(luaFunctionCall()), this, SLOT(on_lua_functionCall()));
 
     // Kommandoeingabe in der Konsole direkt zur Ausführung an den Lua Thread weiter geben
     connect(m_pFrmConsole->getConsole(), SIGNAL(commandInput(const QString&)),
@@ -98,9 +92,7 @@ WndMain::WndMain(QWidget *parent)
 
     connect(this, SIGNAL(doFile(IFile*)), m_thLua, SLOT(on_doFile(IFile*)));
 
-    connect(m_thLua, SIGNAL(luaError(const LuaException&)),
-            this, SLOT(on_lua_scriptError(const LuaException&)));
-
+    connect(m_thLua, SIGNAL(luaError(const LuaException&)), this, SLOT(on_lua_scriptError(const LuaException&)));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -111,6 +103,34 @@ WndMain::~WndMain()
 
     // Restore original cout stream buffer
     std::cout.rdbuf(m_pOriginalStreamBuf);
+}
+
+//-------------------------------------------------------------------------------------------------
+// IMainFrame
+//-------------------------------------------------------------------------------------------------
+
+QWidget* WndMain::asWidget()
+{
+    return this;
+}
+
+//-------------------------------------------------------------------------------------------------
+IScriptEngine* WndMain::getScriptEngine()
+{
+    return m_thLua;
+}
+
+//-------------------------------------------------------------------------------------------------
+IFileObserver* WndMain::getProjectExplorer()
+{
+    Q_ASSERT(m_pFrmExplorer!=NULL);
+    return m_pFrmExplorer;
+}
+
+//-------------------------------------------------------------------------------------------------
+IConsole* WndMain::getConsole()
+{
+    return m_pFrmConsole->getIConsole();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -291,16 +311,6 @@ void WndMain::on_actionConsole_triggered()
     else
         m_pFrmConsole->show();
 }
-
-//-------------------------------------------------------------------------------------------------
-/** \brief Lua Thread ist fertif mit einem Syntaxcheck. */
-void WndMain::on_lua_syntaxCheckDone()
-{
-
-}
-//-------------------------------------------------------------------------------------------------
-void WndMain::on_lua_executionFinished()
-{}
 
 //-------------------------------------------------------------------------------------------------
 void WndMain::on_lua_functionCall()

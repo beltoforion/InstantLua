@@ -23,7 +23,7 @@ class FrmFileExplorer : public QWidget,
     Q_OBJECT
 
 public:
-    explicit FrmFileExplorer(QWidget *parent, IFileObserver *pProjectExplorer);
+    explicit FrmFileExplorer(IMainFrame *pWndMain);
     ~FrmFileExplorer();
 
     void addFile(IFile::ptr_type pFile);
@@ -50,15 +50,15 @@ public:
 
 private:
     Ui::FrmFileExplorer *ui;
-    IFileObserver *m_pProjectExplorer;
+    IMainFrame *m_pWndMain;
 
     IFile* findFile(const QString &sPath);
 
     int getTabIndex(const IFile *pFile);
     FrmSourceEdit* getSourceEdit(const IFile *pFile);
 
-signals:
-    void checkFile(const IFile *pFile);
+//signals:
+//    void checkFile(const IFile *pFile);
 
 private slots:
     void on_actionClose_All_But_This_triggered();

@@ -3,7 +3,6 @@
 
 #include "Settings.h"
 #include "Exceptions.h"
-#include "IInterpreter.h"
 
 
 //-------------------------------------------------------------------------------------------------

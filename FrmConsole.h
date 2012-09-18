@@ -31,7 +31,7 @@ public:
     explicit FrmConsole(QWidget *parent = 0);
     virtual ~FrmConsole();
 
-    void bindToInterpreter(IInterpreter *pInterpreter);
+    //void bindToInterpreter(IInterpreter *pInterpreter);
 
     // ISettingsProvider
     virtual void writeSettings(QSettings &settings);

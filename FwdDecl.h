@@ -13,18 +13,22 @@ class MainWindow;
 class IFile;
 class IFileObserver;
 class IProject;
-class IInterpreter;
+class IScriptEngine;
 class IConsole;
+class IMainFrame;
 
 class LanguageToken;
 class ScriptOutline;
 
 class LuaException;
 
+class QLuaThread;
+
 //--- Qt lib --------------------------------------------------------------------------------------
 class QTimer;
 class QTreeWidgetItem;
 class QModelIndex;
 class QIcon;
+class QWidget;
 
 #endif // FWDDECL_H

@@ -12,6 +12,7 @@
 
 //--- Luanda includes -----------------------------------------------------------------------------
 #include "IProject.h"
+#include "IMainFrame.h"
 #include "ISettingsProvider.h"
 #include "FrmProjectExplorer.h"
 #include "FrmFileExplorer.h"
@@ -30,15 +31,25 @@ namespace Ui {
     class WndMain;
 }
 
-
+//-------------------------------------------------------------------------------------------------
 class WndMain : public QMainWindow,
-                public ISettingsProvider
+                public ISettingsProvider,
+                public IMainFrame
 {
     Q_OBJECT
 
 public:
     explicit WndMain(QWidget *parent = 0);
     ~WndMain();
+
+    //---------------------------------------------------------------------------------------------
+    // IMainFrame implementierung
+    //---------------------------------------------------------------------------------------------
+
+    virtual QWidget* asWidget();
+    virtual IScriptEngine* getScriptEngine();
+    virtual IFileObserver* getProjectExplorer();
+    virtual IConsole* getConsole();
 
 private:
     Ui::WndMain *ui;
@@ -77,8 +88,6 @@ signals:
 private slots:
     void openRecentFile();
 
-    void on_lua_syntaxCheckDone();
-    void on_lua_executionFinished();
     void on_lua_functionCall();
     void on_lua_scriptError(const LuaException &exc);
 

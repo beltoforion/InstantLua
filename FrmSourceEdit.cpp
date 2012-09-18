@@ -156,7 +156,8 @@ FrmSourceEdit::FrmSourceEdit(FrmFileExplorer *pParent, IFile::ptr_type pFile)
         m_nMarkerLine = m_pSrcEdit->markerDefine(QsciScintilla::Background);
         m_pSrcEdit->setMarkerBackgroundColor(QColor(180, 255, 180), m_nMarkerLine);
 
-        m_nMarkerError = m_pSrcEdit->markerDefine(QsciScintilla::Background);
+//        m_nMarkerError = m_pSrcEdit->markerDefine(QsciScintilla::Background);
+        m_nMarkerError = m_pSrcEdit->markerDefine(QsciScintilla::Underline);
         m_pSrcEdit->setMarkerBackgroundColor(QColor(255, 180, 180), m_nMarkerError);
 
         // Indikatoren
@@ -259,13 +260,10 @@ void FrmSourceEdit::indicatorClicked(int nLine, int nIndex, Qt::KeyboardModifier
 }
 
 //-------------------------------------------------------------------------------------------------
-void FrmSourceEdit::tabCloseRequest(int idx)
+void FrmSourceEdit::notifyFileModified(const IFile *pFile)
 {
-}
-
-//-------------------------------------------------------------------------------------------------
-void FrmSourceEdit::tabChange(int idx)
-{
+    // Diese Komponente löst den Event aus, der Inhalt von pFile
+    // wurde bereite in updateFile aktualisiert.
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -306,9 +304,6 @@ void FrmSourceEdit::notifyFileLineSelected(const IFile *pFile, int nLine, ETextM
     if (nLineIdx<0)
         return;
 
-    m_pSrcEdit->setCursorPosition(nLineIdx, 0);
-    m_pSrcEdit->ensureCursorVisible();
-
     switch(eMarker)
     {
     case tmHIGHLIGHT:
@@ -321,6 +316,9 @@ void FrmSourceEdit::notifyFileLineSelected(const IFile *pFile, int nLine, ETextM
         // Alte Fehlermarkierung löschen
         if (m_nErrorLine!=-1)
         {
+            // Es scheint ein Redrawproblem zu geben, wenn der
+            // cursor nicht in der Zeile steht
+            m_pSrcEdit->setCursorPosition(m_nErrorLine, 0);
             m_pSrcEdit->markerDelete(m_nErrorLine, m_nMarkerError);
         }
 
@@ -334,6 +332,8 @@ void FrmSourceEdit::notifyFileLineSelected(const IFile *pFile, int nLine, ETextM
         break;
     }
 
+    m_pSrcEdit->setCursorPosition(nLineIdx, 0);
+    m_pSrcEdit->ensureCursorVisible();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -359,6 +359,8 @@ void FrmSourceEdit::deleteMarker(ETextMarker eMarker)
         }
         m_vMarkedLines.clear();
     }
+
+    //m_pSrcEdit->up->update();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -366,13 +368,6 @@ void FrmSourceEdit::mousePressEvent(QMouseEvent * event)
 {
     qDebug() << "mousePressEvent";
     QWidget::mousePressEvent(event);
-}
-
-//-------------------------------------------------------------------------------------------------
-void FrmSourceEdit::notifyFileModified(const IFile *pFile)
-{
-    // Diese Komponente löst den Event aus, der Inhalt von pFile
-    // wurde bereite in updateFile aktualisiert.
 }
 
 //-------------------------------------------------------------------------------------------------

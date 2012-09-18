@@ -9,28 +9,36 @@
 //-------------------------------------------------------------------------------------------------
 #include "luabind/LuaContext.h"
 #include "FwdDecl.h"
-
+#include "IObserveable.h"
+#include "IScriptEngine.h"
 
 //-------------------------------------------------------------------------------------------------
-class QLuaThread : public QThread
+class QLuaThread : public QThread,
+                   public IScriptEngine
 {
     Q_OBJECT
 public:
-    explicit QLuaThread(QObject *parent = 0);
+    explicit QLuaThread(QObject *parent = NULL, IConsole *pConsole = NULL);
     virtual ~QLuaThread();
 
-    void addTask();
     void stop();
-    void bindToConsole(IConsole *pConsole);
+
+    //---------------------------------------------------------------------------------------------
+    // IScriptEngine implementieren
+    //---------------------------------------------------------------------------------------------
+
+    virtual void doSyntaxCheck(const IFile *pFile);
 
 protected:
     void run();
 
+private:
+    void bindToConsole(IConsole *pConsole);
+
 signals:
-    void luaSyntaxCheckDone();
-    void luaExecutionFinished();
     void luaFunctionCall();
     void luaError(const LuaException &exc);
+    void checkSyntax(const IFile *pFile);
 
 public slots:
 

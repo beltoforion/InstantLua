@@ -13,10 +13,13 @@ IFile::~IFile()
 //-------------------------------------------------------------------------------------------------
 void IFile::setModified(bool bStat)
 {
+    if (!hasObservers())
+        return;
+
     bool bOld = m_bModified;
     m_bModified = bStat;
 
-    if (/*bOld!=m_bModified &&*/ hasObservers())
+//    if (bOld!=m_bModified)
     {
         // Meldung über Änderung am File an alle Observer absetzen
         obs_list::iterator it = m_observer.begin();
