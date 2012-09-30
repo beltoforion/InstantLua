@@ -4,7 +4,7 @@
 #include <iostream>
 
 //--- QTlib includes ------------------------------------------------------------------------------
-#include <QSplitter.h>
+#include <QSplitter>
 #include <QSettings>
 #include <QFileDialog>
 

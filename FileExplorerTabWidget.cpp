@@ -29,7 +29,7 @@ FileExplorerTabWidget::FileExplorerTabWidget(QWidget *pParent)
 }
 
 //-------------------------------------------------------------------------------------------------
-void FileExplorerTabWidget::contextMenuEvent(QContextMenuEvent* e)
+void FileExplorerTabWidget::contextMenuEvent(QContextMenuEvent* /*e*/)
 {
     m_pTabMenu->exec( QCursor::pos() );
 }

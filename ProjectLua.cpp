@@ -38,7 +38,7 @@ ProjectLua::~ProjectLua()
 {}
 
 //-------------------------------------------------------------------------------------------------
-void ProjectLua::loadFromFile(const QString &sFileName)
+void ProjectLua::loadFromFile(const QString & /*sFileName*/)
 {
 }
 
@@ -68,20 +68,20 @@ void ProjectLua::scanDir(QDir dir)
 
 
 //-------------------------------------------------------------------------------------------------
-void ProjectLua::addFile(const QString &sFileName)
+void ProjectLua::addFile(const QString & /*sFileName*/)
 {}
 
 //-------------------------------------------------------------------------------------------------
-void ProjectLua::deleteFile(const QString &sFileName)
+void ProjectLua::deleteFile(const QString & /*sFileName*/)
 {}
 
 //-------------------------------------------------------------------------------------------------
-void ProjectLua::open(const QString &sProject)
+void ProjectLua::open(const QString & /*sProject*/)
 {}
 
 //-------------------------------------------------------------------------------------------------
 /** \brief Erzeugt ein Projektfile durch rekursives scannen eines Verzeichnisses. */
-void importFromDirectory(QString sPath)
+void importFromDirectory(QString /*sPath*/)
 {
 }
 

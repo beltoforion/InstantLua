@@ -24,11 +24,11 @@ FrmConsole::~FrmConsole()
 }
 
 //-------------------------------------------------------------------------------------------------
-void FrmConsole::writeSettings(QSettings &settings)
+void FrmConsole::writeSettings(QSettings & /*settings*/)
 {}
 
 //-------------------------------------------------------------------------------------------------
-void FrmConsole::readSettings(QSettings &settings)
+void FrmConsole::readSettings(QSettings & /*settings*/)
 {}
 
 //-------------------------------------------------------------------------------------------------

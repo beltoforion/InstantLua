@@ -11,8 +11,8 @@
 #include <QVector>
 
 //--- luanda framework ----------------------------------------------------------------------------
-#include "types.h"
-#include "isettingsprovider.h"
+#include "Types.h"
+#include "ISettingsProvider.h"
 
 //-------------------------------------------------------------------------------------------------
 // Settings keys as used by the QSettings object

@@ -5,7 +5,7 @@
 #include <cassert>
 
 //--- Qt lib includes -----------------------------------------------------------------------------
-#include <Qlist>
+#include <QList>
 #include <QUrl>
 #include <QFileInfo>
 #include <QDebug>

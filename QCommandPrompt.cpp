@@ -165,7 +165,7 @@ void QCommandPrompt::writeQueue()
 
   Am Ende der Ausgabe wird immer ein Newline + Prompt ausgegeben!
 */
-void QCommandPrompt::write(QString sMsg, QColor col)
+void QCommandPrompt::write(QString sMsg, QColor /*col*/)
 {
     // Überprüfen, ob die Zeile mit einem Prompt anfängt
     QTextCursor tc = textCursor();

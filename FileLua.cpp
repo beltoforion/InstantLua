@@ -1,4 +1,4 @@
-#include "filelua.h"
+#include "FileLua.h"
 
 //--- Standard includes ---------------------------------------------------------------------------
 #include <stdexcept>
