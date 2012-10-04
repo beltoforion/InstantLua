@@ -68,6 +68,7 @@ build/[Rr]elease/
 # qt lib
 moc_*
 *.pro.user
+ui_*
 
 ## TODO: If you have NuGet Package Restore enabled, uncomment this
 #packages/
