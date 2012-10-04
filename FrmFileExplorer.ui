@@ -52,6 +52,9 @@
      </item>
      <item>
       <widget class="FileExplorerTabWidget" name="tcProject">
+       <property name="styleSheet">
+        <string notr="true"/>
+       </property>
        <property name="tabPosition">
         <enum>QTabWidget::North</enum>
        </property>
@@ -90,15 +93,15 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>FileExplorerTabWidget</class>
-   <extends>QTabWidget</extends>
-   <header>../../FileExplorerTabWidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QGradientPanel</class>
    <extends>QWidget</extends>
    <header>QGradientPanel.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>FileExplorerTabWidget</class>
+   <extends>QTabWidget</extends>
+   <header>FileExplorerTabWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
