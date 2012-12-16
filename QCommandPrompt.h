@@ -41,6 +41,7 @@ public:
     // IConsole Interface
     virtual void addLine(QString sText, QColor col);
     virtual void addLine(QString sText);
+    virtual void clearQueue();
 
 signals:
     void commandInput(const QString &sCmd);

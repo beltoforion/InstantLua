@@ -255,7 +255,6 @@ SOURCES += main.cpp\
     luabind/LuaContext.cpp \
     luabind/ILuaValue.cpp \
     QConsoleStreamBuffer.cpp \
-    QLuaThread.cpp \
     luabind/LuaSysVar.cpp \
     luabind/LuaWorker.cpp
 
@@ -411,7 +410,6 @@ HEADERS  += \
     3rdparty/lua-5.2.1/src/lapi.h \
     QConsoleStreamBuffer.h \
     IConsole.h \
-    QLuaThread.h \
     IMainFrame.h \
     IScriptEngine.h \
     luabind/LuaSysVar.h \

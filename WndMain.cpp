@@ -314,11 +314,18 @@ void WndMain::on_actionConsole_triggered()
 }
 
 //-------------------------------------------------------------------------------------------------
+/** \brief Ein Fehler ist aufgetreten.
+
+    Lua wurde bereits angehalten.
+*/
 void WndMain::on_lua_error(QString sErr)
 {
     IConsole *pConsole = m_pFrmConsole->getConsole();
     if (pConsole!=NULL)
     {
+        // Im konsolenpuffer könnten noch tausende zeilen des skriptes
+        // sein. Die anzuzeigen könnte ewig dauern.
+        pConsole->clearQueue();
         pConsole->addLine(sErr, Qt::red);
         qDebug("on_lua_error(%s); thread id: %d", sErr.toStdString().c_str(), reinterpret_cast<int>(QThread::currentThreadId()));
     }
@@ -387,9 +394,8 @@ void WndMain::on_actionRun_triggered()
 //-------------------------------------------------------------------------------------------------
 void WndMain::on_actionStop_triggered()
 {
-    if (m_thLua==NULL)
-        return;
+    Q_ASSERT(m_pLuaWorker!=NULL);
 
-    // Lua Stoppen
-//    m_thLua->stop();
+    if (m_pLuaWorker!=NULL)
+        m_pLuaWorker->stop();
 }

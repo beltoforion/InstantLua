@@ -38,6 +38,8 @@ public:
   void setVariable(QString sName, ILuaValue &type);
   void stop();
 
+  bool isStopFlagSet();
+
   LuaContext& operator<<(const ILuaValue &arg);
   LuaContext& operator>>(ILuaValue &arg);
 

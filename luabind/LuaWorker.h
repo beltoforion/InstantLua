@@ -21,9 +21,12 @@ public:
 
     // IScriptEngine
     virtual void doSyntaxCheck(const IFile *pFile);
+    virtual void stop();
 
 signals:
     void finished();
+    void aborted();
+    void stop_requested();
     void error(QString sErr);
 
 //    void luaFunctionCall();

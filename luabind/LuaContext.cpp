@@ -178,6 +178,12 @@ void LuaContext::stop()
 }
 
 //-------------------------------------------------------------------------------------------------
+bool LuaContext::isStopFlagSet()
+{
+    return m_luaState->stop_now != 0;
+}
+
+//-------------------------------------------------------------------------------------------------
 LuaContext& LuaContext::operator<<(const ILuaValue &arg)
 {
   arg.Push(m_luaState);

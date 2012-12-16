@@ -36,6 +36,12 @@ void LuaWorker::doSyntaxCheck(const IFile *pFile)
 }
 
 //-------------------------------------------------------------------------------------------------
+void LuaWorker::stop()
+{
+    m_lua.stop();
+}
+
+//-------------------------------------------------------------------------------------------------
 /** \brief Ausführen von Lua code aus einen String.
 
     Diese Funktion wird für die Konsolenanwendung benötigt.
@@ -45,7 +51,7 @@ void LuaWorker::on_doString(const QString &sCmd)
     if (m_pConsole==NULL)
         return;
 
-    qDebug("on_doString(%s); thread id: %d",
+    qDebug("on_doString(\"%s\"); thread id: %d",
            sCmd.toStdString().c_str(),
            reinterpret_cast<int>(QThread::currentThreadId()));
 
@@ -66,7 +72,7 @@ void LuaWorker::on_doString(const QString &sCmd)
         emit error("Internal error: FrmConsole::executeCommand");
     }
 
-    //emit finished();
+    emit finished();
 }
 
 
@@ -90,6 +96,7 @@ void LuaWorker::on_doFile(IFile *pFile)
         }
 
         m_lua.doString(sScript, pFile->getName());
+        emit finished();
     }
     catch(LuaException &exc)
     {

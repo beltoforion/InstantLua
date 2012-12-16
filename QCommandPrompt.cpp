@@ -20,8 +20,8 @@ QCommandPrompt::QCommandPrompt(QWidget *parent)
     ,m_nMaxLines(200)
     ,m_nMaxHist(5)
     ,m_nPromptPos()
-    ,m_nTimerInterval(100)
-    ,m_nBlockSize(100)
+    ,m_nTimerInterval(50)
+    ,m_nBlockSize(200)
     ,m_bIsMuted(false)
 {
     setAcceptDrops(true);                      // drops will be accepted (filenames and commands)
@@ -146,6 +146,13 @@ void QCommandPrompt::addLine(QString sText, QColor col)
     QMutexLocker lock(&m_mtxLineQueue);
 
     m_vLineQueue.enqueue(qMakePair(sText, col));
+}
+
+//-------------------------------------------------------------------------------------------------
+void QCommandPrompt::clearQueue()
+{
+    QMutexLocker lock(&m_mtxLineQueue);
+    m_vLineQueue.clear();
 }
 
 //-------------------------------------------------------------------------------------------------
