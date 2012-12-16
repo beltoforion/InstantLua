@@ -1,40 +1,53 @@
-#include "QLuaThread.h"
-#include <QMutexLocker>
-#include <QTextStream>
-
-#include <iostream>
+#include "LuaWorker.h"
 #include "Exceptions.h"
-#include "IConsole.h"
+
+#include <QThread>
+#include <QVector>
+#include <QString>
+
 #include "IFile.h"
 
 
 //-------------------------------------------------------------------------------------------------
-QLuaThread::QLuaThread(QObject *parent, IConsole *pConsole)
-    :QThread(parent)
+LuaWorker::LuaWorker(IConsole *pConsole)
+    :QObject(NULL)
     ,m_pConsole(pConsole)
     ,m_mtxTasks()
 {
+    // Hier keine dynamische allokation, da diese im Hauptthread geschehen würde!
+
     if (m_pConsole==NULL)
-        throw InternalError(tr("Can't create Lua thread with null console pointer"));
+        throw InternalError(tr("Can't create Lua worker with null console pointer"));
 
-    setTerminationEnabled(false);
+    init();
 
-    connect(this, SIGNAL(checkSyntax(const IFile*)), SLOT(on_checkFile(const IFile*)));
+//    connect(this, SIGNAL(checkSyntax(const IFile*)), SLOT(on_checkFile(const IFile*)));
 }
 
 //-------------------------------------------------------------------------------------------------
-QLuaThread::~QLuaThread()
+LuaWorker::~LuaWorker()
 {}
+
+//-------------------------------------------------------------------------------------------------
+void LuaWorker::doSyntaxCheck(const IFile *pFile)
+{
+    if (pFile!=NULL)
+        emit checkSyntax(pFile);
+}
 
 //-------------------------------------------------------------------------------------------------
 /** \brief Ausführen von Lua code aus einen String.
 
     Diese Funktion wird für die Konsolenanwendung benötigt.
 */
-void QLuaThread::on_doString(const QString &sCmd)
+void LuaWorker::on_doString(const QString &sCmd)
 {
     if (m_pConsole==NULL)
         return;
+
+    qDebug("on_doString(%s); thread id: %d",
+           sCmd.toStdString().c_str(),
+           reinterpret_cast<int>(QThread::currentThreadId()));
 
     try
     {
@@ -42,23 +55,30 @@ void QLuaThread::on_doString(const QString &sCmd)
     }
     catch(Exception &exc)
     {
-        m_pConsole->addLine(exc.getMessage(), Qt::red);
+        emit error(exc.getMessage());
     }
     catch(std::exception &exc)
     {
-        m_pConsole->addLine(exc.what(), Qt::red);
+        emit error(exc.what());
     }
     catch(...)
     {
-        m_pConsole->addLine("Internal error: FrmConsole::executeCommand", Qt::red);
+        emit error("Internal error: FrmConsole::executeCommand");
     }
+
+    //emit finished();
 }
 
+
 //-------------------------------------------------------------------------------------------------
-void QLuaThread::on_doFile(IFile *pFile)
+void LuaWorker::on_doFile(IFile *pFile)
 {
     if (m_pConsole==NULL || pFile==NULL)
         return;
+
+    qDebug("on_doFile(%s); thread id: %d",
+           pFile->getName().toStdString().c_str(),
+           reinterpret_cast<int>(QThread::currentThreadId()));
 
     try
     {
@@ -77,62 +97,30 @@ void QLuaThread::on_doFile(IFile *pFile)
 
         QString sMsg = QString("%1 in Line %2").arg(exc.getMessage())
                                                .arg(exc.getLine());
-        m_pConsole->addLine(sMsg, Qt::red);
-
-        emit luaError(exc);
+        emit error(sMsg);
     }
     catch(Exception &exc)
     {
-        m_pConsole->addLine(exc.getMessage(), Qt::red);
+        emit error(exc.getMessage());
     }
     catch(std::exception &exc)
     {
-        m_pConsole->addLine(exc.what(), Qt::red);
+        emit error(exc.what());
     }
     catch(...)
     {
-        m_pConsole->addLine("Internal error: FrmConsole::executeCommand", Qt::red);
+        emit error("Internal error: FrmConsole::executeCommand");
     }
 }
 
 //-------------------------------------------------------------------------------------------------
-void QLuaThread::on_doProject(const IProject *pProject)
+void LuaWorker::on_doProject(const IProject *pProject)
 {
-    if (m_pConsole==NULL || pProject==NULL)
-        return;
-
-    try
-    {
-        //m_lua.execute(sCmd);
-    }
-    catch(Exception &exc)
-    {
-        m_pConsole->addLine(exc.getMessage(), Qt::red);
-    }
-    catch(std::exception &exc)
-    {
-        m_pConsole->addLine(exc.what(), Qt::red);
-    }
-    catch(...)
-    {
-        m_pConsole->addLine("Internal error: FrmConsole::executeCommand", Qt::red);
-    }
 }
 
-//-------------------------------------------------------------------------------------------------
-/** \brief Anstossen eines Syntax checks.
-
-    Der Check wird in dieser Klasse ausgeführt allerdings über Signal/Slot
-    in den Hauptthread verlagert.
-*/
-void QLuaThread::doSyntaxCheck(const IFile *pFile)
-{
-    if (pFile!=NULL)
-        emit checkSyntax(pFile);
-}
 
 //-------------------------------------------------------------------------------------------------
-void QLuaThread::on_checkFile(const IFile *pFile)
+void LuaWorker::on_checkFile(const IFile *pFile)
 {
     if (m_pConsole==NULL || pFile==NULL)
         return;
@@ -155,59 +143,33 @@ void QLuaThread::on_checkFile(const IFile *pFile)
 
         QString sMsg = QString("%1 in Line %2").arg(exc.getMessage())
                                                .arg(exc.getLine());
-        m_pConsole->addLine(sMsg, Qt::red);
-
-        emit luaError(exc);
+        emit error(sMsg);
     }
     catch(Exception &exc)
     {
-        m_pConsole->addLine(exc.getMessage(), Qt::red);
+        emit error(exc.getMessage());
     }
     catch(std::exception &exc)
     {
-        m_pConsole->addLine(exc.what(), Qt::red);
+        emit error(exc.what());
     }
     catch(...)
     {
-        m_pConsole->addLine("Internal error: FrmConsole::executeCommand", Qt::red);
+        emit error("Internal error: FrmConsole::executeCommand");
     }
 }
 
 //-------------------------------------------------------------------------------------------------
-void QLuaThread::on_checkProject(const IProject *pProject)
+void LuaWorker::on_checkProject(const IProject *pProject)
 {
-    if (m_pConsole==NULL || pProject==NULL)
-        return;
-
-    try
-    {
-        //m_lua.execute(sCmd);
-    }
-    catch(Exception &exc)
-    {
-        m_pConsole->addLine(exc.getMessage(), Qt::red);
-    }
-    catch(std::exception &exc)
-    {
-        m_pConsole->addLine(exc.what(), Qt::red);
-    }
-    catch(...)
-    {
-        m_pConsole->addLine("Internal error: FrmConsole::executeCommand", Qt::red);
-    }
 }
 
+
 //-------------------------------------------------------------------------------------------------
-void QLuaThread::run()
+void LuaWorker::init()
 {
     m_lua.init();
-    splashScreen();
-    exec();
-}
 
-//-------------------------------------------------------------------------------------------------
-void QLuaThread::splashScreen()
-{
     if (m_pConsole==NULL)
         return;
 
@@ -221,11 +183,4 @@ void QLuaThread::splashScreen()
     m_pConsole->addLine("");
     m_pConsole->addLine(m_lua.getCopyright());
     m_pConsole->addLine("");
-}
-
-//-------------------------------------------------------------------------------------------------
-/** \brief Anhalten des Lua Skriptes. */
-void QLuaThread::stop()
-{
-    m_lua.stop();
 }

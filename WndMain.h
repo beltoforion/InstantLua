@@ -25,6 +25,7 @@
 
 //--- Lua bindings --------------------------------------------------------------------------------
 #include "luabind/LuaContext.h"
+#include "luabind/LuaWorker.h"
 
 
 namespace Ui {
@@ -64,7 +65,8 @@ private:
     QSplitter *m_pspLeft;
     QSplitter *m_pspMain;
 
-    QLuaThread *m_thLua;
+    QThread *m_thLua;
+    LuaWorker *m_pLuaWorker;
 
     enum { MaxRecentFiles = 5 };
     QAction *m_recentFileActs[MaxRecentFiles];
@@ -88,6 +90,7 @@ signals:
 private slots:
     void openRecentFile();
 
+    void on_lua_error(QString sMsg);
     void on_lua_functionCall();
     void on_lua_scriptError(const LuaException &exc);
 
@@ -100,6 +103,8 @@ private slots:
     void on_actionOpenFile_triggered();
     void on_actionRun_triggered();
 
+
+    void on_actionStop_triggered();
 
 private:
     std::streambuf *m_pConsoleStreamBuf;

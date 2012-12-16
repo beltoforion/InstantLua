@@ -546,6 +546,12 @@ void luaV_execute (lua_State *L) {
   for (;;) {
     Instruction i = *(ci->u.l.savedpc++);
     StkId ra;
+
+    // <ibg 20121007> Abort script execution if flag is set
+    if (L->stop_now)
+      luaG_runerror(L, "LUA SCRIPT ABORTED!");
+    // </ibg>
+
     if ((L->hookmask & (LUA_MASKLINE | LUA_MASKCOUNT)) &&
         (--L->hookcount == 0 || L->hookmask & LUA_MASKLINE)) {
       Protect(traceexec(L));

@@ -32,9 +32,6 @@ public:
 protected:
     void run();
 
-private:
-    void bindToConsole(IConsole *pConsole);
-
 signals:
     void luaFunctionCall();
     void luaError(const LuaException &exc);

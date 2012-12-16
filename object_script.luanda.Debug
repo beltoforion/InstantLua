@@ -223,6 +223,8 @@ INPUT(
 ./build\debug\.obj\ILuaValue.o
 ./build\debug\.obj\QConsoleStreamBuffer.o
 ./build\debug\.obj\QLuaThread.o
+./build\debug\.obj\LuaSysVar.o
+./build\debug\.obj\LuaWorker.o
 ./build\debug\.obj\moc_SciClasses.o
 ./build\debug\.obj\moc_qsciscintillabase.o
 ./build\debug\.obj\moc_qsciscintilla.o
@@ -277,5 +279,6 @@ INPUT(
 ./build\debug\.obj\moc_QGradientPanel.o
 ./build\debug\.obj\moc_QSelection.o
 ./build\debug\.obj\moc_QLuaThread.o
+./build\debug\.obj\moc_LuaWorker.o
 ./build\debug\.obj\qrc_luanda.o
 );

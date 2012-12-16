@@ -5,14 +5,14 @@
 #include "Exceptions.h"
 
 //--- LUA includes --------------------------------------------------------------------------------
-extern "C"
-{
 #include "lua.h"
-}
+#include "lstate.h"
+
 
 //-------------------------------------------------------------------------------------------------
 LuaContext::LuaContext()
   :m_luaState(NULL)
+  ,m_pSysVar(NULL)
 {}
 
 //-------------------------------------------------------------------------------------------------
@@ -31,18 +31,6 @@ QString LuaContext::getVersion() const
     return QString("Lua %1.%2.%3").arg(LUA_VERSION_MAJOR)
                                   .arg(LUA_VERSION_MINOR)
                                   .arg(LUA_VERSION_RELEASE);
-
-/*
-#define LUA_VERSION_MAJOR	"5"
-#define LUA_VERSION_MINOR	"2"
-#define LUA_VERSION_NUM		502
-#define LUA_VERSION_RELEASE	"1"
-
-#define LUA_VERSION	"Lua " LUA_VERSION_MAJOR "." LUA_VERSION_MINOR
-#define LUA_RELEASE	LUA_VERSION "." LUA_VERSION_RELEASE
-#define LUA_COPYRIGHT	LUA_RELEASE "  Copyright (C) 1994-2012 Lua.org, PUC-Rio"
-#define LUA_AUTHORS	"R. Ierusalimschy, L. H. de Figueiredo, W. Celes"
-*/
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -54,36 +42,38 @@ QString LuaContext::getCopyright() const
 //-------------------------------------------------------------------------------------------------
 void LuaContext::init()
 {
-  if (m_luaState!=NULL)
-    throw std::runtime_error("LUA is already initialized");
+    if (m_luaState!=NULL)
+        throw std::runtime_error("LUA is already initialized");
 
-  m_luaState = luaL_newstate();
-  if (m_luaState == NULL) 
-    throw std::runtime_error("Can't create LUA state");
+    m_luaState = luaL_newstate();
+    if (m_luaState == NULL)
+        throw std::runtime_error("Can't create LUA state");
 
-  // öffnen der LUA standardbibliotheken. Ab Lua 5.1, dürfen die
-  // luaopen_xxx Befehle nicht mehr von c aus aufgerufen werden
+    // öffnen der LUA standardbibliotheken. Ab Lua 5.1, dürfen die
+    // luaopen_xxx Befehle nicht mehr von c aus aufgerufen werden
 
-  // folgender code stammt aus linit.c:
-  const luaL_Reg lualibs[] = {
-    {"", luaopen_base},
-    {LUA_LOADLIBNAME, luaopen_package},
-    {LUA_TABLIBNAME,  luaopen_table},
-    {LUA_IOLIBNAME,   luaopen_io},
-    {LUA_OSLIBNAME,   luaopen_os},
-    {LUA_STRLIBNAME,  luaopen_string},
-    {LUA_MATHLIBNAME, luaopen_math},
-    {LUA_DBLIBNAME,   luaopen_debug},
-    {NULL, NULL}
-  };
+    // folgender code stammt aus linit.c:
+    const luaL_Reg lualibs[] = {
+        {"", luaopen_base},
+        {LUA_LOADLIBNAME, luaopen_package},
+        {LUA_TABLIBNAME,  luaopen_table},
+        {LUA_IOLIBNAME,   luaopen_io},
+        {LUA_OSLIBNAME,   luaopen_os},
+        {LUA_STRLIBNAME,  luaopen_string},
+        {LUA_MATHLIBNAME, luaopen_math},
+        {LUA_DBLIBNAME,   luaopen_debug},
+        {NULL, NULL}
+    };
 
-  const luaL_Reg *lib = lualibs;
-  for (; lib->func; lib++) 
-  {
-    lua_pushcfunction(m_luaState, lib->func);
-    lua_pushstring(m_luaState, lib->name);
-    lua_call(m_luaState, 1, 0);
-  }
+    const luaL_Reg *lib = lualibs;
+    for (; lib->func; lib++)
+    {
+        lua_pushcfunction(m_luaState, lib->func);
+        lua_pushstring(m_luaState, lib->name);
+        lua_call(m_luaState, 1, 0);
+    }
+
+    // Setzen der Systemeigenen Kontrollvariablen
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -114,6 +104,8 @@ void LuaContext::doString(const QString &sLuaCode, const QString &sChunkName)
 {
     if (m_luaState==NULL)
         throw LuaException(QString("Can't execute Lua code fragment \"%1\": Lua state is not initialized").arg(sLuaCode));
+
+    m_luaState->stop_now = 0;
 
 //    checkLuaError(luaL_loadbuffer(m_luaState,
 //                                  sLuaCode.toAscii(),
@@ -168,40 +160,21 @@ int LuaContext::doCall(int nArg, int clear)
 }
 
 //-------------------------------------------------------------------------------------------------
-void LuaContext::SetVariable(const char *szName, ILuaValue &type)
+void LuaContext::setVariable(QString sName, ILuaValue &type)
 {
   if (m_luaState==NULL)
-    throw std::runtime_error("LUA engine is not initialized.");
+    throw InternalError("LUA engine is not initialized.");
   
   type.Push(m_luaState);
-  lua_setglobal(m_luaState, szName);
+  lua_setglobal(m_luaState, sName.toUtf8().constData());
 }
 
-/* hinzufügen einer Tabelle:
-  // test
-  lua_newtable(L);
-  for (int i = 1; i <= 5; i++) 
-  {
-        lua_pushnumber(L, i);   // Push the table index
-        lua_pushnumber(L, i*2); // Push the cell value 
-        lua_rawset(L, -3);      // Stores the pair in the table 
-  }
-  lua_setglobal(L, "xxx");
+//-------------------------------------------------------------------------------------------------
+/** \brief Anhalten von Lua zum nächstmöglichen Zeitpunkt.
 */
-
-//-------------------------------------------------------------------------------------------------
-lua_State* LuaContext::GetState()
+void LuaContext::stop()
 {
-  return m_luaState;
-}
-
-//-------------------------------------------------------------------------------------------------
-LuaContext& LuaContext::GenPCall(const std::string &sLuaCode)
-{
-  if (luaL_loadstring(m_luaState, sLuaCode.c_str()))
-    throw std::runtime_error(lua_tostring(m_luaState, -1));
-
-  return *this;
+    m_luaState->stop_now = 1;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -217,17 +190,3 @@ LuaContext& LuaContext::operator>>(ILuaValue &arg)
   arg.Pop(m_luaState);
   return *this;
 }
-
-
-
-//-------------------------------------------------------------------------------------------------
-/** \brief Loads a file as a lua chunk. 
-*/
-void LuaContext::LoadFile(const char *szFileName)
-{
-/*
-  int stat = luaL_loadfile (m_luaState, szFileName);
-  LUA_ERRFILE
-*/
-}
-

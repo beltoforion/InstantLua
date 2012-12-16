@@ -15,6 +15,8 @@
 #include "ProjectLua.h"
 #include "Exceptions.h"
 
+#include "luabind/LuaWorker.h"
+
 //-------------------------------------------------------------------------------------------------
 WndMain::WndMain(QWidget *parent)
     :QMainWindow(parent)
@@ -77,22 +79,21 @@ WndMain::WndMain(QWidget *parent)
     m_pOriginalStreamBuf = std::cout.rdbuf(m_pConsoleStreamBuf);
 
     // Starten des Lua threads
-    m_thLua = new QLuaThread(this, m_pFrmConsole->getIConsole());
-//    m_thLua->attach(this);
-//    m_thLua->attach(m_pFrmFileExplorer);
-//    m_thLua->attach(m_pFrmExplorer);
-//    m_thLua->attach(m_pFrmConsole);
+    m_thLua = new QThread();
+
+    qDebug("Main thread id: %d", reinterpret_cast<int>(QThread::currentThreadId()));
+
+    m_pLuaWorker = new LuaWorker(m_pFrmConsole->getConsole());
+    m_pLuaWorker->moveToThread(m_thLua);
+
+    connect(m_pLuaWorker, SIGNAL(error(QString)), this, SLOT(on_lua_error(QString)));
+    connect(m_pLuaWorker, SIGNAL(finished()), m_thLua, SLOT(quit()));
+    connect(m_pFrmConsole->getConsole(), SIGNAL(commandInput(const QString&)), m_pLuaWorker, SLOT(on_doString(const QString&)));
+    connect(m_pFrmFileExplorer, SIGNAL(checkFile(const IFile*)), m_pLuaWorker, SLOT(on_checkFile(const IFile*)));
+    connect(this, SIGNAL(doFile(IFile*)), m_pLuaWorker, SLOT(on_doFile(IFile*)));
+
+
     m_thLua->start();
-
-    // Kommandoeingabe in der Konsole direkt zur Ausführung an den Lua Thread weiter geben
-    connect(m_pFrmConsole->getConsole(), SIGNAL(commandInput(const QString&)),
-            m_thLua, SLOT(on_doString(const QString&)));
-
-    connect(m_pFrmFileExplorer, SIGNAL(checkFile(const IFile*)), m_thLua, SLOT(on_checkFile(const IFile*)));
-
-    connect(this, SIGNAL(doFile(IFile*)), m_thLua, SLOT(on_doFile(IFile*)));
-
-    connect(m_thLua, SIGNAL(luaError(const LuaException&)), this, SLOT(on_lua_scriptError(const LuaException&)));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -117,7 +118,7 @@ QWidget* WndMain::asWidget()
 //-------------------------------------------------------------------------------------------------
 IScriptEngine* WndMain::getScriptEngine()
 {
-    return m_thLua;
+    return m_pLuaWorker;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -313,6 +314,17 @@ void WndMain::on_actionConsole_triggered()
 }
 
 //-------------------------------------------------------------------------------------------------
+void WndMain::on_lua_error(QString sErr)
+{
+    IConsole *pConsole = m_pFrmConsole->getConsole();
+    if (pConsole!=NULL)
+    {
+        pConsole->addLine(sErr, Qt::red);
+        qDebug("on_lua_error(%s); thread id: %d", sErr.toStdString().c_str(), reinterpret_cast<int>(QThread::currentThreadId()));
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
 void WndMain::on_lua_functionCall()
 {}
 
@@ -370,4 +382,14 @@ void WndMain::on_actionRun_triggered()
         // Notification absenden
         emit doFile(pFile);
     }
+}
+
+//-------------------------------------------------------------------------------------------------
+void WndMain::on_actionStop_triggered()
+{
+    if (m_thLua==NULL)
+        return;
+
+    // Lua Stoppen
+//    m_thLua->stop();
 }

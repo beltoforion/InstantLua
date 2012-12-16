@@ -255,7 +255,9 @@ SOURCES += main.cpp\
     luabind/LuaContext.cpp \
     luabind/ILuaValue.cpp \
     QConsoleStreamBuffer.cpp \
-    QLuaThread.cpp
+    QLuaThread.cpp \
+    luabind/LuaSysVar.cpp \
+    luabind/LuaWorker.cpp
 
 HEADERS  += \
     3rdparty/QScintilla-gpl-2.6.2/Qt4Qt5/ListBoxQt.h \
@@ -411,7 +413,9 @@ HEADERS  += \
     IConsole.h \
     QLuaThread.h \
     IMainFrame.h \
-    IScriptEngine.h
+    IScriptEngine.h \
+    luabind/LuaSysVar.h \
+    luabind/LuaWorker.h
 
 FORMS    += \
     DlgSettings.ui \

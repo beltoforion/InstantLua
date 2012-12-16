@@ -2,10 +2,11 @@
 #define LUA_CONTEXT_H
 
 //--- Standard includes ---------------------------------------------------------------------------
-#include <string>
+#include <memory>
 
 //--- QT Lib includes -----------------------------------------------------------------------------
 #include <QString>
+#include <QSharedPointer>
 
 //--- LUA includes --------------------------------------------------------------------------------
 #include "lauxlib.h"
@@ -28,27 +29,25 @@ public:
   QString getVersion() const;
   QString getCopyright() const;
 
-  // IInterpreter interface
   virtual void execute(const QString &sCmd);
 
   void doString(const QString &sLuaCode, const QString &sChunkName);
   void syntaxCheck(const QString &sLuaCode, const QString &sChunkName);
   int doCall(int nArg, int clear);
 
-  LuaContext& GenPCall(const std::string &sLuaCode);
+  void setVariable(QString sName, ILuaValue &type);
+  void stop();
+
   LuaContext& operator<<(const ILuaValue &arg);
   LuaContext& operator>>(ILuaValue &arg);
-
-  void SetVariable(const char *szName, ILuaValue &type);
-  void LoadFile(const char *szFileName);
-
-  lua_State* GetState();
 
 private:
   LuaContext(const LuaContext&);
   LuaContext& operator=(const LuaContext&);
 
   lua_State *m_luaState;
+
+  QSharedPointer<ILuaValue> m_pSysVar;
 };
 
 #endif

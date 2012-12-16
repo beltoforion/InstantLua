@@ -308,6 +308,11 @@ LUA_API lua_State *lua_newstate (lua_Alloc f, void *ud) {
   }
   else
     luai_userstateopen(L);
+
+  // <ibg 20121007> reset the stop flag
+  L->stop_now = 0;
+  // </ibg>
+
   return L;
 }
 
