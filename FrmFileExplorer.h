@@ -57,8 +57,8 @@ private:
     int getTabIndex(const IFile *pFile);
     FrmSourceEdit* getSourceEdit(const IFile *pFile);
 
-//signals:
-//    void checkFile(const IFile *pFile);
+signals:
+    void checkFile(const IFile *pFile);
 
 private slots:
     void on_actionClose_All_But_This_triggered();

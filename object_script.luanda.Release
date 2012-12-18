@@ -219,7 +219,6 @@ INPUT(
 ./build\release\.obj\QGradientPanel.o
 ./build\release\.obj\QSelection.o
 ./build\release\.obj\LuaValues.o
-./build\release\.obj\LuaContext.o
 ./build\release\.obj\ILuaValue.o
 ./build\release\.obj\QConsoleStreamBuffer.o
 ./build\release\.obj\LuaSysVar.o

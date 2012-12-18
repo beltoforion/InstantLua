@@ -21,10 +21,8 @@
 #include "DlgSettings.h"
 #include "DlgAbout.h"
 #include "QConsoleStreamBuffer.h"
-#include "QLuaThread.h"
 
 //--- Lua bindings --------------------------------------------------------------------------------
-#include "luabind/LuaContext.h"
 #include "luabind/LuaWorker.h"
 
 
@@ -91,8 +89,13 @@ private slots:
     void openRecentFile();
 
     void on_lua_error(QString sMsg);
+    void on_lua_syntax_check_fail(const IFile *pFile, QString sMsg);
+    void on_lua_syntax_check_success(const IFile *pFile);
+
     void on_lua_functionCall();
     void on_lua_scriptError(const LuaException &exc);
+
+
 
     void on_actionConsole_triggered();
     void on_actionPreferences_triggered();

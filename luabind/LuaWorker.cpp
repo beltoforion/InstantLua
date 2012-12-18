@@ -5,7 +5,13 @@
 #include <QVector>
 #include <QString>
 
+//--- LUA includes --------------------------------------------------------------------------------
+#include "lua.h"
+#include "lstate.h"
+
 #include "IFile.h"
+#include "ILuaValue.h"
+#include "Exceptions.h"
 
 
 //-------------------------------------------------------------------------------------------------
@@ -13,6 +19,8 @@ LuaWorker::LuaWorker(IConsole *pConsole)
     :QObject(NULL)
     ,m_pConsole(pConsole)
     ,m_mtxTasks()
+    ,m_luaState(NULL)
+    ,m_pSysVar(NULL)
 {
     // Hier keine dynamische allokation, da diese im Hauptthread geschehen würde!
 
@@ -26,7 +34,13 @@ LuaWorker::LuaWorker(IConsole *pConsole)
 
 //-------------------------------------------------------------------------------------------------
 LuaWorker::~LuaWorker()
-{}
+{
+    if (m_luaState)
+    {
+      lua_close(m_luaState);
+      m_luaState = NULL;
+    }
+}
 
 //-------------------------------------------------------------------------------------------------
 void LuaWorker::doSyntaxCheck(const IFile *pFile)
@@ -38,7 +52,7 @@ void LuaWorker::doSyntaxCheck(const IFile *pFile)
 //-------------------------------------------------------------------------------------------------
 void LuaWorker::stop()
 {
-    m_lua.stop();
+    m_luaState->stop_now = 1;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -57,7 +71,7 @@ void LuaWorker::on_doString(const QString &sCmd)
 
     try
     {
-        m_lua.execute(sCmd);
+        doString(sCmd, "command_line_chunk");
     }
     catch(Exception &exc)
     {
@@ -72,7 +86,7 @@ void LuaWorker::on_doString(const QString &sCmd)
         emit error("Internal error: FrmConsole::executeCommand");
     }
 
-    emit finished();
+    //emit finished();
 }
 
 
@@ -95,7 +109,10 @@ void LuaWorker::on_doFile(IFile *pFile)
             sScript += vLines[i];
         }
 
-        m_lua.doString(sScript, pFile->getName());
+        if (m_luaState==NULL)
+            throw LuaException(QString("Can't execute Lua code fragment \"%1\": Lua state is not initialized").arg(sScript));
+
+        doString(sScript, pFile->getName());
         emit finished();
     }
     catch(LuaException &exc)
@@ -141,7 +158,8 @@ void LuaWorker::on_checkFile(const IFile *pFile)
             sScript += vLines[i];
         }
 
-        m_lua.syntaxCheck(sScript, pFile->getName());
+        syntaxCheck(sScript, pFile->getName());
+        emit syntaxCheckSuccess(pFile);
 
     }
     catch(LuaException &exc)
@@ -150,19 +168,19 @@ void LuaWorker::on_checkFile(const IFile *pFile)
 
         QString sMsg = QString("%1 in Line %2").arg(exc.getMessage())
                                                .arg(exc.getLine());
-        emit error(sMsg);
+        emit syntaxCheckFail(pFile, sMsg);
     }
     catch(Exception &exc)
     {
-        emit error(exc.getMessage());
+        emit syntaxCheckFail(pFile, exc.getMessage());
     }
     catch(std::exception &exc)
     {
-        emit error(exc.what());
+        emit syntaxCheckFail(pFile, exc.what());
     }
     catch(...)
     {
-        emit error("Internal error: FrmConsole::executeCommand");
+        emit syntaxCheckFail(pFile, "Internal error: FrmConsole::executeCommand");
     }
 }
 
@@ -175,8 +193,40 @@ void LuaWorker::on_checkProject(const IProject *pProject)
 //-------------------------------------------------------------------------------------------------
 void LuaWorker::init()
 {
-    m_lua.init();
+    if (m_luaState!=NULL)
+        throw std::runtime_error("LUA is already initialized");
 
+    m_luaState = luaL_newstate();
+    if (m_luaState == NULL)
+        throw std::runtime_error("Can't create LUA state");
+
+    // folgender code stammt aus linit.c:
+    const luaL_Reg lualibs[] = {
+                                {"", luaopen_base},
+                                {LUA_LOADLIBNAME, luaopen_package},
+                                {LUA_TABLIBNAME,  luaopen_table},
+                                {LUA_IOLIBNAME,   luaopen_io},
+                                {LUA_OSLIBNAME,   luaopen_os},
+                                {LUA_STRLIBNAME,  luaopen_string},
+                                {LUA_MATHLIBNAME, luaopen_math},
+                                {LUA_DBLIBNAME,   luaopen_debug},
+                                {NULL, NULL}
+                               };
+
+    const luaL_Reg *lib = lualibs;
+    for (; lib->func; lib++)
+    {
+        lua_pushcfunction(m_luaState, lib->func);
+        lua_pushstring(m_luaState, lib->name);
+        lua_call(m_luaState, 1, 0);
+    }
+
+    splashScreen();
+}
+
+//-------------------------------------------------------------------------------------------------
+void LuaWorker::splashScreen()
+{
     if (m_pConsole==NULL)
         return;
 
@@ -188,6 +238,91 @@ void LuaWorker::init()
     m_pConsole->addLine("|_____|_| |_|___/\\__\\__,_|_| |_|\\__| |______\\__,_|\\__,_|");
     m_pConsole->addLine(" (C) 2012 Ingo Berg    http://instant_lua.beltoforion.de");
     m_pConsole->addLine("");
-    m_pConsole->addLine(m_lua.getCopyright());
+    m_pConsole->addLine(getCopyright());
     m_pConsole->addLine("");
+
+}
+
+//-------------------------------------------------------------------------------------------------
+QString LuaWorker::getVersion() const
+{
+    return QString("Lua %1.%2.%3").arg(LUA_VERSION_MAJOR)
+                                  .arg(LUA_VERSION_MINOR)
+                                  .arg(LUA_VERSION_RELEASE);
+}
+
+//-------------------------------------------------------------------------------------------------
+QString LuaWorker::getCopyright() const
+{
+    return QString(LUA_COPYRIGHT"\n"LUA_AUTHORS);
+}
+
+//-------------------------------------------------------------------------------------------------
+LuaWorker& LuaWorker::operator<<(const ILuaValue &arg)
+{
+  arg.Push(m_luaState);
+  return *this;
+}
+
+//-------------------------------------------------------------------------------------------------
+LuaWorker& LuaWorker::operator>>(ILuaValue &arg)
+{
+  arg.Pop(m_luaState);
+  return *this;
+}
+
+//-------------------------------------------------------------------------------------------------
+void LuaWorker::setVariable(QString sName, ILuaValue &type)
+{
+  if (m_luaState==NULL)
+    throw InternalError("LUA engine is not initialized.");
+
+  type.Push(m_luaState);
+  lua_setglobal(m_luaState, sName.toUtf8().constData());
+}
+
+//-------------------------------------------------------------------------------------------------
+void LuaWorker::syntaxCheck(const QString &sLuaCode, const QString &sChunkName)
+{
+    if (m_luaState==NULL)
+        throw LuaException(QString("Can't execute Lua code fragment \"%1\": Lua state is not initialized").arg(sLuaCode));
+
+    checkLuaError(luaL_loadbuffer(m_luaState,
+                                  sLuaCode.toAscii(),
+                                  sLuaCode.size(),
+                                  sChunkName.toAscii()));
+}
+
+//-------------------------------------------------------------------------------------------------
+void LuaWorker::checkLuaError(int errc)
+{
+    if (!errc)
+        return;
+
+    int nStackSize = lua_gettop(m_luaState);
+    if (nStackSize>=1)
+    {
+        QString sErr = lua_tostring(m_luaState, -1);
+        lua_pop(m_luaState, 1);
+        throw LuaException(sErr);
+    }
+    else
+        throw LuaException("Lua error (no details available)");
+}
+
+//-------------------------------------------------------------------------------------------------
+void LuaWorker::doString(const QString &sLuaCode, const QString &sChunkName)
+{
+    if (m_luaState==NULL)
+        throw LuaException(QString("Can't execute Lua code fragment \"%1\": Lua state is not initialized").arg(sLuaCode));
+
+    m_luaState->stop_now = 0;
+
+//    checkLuaError(luaL_loadbuffer(m_luaState,
+//                                  sLuaCode.toAscii(),
+//                                  sLuaCode.size(),
+//                                  sChunkName.toAscii()));
+    syntaxCheck(sLuaCode, sChunkName);
+
+    checkLuaError(lua_pcall(m_luaState, 0, 0, 0));
 }

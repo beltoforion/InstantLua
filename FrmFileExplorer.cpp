@@ -146,7 +146,8 @@ void FrmFileExplorer::notifyFileModified(const IFile *pFile)
 
     ui->tcProject->setTabIcon(i, QIcon(":/images/res/warning.ico"));
 
- //   m_pWndMain->getScriptEngine()->doSyntaxCheck(pFile);
+    qDebug() << "FrmFileExplorer::notifyFileModified: emit checkFile(...)\n";
+    emit checkFile(pFile);
 }
 
 //-------------------------------------------------------------------------------------------------

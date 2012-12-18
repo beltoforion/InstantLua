@@ -7,6 +7,8 @@
 #include <QSplitter>
 #include <QSettings>
 #include <QFileDialog>
+#include <QDebug>
+#include <QThread>
 
 //-------------------------------------------------------------------------------------------------
 #include "Settings.h"
@@ -78,16 +80,25 @@ WndMain::WndMain(QWidget *parent)
     m_pConsoleStreamBuf  = new console_streambuf(m_pFrmConsole->getIConsole());
     m_pOriginalStreamBuf = std::cout.rdbuf(m_pConsoleStreamBuf);
 
-    // Starten des Lua threads
-    m_thLua = new QThread();
-
     qDebug("Main thread id: %d", reinterpret_cast<int>(QThread::currentThreadId()));
 
+    // Starten des Lua threads
+    m_thLua = new QThread();
     m_pLuaWorker = new LuaWorker(m_pFrmConsole->getConsole());
     m_pLuaWorker->moveToThread(m_thLua);
 
-    connect(m_pLuaWorker, SIGNAL(error(QString)), this, SLOT(on_lua_error(QString)));
-    connect(m_pLuaWorker, SIGNAL(finished()), m_thLua, SLOT(quit()));
+    connect(m_pLuaWorker, SIGNAL(error(QString)),
+            this,         SLOT(on_lua_error(QString)));
+
+    connect(m_pLuaWorker, SIGNAL(finished()),
+            m_thLua,      SLOT(quit()));
+
+    connect(m_pLuaWorker, SIGNAL(syntaxCheckFail(const IFile*, QString)),
+            this,         SLOT(on_lua_syntax_check_fail(const IFile*, QString)));
+
+    connect(m_pLuaWorker, SIGNAL(syntaxCheckSuccess(const IFile*)),
+            this,         SLOT(on_lua_syntax_check_success(const IFile*)));
+
     connect(m_pFrmConsole->getConsole(), SIGNAL(commandInput(const QString&)), m_pLuaWorker, SLOT(on_doString(const QString&)));
     connect(m_pFrmFileExplorer, SIGNAL(checkFile(const IFile*)), m_pLuaWorker, SLOT(on_checkFile(const IFile*)));
     connect(this, SIGNAL(doFile(IFile*)), m_pLuaWorker, SLOT(on_doFile(IFile*)));
@@ -323,12 +334,24 @@ void WndMain::on_lua_error(QString sErr)
     IConsole *pConsole = m_pFrmConsole->getConsole();
     if (pConsole!=NULL)
     {
-        // Im konsolenpuffer könnten noch tausende zeilen des skriptes
-        // sein. Die anzuzeigen könnte ewig dauern.
+        // Zurücksetzten der queue, nur die Fehlermeldung wird angezeigt.
         pConsole->clearQueue();
         pConsole->addLine(sErr, Qt::red);
         qDebug("on_lua_error(%s); thread id: %d", sErr.toStdString().c_str(), reinterpret_cast<int>(QThread::currentThreadId()));
     }
+}
+
+
+//-------------------------------------------------------------------------------------------------
+void WndMain::on_lua_syntax_check_fail(const IFile *pFile, QString sErr)
+{
+    qDebug() << "Syntax check failed\n";
+}
+
+//-------------------------------------------------------------------------------------------------
+void WndMain::on_lua_syntax_check_success(const IFile *pFile)
+{
+    qDebug() << "Syntax check successfull\n";
 }
 
 //-------------------------------------------------------------------------------------------------

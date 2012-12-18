@@ -252,7 +252,6 @@ SOURCES += main.cpp\
     QGradientPanel.cpp \
     QSelection.cpp \
     luabind/LuaValues.cpp \
-    luabind/LuaContext.cpp \
     luabind/ILuaValue.cpp \
     QConsoleStreamBuffer.cpp \
     luabind/LuaSysVar.cpp \
@@ -381,7 +380,6 @@ HEADERS  += \
     QGradientPanel.h \
     QSelection.h \
     luabind/LuaValues.h \
-    luabind/LuaContext.h \
     luabind/ILuaValue.h \
     3rdparty/lua-5.2.1/src/lzio.h \
     3rdparty/lua-5.2.1/src/lvm.h \

@@ -16,7 +16,7 @@ void IFile::setModified(bool bStat)
     if (!hasObservers())
         return;
 
-    bool bOld = m_bModified;
+//    bool bOld = m_bModified;
     m_bModified = bStat;
 
 //    if (bOld!=m_bModified)

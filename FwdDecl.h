@@ -10,6 +10,7 @@ class FrmSourceEdit;
 class MainWindow;
 
 //-------------------------------------------------------------------------------------------------
+class ILuaValue;
 class IFile;
 class IFileObserver;
 class IProject;
