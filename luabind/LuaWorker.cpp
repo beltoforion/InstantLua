@@ -4,6 +4,7 @@
 #include <QThread>
 #include <QVector>
 #include <QString>
+#include <QDebug>
 
 //--- LUA includes --------------------------------------------------------------------------------
 #include "lua.h"
@@ -12,7 +13,7 @@
 #include "IFile.h"
 #include "ILuaValue.h"
 #include "Exceptions.h"
-
+#include "Locker.h"
 
 //-------------------------------------------------------------------------------------------------
 LuaWorker::LuaWorker(IConsole *pConsole)
@@ -23,13 +24,10 @@ LuaWorker::LuaWorker(IConsole *pConsole)
     ,m_pSysVar(NULL)
 {
     // Hier keine dynamische allokation, da diese im Hauptthread geschehen würde!
-
     if (m_pConsole==NULL)
         throw InternalError(tr("Can't create Lua worker with null console pointer"));
 
     init();
-
-//    connect(this, SIGNAL(checkSyntax(const IFile*)), SLOT(on_checkFile(const IFile*)));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -151,16 +149,24 @@ void LuaWorker::on_checkFile(const IFile *pFile)
 
     try
     {
-        QVector<QString> vLines = pFile->getLines();
+        Q_ASSERT(pFile!=NULL);
+        Locker lock(pFile);
+
+        if (m_luaState==NULL)
+            throw LuaException(QString("Can't execute Lua code fragment \"%1\": Lua state is not initialized").arg(pFile->getName()));
+
+    //    qDebug() << "syntaxCheck(" << pFile->getName() << ")";
+
+        const QVector<QString> &vLines = pFile->getLines();
         QString sScript;
         for (int i=0; i<vLines.size(); ++i)
         {
-            sScript += vLines[i];
+            const QString &sLine = vLines[i];
+            sScript += sLine;
         }
 
         syntaxCheck(sScript, pFile->getName());
         emit syntaxCheckSuccess(pFile);
-
     }
     catch(LuaException &exc)
     {
@@ -285,7 +291,7 @@ void LuaWorker::setVariable(QString sName, ILuaValue &type)
 void LuaWorker::syntaxCheck(const QString &sLuaCode, const QString &sChunkName)
 {
     if (m_luaState==NULL)
-        throw LuaException(QString("Can't execute Lua code fragment \"%1\": Lua state is not initialized").arg(sLuaCode));
+        throw LuaException(QString("Can't execute Lua code fragment \"%1\": Lua state is not initialized").arg(sChunkName));
 
     checkLuaError(luaL_loadbuffer(m_luaState,
                                   sLuaCode.toAscii(),
@@ -318,10 +324,6 @@ void LuaWorker::doString(const QString &sLuaCode, const QString &sChunkName)
 
     m_luaState->stop_now = 0;
 
-//    checkLuaError(luaL_loadbuffer(m_luaState,
-//                                  sLuaCode.toAscii(),
-//                                  sLuaCode.size(),
-//                                  sChunkName.toAscii()));
     syntaxCheck(sLuaCode, sChunkName);
 
     checkLuaError(lua_pcall(m_luaState, 0, 0, 0));

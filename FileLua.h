@@ -5,6 +5,7 @@
 #include <QVector>
 #include <QString>
 #include <QFileInfo>
+#include <QMutex>
 
 //--- Luanda framework ----------------------------------------------------------------------------
 #include "IFile.h"
@@ -36,6 +37,11 @@ public:
     virtual const QString& getLine(std::size_t i) const;
     virtual QString path() const;
 
+    // ILockable interface
+
+    virtual void lock() const;
+    virtual void unlock() const;
+
 protected:
     virtual void loadImpl();
     virtual void saveImpl();
@@ -46,6 +52,8 @@ private:
 
     QVector<QString> m_vLines;
     QFileInfo m_fi;
+    mutable QMutex m_mtxFile;
+
 };
 
 #endif // FILELUA_H

@@ -10,7 +10,7 @@
 
 //--- InstandLuaX Framework -----------------------------------------------------------------------
 #include "Settings.h"
-
+#include "Locker.h"
 
 //-------------------------------------------------------------------------------------------------
 FrmSourceEdit::FrmSourceEdit(FrmFileExplorer *pParent, IFile::ptr_type pFile)
@@ -206,11 +206,17 @@ void FrmSourceEdit::updateFile(bool bSetModifiedFlag)
         return;
 
     int nLines = m_pSrcEdit->lines();
+
+    Locker lock(m_pFile.data());
+
     m_pFile->clear();
+
+    qDebug() << "clearing buffered content of file " << m_pFile->getName();
     for (int i=0; i<nLines; ++i)
     {
         m_pFile->addLine(m_pSrcEdit->text(i));
     }
+    qDebug() << "content of file " << m_pFile->getName() << "updated";
 
     if (bSetModifiedFlag)
     {

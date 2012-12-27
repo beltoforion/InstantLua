@@ -12,12 +12,13 @@
 #include "IProject.h"
 #include "IFileObserver.h"
 #include "IObserveable.h"
-
+#include "ILockable.h"
 
 //-------------------------------------------------------------------------------------------------
 /** \brief Interface für Dateien, die in Luanda angezeigt werden können.
 */
-class IFile : public IObserveable<IFileObserver>
+class IFile : public IObserveable<IFileObserver>,
+              public ILockable
 {
 public:
 

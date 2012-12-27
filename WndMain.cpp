@@ -351,7 +351,7 @@ void WndMain::on_lua_syntax_check_fail(const IFile *pFile, QString sErr)
 //-------------------------------------------------------------------------------------------------
 void WndMain::on_lua_syntax_check_success(const IFile *pFile)
 {
-    qDebug() << "Syntax check successfull\n";
+    qDebug() << "on_lua_syntax_check_success(" << pFile->getName() << "): Syntax check successfull\n";
 }
 
 //-------------------------------------------------------------------------------------------------

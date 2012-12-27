@@ -19,6 +19,7 @@ IFile::ptr_type FileLua::Create(const QString &sPath)
 FileLua::FileLua(const QString &path)
     :m_vLines()
     ,m_fi(path)
+    ,m_mtxFile()
 {}
 
 //-------------------------------------------------------------------------------------------------
@@ -113,4 +114,16 @@ void FileLua::saveImpl()
         stream << m_vLines[i];
     }
     file.close();
+}
+
+//-------------------------------------------------------------------------------------------------
+void FileLua::lock() const
+{
+    m_mtxFile.lock();
+}
+
+//-------------------------------------------------------------------------------------------------
+void FileLua::unlock() const
+{
+    m_mtxFile.unlock();
 }
