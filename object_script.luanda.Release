@@ -231,6 +231,8 @@ INPUT(
 ./build\release\.obj\Catalogue.o
 ./build\release\.obj\CallTip.o
 ./build\release\.obj\AutoComplete.o
+./build\release\.obj\LuaTabWindow.o
+./build\release\.obj\ILuaTable.o
 ./build\release\.obj\moc_DlgSettings.o
 ./build\release\.obj\moc_FrmSourceEdit.o
 ./build\release\.obj\moc_FrmProjectExplorer.o

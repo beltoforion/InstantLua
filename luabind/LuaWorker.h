@@ -6,10 +6,12 @@
 #include <QMutex>
 #include <QSharedPointer>
 #include <QString>
+#include <QVector>
 
 #include "FwdDecl.h"
 #include "IConsole.h"
 #include "IScriptEngine.h"
+#include "ILuaTable.h"
 
 //--- LUA includes --------------------------------------------------------------------------------
 #include "lauxlib.h"
@@ -59,8 +61,11 @@ private:
     QMutex m_mtxTasks;
     lua_State *m_luaState;
     QSharedPointer<ILuaValue> m_pSysVar;
+    QVector<ILuaTable*> m_vLuaTables;
 
     void init();
+    void initTables();
+
     void splashScreen();
 
     void checkLuaError(int errc);

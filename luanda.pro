@@ -263,7 +263,9 @@ SOURCES += main.cpp\
     3rdparty/QScintilla-gpl-2.7/src/CellBuffer.cpp \
     3rdparty/QScintilla-gpl-2.7/src/Catalogue.cpp \
     3rdparty/QScintilla-gpl-2.7/src/CallTip.cpp \
-    3rdparty/QScintilla-gpl-2.7/src/AutoComplete.cpp
+    3rdparty/QScintilla-gpl-2.7/src/AutoComplete.cpp \
+    luabind/LuaTabWindow.cpp \
+    luabind/ILuaTable.cpp
 
 HEADERS  += \
     IFile.h \
@@ -420,7 +422,9 @@ HEADERS  += \
     3rdparty/QScintilla-gpl-2.7/Qt4Qt5/Qsci/qscicommandset.h \
     3rdparty/QScintilla-gpl-2.7/Qt4Qt5/Qsci/qscicommand.h \
     3rdparty/QScintilla-gpl-2.7/Qt4Qt5/Qsci/qsciapis.h \
-    3rdparty/QScintilla-gpl-2.7/Qt4Qt5/Qsci/qsciabstractapis.h
+    3rdparty/QScintilla-gpl-2.7/Qt4Qt5/Qsci/qsciabstractapis.h \
+    luabind/LuaTabWindow.h \
+    luabind/ILuaTable.h
 
 FORMS    += \
     DlgSettings.ui \

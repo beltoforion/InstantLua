@@ -14,6 +14,7 @@
 #include "ILuaValue.h"
 #include "Exceptions.h"
 #include "Locker.h"
+#include "LuaTabWindow.h"
 
 //-------------------------------------------------------------------------------------------------
 LuaWorker::LuaWorker(IConsole *pConsole)
@@ -22,12 +23,18 @@ LuaWorker::LuaWorker(IConsole *pConsole)
     ,m_mtxTasks()
     ,m_luaState(NULL)
     ,m_pSysVar(NULL)
+    ,m_vLuaTables()
 {
     // Hier keine dynamische allokation, da diese im Hauptthread geschehen würde!
     if (m_pConsole==NULL)
         throw InternalError(tr("Can't create Lua worker with null console pointer"));
 
+    m_vLuaTables.push_back(new LuaTabWindow);
+
     init();
+    initTables();
+
+    splashScreen();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -226,8 +233,19 @@ void LuaWorker::init()
         lua_pushstring(m_luaState, lib->name);
         lua_call(m_luaState, 1, 0);
     }
+}
 
-    splashScreen();
+//-------------------------------------------------------------------------------------------------
+void LuaWorker::initTables()
+{
+    for (int i=0; i<m_vLuaTables.size(); ++i)
+    {
+        ILuaTable *pTab = m_vLuaTables[i];
+        if (pTab==NULL)
+            continue;
+
+        pTab->addToLua(m_luaState);
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
