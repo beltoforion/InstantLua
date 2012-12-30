@@ -1,18 +1,17 @@
-#ifndef LUATABWINDOW_H
-#define LUATABWINDOW_H
+#ifndef LUATABSYS_H
+#define LUATABSYS_H
 
-//-------------------------------------------------------------------------------------------------
+//--- Qt includes ---------------------------------------------------------------------------------
+#include <QThread>
+
 #include "ILuaTable.h"
 
-//--- Lua includes --------------------------------------------------------------------------------
-#include "lualib.h"
-#include "lauxlib.h"
 
 //-------------------------------------------------------------------------------------------------
-class LuaTabWindow : public ILuaTable
+class LuaTabSys : public ILuaTable
 {
 public:
-    LuaTabWindow();
+    LuaTabSys();
 
     virtual const SProperty* getProperties() const;
     virtual const SFunction* getFunctions() const;
@@ -21,25 +20,24 @@ public:
 
 private:
 
-    int m_nWidth;
-    int m_nHeight;
+    struct QThreadDelay : QThread
+    {
+      using QThread::msleep;
+    };
 
     //---------------------------------------------------------------------------------------------
     // Lua function callbacks
     //---------------------------------------------------------------------------------------------
 
-    static int create(lua_State *pState);
-    static int finalize(lua_State *pState);
+    static int func_delay(lua_State *L);
 
     //---------------------------------------------------------------------------------------------
     // Lua Property callbacks
     //---------------------------------------------------------------------------------------------
 
-    static int prop_width_read(lua_State *pState);
-    static int prop_width_write(lua_State *pState);
-
-    static int prop_height_read(lua_State *pState);
-    static int prop_height_write(lua_State *pState);
+    static int prop_time_read(lua_State *L);
+    static int prop_time_str_read(lua_State *L);
 };
 
-#endif // LUATABWINDOW_H
+
+#endif // LUATABSYS_H

@@ -6,47 +6,48 @@
 #include <QVector>
 
 //--- LUA includes --------------------------------------------------------------------------------
-//#include "lauxlib.h"
 #include "lualib.h"
-//#include "lua.h"
 
 
 //-------------------------------------------------------------------------------------------------
 class ILuaTable
 {
-public:
-    ILuaTable(const QString &sName);
-    virtual ~ILuaTable();
-
-    void addToLua(lua_State *pState);
-
-    const QString& getName() const;
-
 protected:
 
     struct SProperty
     {
-        QString name;
-        lua_CFunction read;
-        lua_CFunction write;
+        const char *name;
+        lua_CFunction ptr_read;
+        lua_CFunction ptr_write;
     };
 
     struct SFunction
     {
-        QString name;
+        const char *name;
         lua_CFunction ptr;
     };
 
-    void addFunc(const QString &sFuncName,lua_CFunction ptrFun);
-    void addProperty(const QString &sPropName, lua_CFunction funcRead, lua_CFunction funcWrite);
-    void addInteger(const QString &sName);
-    void addDouble(const QString &sName);
+public:
+
+    ILuaTable();
+    virtual ~ILuaTable();
+
+    void bindToLua(lua_State *pState);
+
+    virtual const SProperty* getProperties() const = 0;
+    virtual const SFunction* getFunctions() const = 0;
+    virtual const char* getName() const = 0;
+    virtual QString toString() const = 0;
 
 private:
-    QString m_sName;
-    QVector<SProperty> m_vProperties;
-    QVector<SFunction> m_vFunctions;
 
+    // Hilfsfunktionen
+    static const ILuaTable* getTableFromStack(lua_State *pState, int idx);
+
+    // Spezielle meta funktionscallbacks von lua
+    static int __index(lua_State *lua);
+    static int __newindex(lua_State *lua);
+    static int __tostring(lua_State *lua);
 };
 
 #endif

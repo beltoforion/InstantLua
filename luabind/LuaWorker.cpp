@@ -15,6 +15,8 @@
 #include "Exceptions.h"
 #include "Locker.h"
 #include "LuaTabWindow.h"
+#include "LuaTabSys.h"
+
 
 //-------------------------------------------------------------------------------------------------
 LuaWorker::LuaWorker(IConsole *pConsole)
@@ -30,6 +32,7 @@ LuaWorker::LuaWorker(IConsole *pConsole)
         throw InternalError(tr("Can't create Lua worker with null console pointer"));
 
     m_vLuaTables.push_back(new LuaTabWindow);
+    m_vLuaTables.push_back(new LuaTabSys);
 
     init();
     initTables();
@@ -244,7 +247,7 @@ void LuaWorker::initTables()
         if (pTab==NULL)
             continue;
 
-        pTab->addToLua(m_luaState);
+        pTab->bindToLua(m_luaState);
     }
 }
 

@@ -265,7 +265,9 @@ SOURCES += main.cpp\
     3rdparty/QScintilla-gpl-2.7/src/CallTip.cpp \
     3rdparty/QScintilla-gpl-2.7/src/AutoComplete.cpp \
     luabind/LuaTabWindow.cpp \
-    luabind/ILuaTable.cpp
+    luabind/ILuaTable.cpp \
+    luabind/LuaExtensions.cpp \
+    luabind/LuaTabSys.cpp
 
 HEADERS  += \
     IFile.h \
@@ -424,7 +426,9 @@ HEADERS  += \
     3rdparty/QScintilla-gpl-2.7/Qt4Qt5/Qsci/qsciapis.h \
     3rdparty/QScintilla-gpl-2.7/Qt4Qt5/Qsci/qsciabstractapis.h \
     luabind/LuaTabWindow.h \
-    luabind/ILuaTable.h
+    luabind/ILuaTable.h \
+    luabind/LuaExtensions.h \
+    luabind/LuaTabSys.h
 
 FORMS    += \
     DlgSettings.ui \

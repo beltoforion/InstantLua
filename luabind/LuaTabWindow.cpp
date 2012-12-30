@@ -2,21 +2,47 @@
 
 //-------------------------------------------------------------------------------------------------
 LuaTabWindow::LuaTabWindow()
-    :ILuaTable(QString("window"))
+    :ILuaTable()
+    ,m_nWidth(640)
+    ,m_nHeight(480)
+{}
+
+
+//-------------------------------------------------------------------------------------------------
+const ILuaTable::SProperty* LuaTabWindow::getProperties() const
 {
-    // Add functions
-    addFunc("create", LuaTabWindow::create);
-    addFunc("finalize", LuaTabWindow::finalize);
+    static const SProperty prop[] =
+                    {
+                        { "width",  LuaTabWindow::prop_width_read,  LuaTabWindow::prop_width_write  },
+                        { "height", LuaTabWindow::prop_height_read, LuaTabWindow::prop_height_write },
+                        { NULL, NULL, NULL }
+                    };
 
-    // Add Properties
-    addProperty("width", LuaTabWindow::prop_width_read, LuaTabWindow::prop_width_write);
-    addProperty("height", LuaTabWindow::prop_height_read, LuaTabWindow::prop_height_write);
-
-    // Add Values
-//    addInteger("valInt");
-//    addDouble("valDouble");
+    return prop;
 }
 
+//-------------------------------------------------------------------------------------------------
+const ILuaTable::SFunction* LuaTabWindow::getFunctions() const
+{
+    static const SFunction func[] =
+                    {
+                        { "new", LuaTabWindow::create },
+                        { NULL, NULL }
+                    };
+    return func;
+}
+
+//-------------------------------------------------------------------------------------------------
+const char* LuaTabWindow::getName() const
+{
+    return "window";
+}
+
+//-------------------------------------------------------------------------------------------------
+QString LuaTabWindow::toString() const
+{
+    return getName();
+}
 
 //-------------------------------------------------------------------------------------------------
 //
@@ -26,6 +52,10 @@ LuaTabWindow::LuaTabWindow()
 
 int LuaTabWindow::create(lua_State *pState)
 {
+    int argc = lua_gettop(pState);
+    if (argc != 0)
+        return luaL_error(pState, "Got %d arguments expected none.", argc);
+
     return 0;
 }
 
@@ -41,9 +71,10 @@ int LuaTabWindow::finalize(lua_State *pState)
 //
 //-------------------------------------------------------------------------------------------------
 
-int LuaTabWindow::prop_width_read(lua_State *pState)
+int LuaTabWindow::prop_width_read(lua_State *L)
 {
-    return 0;
+    lua_pushnumber(L, 640); //m_nWidth);
+    return 1;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -53,9 +84,10 @@ int LuaTabWindow::prop_width_write(lua_State *pState)
 }
 
 //-------------------------------------------------------------------------------------------------
-int LuaTabWindow::prop_height_read(lua_State *pState)
+int LuaTabWindow::prop_height_read(lua_State *L)
 {
-    return 0;
+    lua_pushnumber(L, 480); //m_nHeight);
+    return 1;
 }
 
 //-------------------------------------------------------------------------------------------------

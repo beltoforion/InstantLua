@@ -233,6 +233,8 @@ INPUT(
 ./build\release\.obj\AutoComplete.o
 ./build\release\.obj\LuaTabWindow.o
 ./build\release\.obj\ILuaTable.o
+./build\release\.obj\LuaExtensions.o
+./build\release\.obj\LuaTabSys.o
 ./build\release\.obj\moc_DlgSettings.o
 ./build\release\.obj\moc_FrmSourceEdit.o
 ./build\release\.obj\moc_FrmProjectExplorer.o
