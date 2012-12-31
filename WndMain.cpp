@@ -99,6 +99,9 @@ WndMain::WndMain(QWidget *parent)
     connect(m_pLuaWorker, SIGNAL(syntaxCheckSuccess(const IFile*)),
             this,         SLOT(on_lua_syntax_check_success(const IFile*)));
 
+    connect(m_pLuaWorker, SIGNAL(execInMainThread(IAction*)),
+            this,         SLOT(on_lua_exec_in_main_thread(IAction*)));
+
     connect(m_pFrmConsole->getConsole(), SIGNAL(commandInput(const QString&)), m_pLuaWorker, SLOT(on_doString(const QString&)));
     connect(m_pFrmFileExplorer, SIGNAL(checkFile(const IFile*)), m_pLuaWorker, SLOT(on_checkFile(const IFile*)));
     connect(this, SIGNAL(doFile(IFile*)), m_pLuaWorker, SLOT(on_doFile(IFile*)));
@@ -341,6 +344,14 @@ void WndMain::on_lua_error(QString sErr)
     }
 }
 
+//-------------------------------------------------------------------------------------------------
+void WndMain::on_lua_exec_in_main_thread(IAction *pAction)
+{
+    qDebug() << "Executing action in main thread\n";
+
+    if (pAction!=NULL)
+        pAction->execute();
+}
 
 //-------------------------------------------------------------------------------------------------
 void WndMain::on_lua_syntax_check_fail(const IFile *pFile, QString sErr)

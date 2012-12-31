@@ -1,19 +1,43 @@
 #include "LuaTabSys.h"
+
+//--- Standard includes ---------------------------------------------------------------------------
+#include <ctime>
+#include <cassert>
+
+//--- QT Lib includes -----------------------------------------------------------------------------
 #include <QDateTime>
 #include <QThread>
-#include <ctime>
+#include <QMessageBox>
 
-//#include "lua.h"
+//--- Lua includes --------------------------------------------------------------------------------
 #include "lstate.h"
 #include "lauxlib.h"
 
+#include "ILuaAction.h"
+#include "ISyncContext.h"
+
+
 using namespace std;
 
+LuaTabSys::ActMessageBox LuaTabSys::actMessageBox;
+
+//-------------------------------------------------------------------------------------------------
+int LuaTabSys::ActMessageBox::execute()
+{
+    if (msg!=NULL)
+    {
+        QMessageBox msgBox;
+        msgBox.setText(msg);
+        msgBox.exec();
+    }
+
+    return 0;
+}
 
 //-------------------------------------------------------------------------------------------------
 LuaTabSys::LuaTabSys()
-{
-}
+    :ILuaTable()
+{}
 
 //-------------------------------------------------------------------------------------------------
 const ILuaTable::SProperty* LuaTabSys::getProperties() const
@@ -22,6 +46,7 @@ const ILuaTable::SProperty* LuaTabSys::getProperties() const
                     {
                         { "time",     LuaTabSys::prop_time_read,  NULL },
                         { "time_str", LuaTabSys::prop_time_str_read, NULL },
+                        { "client",   LuaTabSys::prop_client_name_read, NULL },
                         { NULL, NULL, NULL }
                     };
 
@@ -33,7 +58,8 @@ const ILuaTable::SFunction* LuaTabSys::getFunctions() const
 {
     static const SFunction func[] =
                     {
-                        { "delay", LuaTabSys::func_delay },
+                        { "delay",  LuaTabSys::func_delay },
+                        { "msgbox", LuaTabSys::func_msgbox },
                         { NULL, NULL }
                     };
 
@@ -63,14 +89,35 @@ int LuaTabSys::prop_time_read(lua_State *L)
 //-------------------------------------------------------------------------------------------------
 int LuaTabSys::prop_time_str_read(lua_State *L)
 {
-    char    str[64];
-    time_t  t;
+    char str[256];
+    time_t t;
 
     time(&t);
     strftime(str, sizeof(str), "%H:%M:%S %Y-%m-%d", localtime(&t));
 
     lua_pushstring(L, str);
     return 1;
+}
+
+//-------------------------------------------------------------------------------------------------
+int LuaTabSys::prop_client_name_read(lua_State *L)
+{
+    lua_pushstring(L, "InstantLua");
+    return 1;
+}
+
+//-----------------------------------------------------------------------------
+int LuaTabSys::func_msgbox(lua_State *L)
+{
+    assert(ILuaTable::s_pSyncContext!=NULL);
+    if (ILuaTable::s_pSyncContext==NULL)
+        return 0;
+
+    // execute the action in the main thread
+    actMessageBox.msg = luaL_checklstring(L, 1, NULL);
+    ILuaTable::s_pSyncContext->doAction(&actMessageBox);
+
+    return 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -86,12 +133,12 @@ int LuaTabSys::func_delay(lua_State *L)
         {
             if (dly > 1000)
             {
-                QThreadDelay::msleep(1000);
+                MyThread::msleep(1000);
                 dly -= 1000;
             }
             else
             {
-                QThreadDelay::msleep(dly);
+                MyThread::msleep(dly);
                 dly = 0;
             }
         }

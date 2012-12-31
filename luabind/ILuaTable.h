@@ -4,9 +4,14 @@
 //-------------------------------------------------------------------------------------------------
 #include <QString>
 #include <QVector>
+#include <QObject>
 
 //--- LUA includes --------------------------------------------------------------------------------
 #include "lualib.h"
+
+//-------------------------------------------------------------------------------------------------
+#include "FwdDecl.h"
+#include "ILuaAction.h"
 
 
 //-------------------------------------------------------------------------------------------------
@@ -29,20 +34,25 @@ protected:
 
 public:
 
+    static void setSyncContext(ISyncContext *pContext);
+
     ILuaTable();
     virtual ~ILuaTable();
 
     void bindToLua(lua_State *pState);
-
     virtual const SProperty* getProperties() const = 0;
     virtual const SFunction* getFunctions() const = 0;
     virtual const char* getName() const = 0;
     virtual QString toString() const = 0;
 
-private:
+protected:
 
     // Hilfsfunktionen
-    static const ILuaTable* getTableFromStack(lua_State *pState, int idx);
+    static ILuaTable* getTableFromStack(lua_State *pState, int idx);
+    static ISyncContext *s_pSyncContext;
+
+private:
+
 
     // Spezielle meta funktionscallbacks von lua
     static int __index(lua_State *lua);

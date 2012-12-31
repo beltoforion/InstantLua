@@ -4,6 +4,16 @@
 //--- Lua includes --------------------------------------------------------------------------------
 #include "lauxlib.h"
 
+#include "ISyncContext.h"
+
+//-------------------------------------------------------------------------------------------------
+ISyncContext *ILuaTable::s_pSyncContext = NULL;
+
+//-------------------------------------------------------------------------------------------------
+void ILuaTable::setSyncContext(ISyncContext *pContext)
+{
+    ILuaTable::s_pSyncContext = pContext;
+}
 
 //-------------------------------------------------------------------------------------------------
 ILuaTable::ILuaTable()
@@ -14,11 +24,11 @@ ILuaTable::~ILuaTable()
 {}
 
 //-------------------------------------------------------------------------------------------------
-const ILuaTable* ILuaTable::getTableFromStack(lua_State *pState, int idx)
+ILuaTable* ILuaTable::getTableFromStack(lua_State *pState, int idx)
 {
     if (luaL_getmetafield(pState, idx, "this_ptr"))
     {
-        const ILuaTable *pTable = (const ILuaTable*)lua_touserdata(pState, -1);
+        ILuaTable *pTable = (ILuaTable*)lua_touserdata(pState, -1);
         lua_pop(pState, 1);
         return pTable;
     }

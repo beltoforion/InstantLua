@@ -11,6 +11,7 @@
 #include "FwdDecl.h"
 #include "IConsole.h"
 #include "IScriptEngine.h"
+#include "ISyncContext.h"
 #include "ILuaTable.h"
 
 //--- LUA includes --------------------------------------------------------------------------------
@@ -19,7 +20,8 @@
 
 //-------------------------------------------------------------------------------------------------
 class LuaWorker : public QObject,
-                  public IScriptEngine
+                  public IScriptEngine,
+                  public ISyncContext
 {
     Q_OBJECT
 
@@ -38,12 +40,16 @@ public:
     virtual QString getVersion() const;
     virtual QString getCopyright() const;
 
+    // ISynchContext
+    virtual void doAction(IAction *pAction);
+
 signals:
     void finished();
     void error(QString sErr);
     void syntaxCheckFail(const IFile *pFile, QString sErr);
     void syntaxCheckSuccess(const IFile *pFile);
     void checkSyntax(const IFile *pFile);
+    void execInMainThread(IAction *pAction);
 
 public slots:
 

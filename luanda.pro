@@ -91,7 +91,6 @@ SOURCES += main.cpp\
     luabind/LuaValues.cpp \
     luabind/ILuaValue.cpp \
     QConsoleStreamBuffer.cpp \
-    luabind/LuaSysVar.cpp \
     luabind/LuaWorker.cpp \
     Locker.cpp \
     3rdparty/QScintilla-gpl-2.7/lexers/LexYAML.cpp \
@@ -267,7 +266,8 @@ SOURCES += main.cpp\
     luabind/LuaTabWindow.cpp \
     luabind/ILuaTable.cpp \
     luabind/LuaExtensions.cpp \
-    luabind/LuaTabSys.cpp
+    luabind/LuaTabSys.cpp \
+    luabind/ILuaAction.cpp
 
 HEADERS  += \
     IFile.h \
@@ -327,7 +327,6 @@ HEADERS  += \
     IConsole.h \
     IMainFrame.h \
     IScriptEngine.h \
-    luabind/LuaSysVar.h \
     luabind/LuaWorker.h \
     Locker.h \
     3rdparty/QScintilla-gpl-2.7/include/ScintillaWidget.h \
@@ -428,7 +427,9 @@ HEADERS  += \
     luabind/LuaTabWindow.h \
     luabind/ILuaTable.h \
     luabind/LuaExtensions.h \
-    luabind/LuaTabSys.h
+    luabind/LuaTabSys.h \
+    luabind/ILuaAction.h \
+    ISyncContext.h
 
 FORMS    += \
     DlgSettings.ui \

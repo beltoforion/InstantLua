@@ -176,6 +176,7 @@ struct lua_State {
 
   // <ibg 20121007> Added to allow abortion
   volatile int stop_now;
+//  ISynchContext *sync;
 };
 
 

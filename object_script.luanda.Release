@@ -58,7 +58,6 @@ INPUT(
 ./build\release\.obj\LuaValues.o
 ./build\release\.obj\ILuaValue.o
 ./build\release\.obj\QConsoleStreamBuffer.o
-./build\release\.obj\LuaSysVar.o
 ./build\release\.obj\LuaWorker.o
 ./build\release\.obj\Locker.o
 ./build\release\.obj\LexYAML.o
@@ -235,6 +234,7 @@ INPUT(
 ./build\release\.obj\ILuaTable.o
 ./build\release\.obj\LuaExtensions.o
 ./build\release\.obj\LuaTabSys.o
+./build\release\.obj\ILuaAction.o
 ./build\release\.obj\moc_DlgSettings.o
 ./build\release\.obj\moc_FrmSourceEdit.o
 ./build\release\.obj\moc_FrmProjectExplorer.o

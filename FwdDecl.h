@@ -15,8 +15,10 @@ class IFile;
 class IFileObserver;
 class IProject;
 class IScriptEngine;
+class ISyncContext;
 class IConsole;
 class IMainFrame;
+class IAction;
 
 class LanguageToken;
 class ScriptOutline;

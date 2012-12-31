@@ -21,18 +21,22 @@
 //-------------------------------------------------------------------------------------------------
 LuaWorker::LuaWorker(IConsole *pConsole)
     :QObject(NULL)
+    ,IScriptEngine()
+    ,ISyncContext()
     ,m_pConsole(pConsole)
     ,m_mtxTasks()
     ,m_luaState(NULL)
     ,m_pSysVar(NULL)
     ,m_vLuaTables()
 {
+    ILuaTable::setSyncContext(this);
+
     // Hier keine dynamische allokation, da diese im Hauptthread geschehen würde!
     if (m_pConsole==NULL)
         throw InternalError(tr("Can't create Lua worker with null console pointer"));
 
-    m_vLuaTables.push_back(new LuaTabWindow);
-    m_vLuaTables.push_back(new LuaTabSys);
+    m_vLuaTables.push_back(new LuaTabWindow());
+    m_vLuaTables.push_back(new LuaTabSys());
 
     init();
     initTables();
@@ -55,6 +59,13 @@ void LuaWorker::doSyntaxCheck(const IFile *pFile)
 {
     if (pFile!=NULL)
         emit checkSyntax(pFile);
+}
+
+//-------------------------------------------------------------------------------------------------
+void LuaWorker::doAction(IAction *pAction)
+{
+    if (pAction!=NULL)
+        emit execInMainThread(pAction);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -121,7 +132,7 @@ void LuaWorker::on_doFile(IFile *pFile)
             throw LuaException(QString("Can't execute Lua code fragment \"%1\": Lua state is not initialized").arg(sScript));
 
         doString(sScript, pFile->getName());
-        emit finished();
+        //emit finished();
     }
     catch(LuaException &exc)
     {

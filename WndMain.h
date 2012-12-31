@@ -95,7 +95,7 @@ private slots:
     void on_lua_functionCall();
     void on_lua_scriptError(const LuaException &exc);
 
-
+    void on_lua_exec_in_main_thread(IAction *pAction);
 
     void on_actionConsole_triggered();
     void on_actionPreferences_triggered();
