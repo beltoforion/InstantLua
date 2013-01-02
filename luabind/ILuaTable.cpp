@@ -70,25 +70,7 @@ int ILuaTable::__index(lua_State *L)
         lua_ex::error(L, "Table has no property or function \"%s\".", szKey);
         return 0;
     }
-    else
-        return 0;
-/*
-    const SProperty *pProp = lua_table_get_property(pState, -2);
-    if (!pProp)
-        return 0;
 
-    if (pProp->ptr_read)
-    {
-        pProp->ptr_read(pState);
-        return 1;
-    }
-    else
-    {
-        lua_throw_error_from_c(pState,
-                               "Cannot read from write only table property %s!",
-                               pProp->name.toAscii());
-    }
-*/
     return 0;
 }
 

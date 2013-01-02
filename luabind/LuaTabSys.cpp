@@ -22,7 +22,12 @@ using namespace std;
 LuaTabSys::ActMessageBox LuaTabSys::actMessageBox;
 
 //-------------------------------------------------------------------------------------------------
-int LuaTabSys::ActMessageBox::execute()
+LuaTabSys::ActMessageBox::ActMessageBox()
+    :IAction(IAction::SYNC)
+{}
+
+//-------------------------------------------------------------------------------------------------
+void LuaTabSys::ActMessageBox::execute_impl()
 {
     if (msg!=NULL)
     {
@@ -30,8 +35,6 @@ int LuaTabSys::ActMessageBox::execute()
         msgBox.setText(msg);
         msgBox.exec();
     }
-
-    return 0;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -109,13 +112,12 @@ int LuaTabSys::prop_client_name_read(lua_State *L)
 //-----------------------------------------------------------------------------
 int LuaTabSys::func_msgbox(lua_State *L)
 {
-    assert(ILuaTable::s_pSyncContext!=NULL);
-    if (ILuaTable::s_pSyncContext==NULL)
-        return 0;
-
     // execute the action in the main thread
-    actMessageBox.msg = luaL_checklstring(L, 1, NULL);
-    ILuaTable::s_pSyncContext->doAction(&actMessageBox);
+    if (ILuaTable::s_pSyncContext!=NULL)
+    {
+        actMessageBox.msg  = luaL_checklstring(L, 1, NULL);
+        ILuaTable::s_pSyncContext->doAction(&actMessageBox);
+    }
 
     return 0;
 }

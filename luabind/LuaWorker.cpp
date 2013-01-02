@@ -5,6 +5,7 @@
 #include <QVector>
 #include <QString>
 #include <QDebug>
+#include <QMutexLocker>
 
 //--- LUA includes --------------------------------------------------------------------------------
 #include "lua.h"
@@ -64,8 +65,19 @@ void LuaWorker::doSyntaxCheck(const IFile *pFile)
 //-------------------------------------------------------------------------------------------------
 void LuaWorker::doAction(IAction *pAction)
 {
-    if (pAction!=NULL)
+    if (pAction==NULL)
+        return;
+
+    // Perform an asynchronous action
+    if (pAction->getType()==IAction::ASYNC)
+    {
         emit execInMainThread(pAction);
+    }
+    else
+    {
+        ActionWaiter wait(pAction);
+        emit execInMainThread(pAction);
+    }
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -2,12 +2,51 @@
 #define IACTION_H
 
 //-------------------------------------------------------------------------------------------------
+#include <QMutex>
+#include <QWaitCondition>
+
+
+//-------------------------------------------------------------------------------------------------
 class IAction
 {
+friend class ActionWaiter;
+
 public:
-    IAction();
+
+    enum EActionType
+    {
+        SYNC,
+        ASYNC
+    };
+
+    IAction(EActionType eType = IAction::ASYNC);
     virtual ~IAction();
-    virtual int execute() = 0;
+    virtual void execute_impl() = 0;
+
+    void execute();
+    void wait();
+    EActionType getType() const;
+
+public:
+    mutable QMutex m_mtxAction;
+    QWaitCondition m_wait;
+
+private:
+    EActionType    m_eType;
+};
+
+//-------------------------------------------------------------------------------------------------
+class ActionWaiter
+{
+public:
+    ActionWaiter(IAction *pAction);
+   ~ActionWaiter();
+
+private:
+    ActionWaiter(const ActionWaiter&);
+    ActionWaiter& operator=(const ActionWaiter&);
+
+    IAction *m_pAction;
 };
 
 #endif // IACTION_H

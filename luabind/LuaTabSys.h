@@ -31,7 +31,8 @@ private:
 
     struct ActMessageBox : IAction
     {
-        virtual int execute();
+        ActMessageBox();
+        virtual void execute_impl();
         const char *msg;
     } static actMessageBox;
 

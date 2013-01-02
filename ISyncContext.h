@@ -9,6 +9,7 @@
 class ISyncContext
 {
 public:
+
     virtual void doAction(IAction *pAction) = 0;
 };
 
