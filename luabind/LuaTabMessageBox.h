@@ -1,5 +1,5 @@
-#ifndef LUATABSYS_H
-#define LUATABSYS_H
+#ifndef LUATAB_MESSAGE_BOX_H
+#define LUATAB_MESSAGE_BOX_H
 
 //--- Qt includes ---------------------------------------------------------------------------------
 #include <QThread>
@@ -9,56 +9,60 @@
 
 
 //-------------------------------------------------------------------------------------------------
-class LuaTabSys : public ILuaTable
+class LuaTabMessageBox : public ILuaTable
 {
 public:
-    LuaTabSys();
+    LuaTabMessageBox();
 
     virtual const SProperty* getProperties() const;
     virtual const SFunction* getFunctions() const;
     virtual const char* getName() const;
     virtual QString toString() const;
+    virtual int create(lua_State *L);
 
 private:
 
-    struct MyThread : QThread
-    {
-      using QThread::msleep;
-    };
+    QMessageBox *m_pMessageBox;
 
     //---------------------------------------------------------------------------------------------
     // Aktionen für Qt Lib funktionen, die im Hauptthread ausgeführt werden müssen
     //---------------------------------------------------------------------------------------------
 
-    struct ActMessageBox : IAction
+    struct ActShow : IAction
     {
-        ActMessageBox();
+        ActShow();
         virtual void execute_impl();
-
-        // arguments
         const char *text;
-        const char *subtext;
-        QMessageBox::StandardButton buttons;
+        const char *detailed_text;
+        QMessageBox *msgbox;
+    } static actShow;
 
-        // return values
-        QMessageBox::StandardButton result;
-    } static actMessageBox;
+    //---------------------------------------------------------------------------------------------
+    struct ActCreate : IAction
+    {
+        ActCreate();
+        virtual void execute_impl();
+        QMessageBox *msgbox;
+    } static actCreate;
+
+    //---------------------------------------------------------------------------------------------
+    struct ActDelete : IAction
+    {
+        ActDelete();
+        virtual void execute_impl();
+        QMessageBox *msgbox;
+    } static actDelete;
 
     //---------------------------------------------------------------------------------------------
     // Lua function callbacks
     //---------------------------------------------------------------------------------------------
 
-    static int func_delay(lua_State *L);
-    static int func_msgbox(lua_State *L);
+    static int show(lua_State *L);
 
     //---------------------------------------------------------------------------------------------
     // Lua Property callbacks
     //---------------------------------------------------------------------------------------------
-
-    static int prop_time_read(lua_State *L);
-    static int prop_time_str_read(lua_State *L);
-    static int prop_client_name_read(lua_State *L);
 };
 
 
-#endif // LUATABSYS_H
+#endif // LUATAB_MESSAGE_BOX_H

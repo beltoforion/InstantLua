@@ -24,12 +24,12 @@ ILuaTable::~ILuaTable()
 {}
 
 //-------------------------------------------------------------------------------------------------
-ILuaTable* ILuaTable::getTableFromStack(lua_State *pState, int idx)
+ILuaTable* ILuaTable::getTableFromStack(lua_State *L, int idx)
 {
-    if (luaL_getmetafield(pState, idx, "this_ptr"))
+    if (luaL_getmetafield(L, idx, "this_ptr"))
     {
-        ILuaTable *pTable = (ILuaTable*)lua_touserdata(pState, -1);
-        lua_pop(pState, 1);
+        ILuaTable *pTable = (ILuaTable*)lua_touserdata(L, -1);
+        lua_pop(L, 1);
         return pTable;
     }
     else
@@ -102,31 +102,30 @@ int ILuaTable::__tostring(lua_State *pState)
     if (pLuaTable!=NULL)
     {
         lua_pushfstring(pState, pLuaTable->toString().toAscii());
-        return 1;
+        return 0;
     }
     else
     {
+
         return 0;
     }
-/*
-    // push the ILuaTable pointer to the stack
-    int stat = luaL_getmetafield(pState, -1, "this_ptr");
-    if (!stat)
-        return 0;
+}
 
-    const ILuaTable *pLuaTable = (const ILuaTable*)lua_touserdata(pState, -1);
-    lua_pop(pState, 1); // eintrag vom stack nehmen
+//-----------------------------------------------------------------------------
+int ILuaTable::__call(lua_State *L)
+{
+    int argc = lua_gettop(L);
+    ILuaTable *pLuaTable = getTableFromStack(L, -argc);
 
     if (pLuaTable!=NULL)
     {
-        lua_pushfstring(pState, pLuaTable->toString().toAscii());
-        return 1;
+        return pLuaTable->create(L);
     }
     else
     {
+        lua_ex::error(L, "This lua table has no constructor.");
         return 0;
     }
-*/
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -165,6 +164,11 @@ void ILuaTable::bindToLua(lua_State *pState)
     lua_pushcfunction(pState, ILuaTable::__tostring);
     lua_settable(pState, -3);
 
+    // Einsprungpunkt für Lua Konstruktor
+    lua_pushstring(pState, "__call");
+    lua_pushcfunction(pState, ILuaTable::__call);
+    lua_settable(pState, -3);
+
     // store pointer to this as light userdata
     lua_pushstring(pState, "this_ptr");
     lua_pushlightuserdata(pState, (void*)this);
@@ -173,4 +177,13 @@ void ILuaTable::bindToLua(lua_State *pState)
     lua_setmetatable(pState, -2);
 
     lua_setglobal(pState, getName());
+}
+
+//-------------------------------------------------------------------------------------------------
+int ILuaTable::create(lua_State *L)
+
+{
+    // Nichts machen, abgeleitete Klassen können hier
+    // ihren lua Konstruktor implementieren
+    return 0;
 }

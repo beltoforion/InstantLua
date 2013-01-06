@@ -17,7 +17,7 @@
 #include "Locker.h"
 #include "LuaTabWindow.h"
 #include "LuaTabSys.h"
-
+#include "LuaTabMessageBox.h"
 
 //-------------------------------------------------------------------------------------------------
 LuaWorker::LuaWorker(IConsole *pConsole)
@@ -38,6 +38,8 @@ LuaWorker::LuaWorker(IConsole *pConsole)
 
     m_vLuaTables.push_back(new LuaTabWindow());
     m_vLuaTables.push_back(new LuaTabSys());
+    m_vLuaTables.push_back(new LuaTabMessageBox());
+
 
     init();
     initTables();

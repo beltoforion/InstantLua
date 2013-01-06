@@ -235,6 +235,7 @@ INPUT(
 ./build\release\.obj\LuaExtensions.o
 ./build\release\.obj\LuaTabSys.o
 ./build\release\.obj\ILuaAction.o
+./build\release\.obj\LuaTabMessageBox.o
 ./build\release\.obj\moc_DlgSettings.o
 ./build\release\.obj\moc_FrmSourceEdit.o
 ./build\release\.obj\moc_FrmProjectExplorer.o

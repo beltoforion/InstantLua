@@ -24,16 +24,24 @@ LuaTabSys::ActMessageBox LuaTabSys::actMessageBox;
 //-------------------------------------------------------------------------------------------------
 LuaTabSys::ActMessageBox::ActMessageBox()
     :IAction(IAction::SYNC)
+    ,text(NULL)
+    ,subtext(NULL)
+    ,buttons(QMessageBox::Ok)
+    ,result(QMessageBox::NoButton)
 {}
 
 //-------------------------------------------------------------------------------------------------
 void LuaTabSys::ActMessageBox::execute_impl()
 {
-    if (msg!=NULL)
+    if (text!=NULL)
     {
         QMessageBox msgBox;
-        msgBox.setText(msg);
-        msgBox.exec();
+        msgBox.setText(text);
+
+        if (subtext!=NULL)
+            msgBox.setInformativeText(subtext);
+
+        result = static_cast<QMessageBox::StandardButton>(msgBox.exec());
     }
 }
 
@@ -115,8 +123,13 @@ int LuaTabSys::func_msgbox(lua_State *L)
     // execute the action in the main thread
     if (ILuaTable::s_pSyncContext!=NULL)
     {
-        actMessageBox.msg  = luaL_checklstring(L, 1, NULL);
+        actMessageBox.text    = luaL_checklstring(L, 1, NULL);
+        actMessageBox.subtext = luaL_checklstring(L, 2, NULL);
         ILuaTable::s_pSyncContext->doAction(&actMessageBox);
+
+        int nResult = (int)actMessageBox.result;
+
+        // todo: push to stack for the lua script to deal with...
     }
 
     return 0;

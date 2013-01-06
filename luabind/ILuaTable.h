@@ -45,6 +45,8 @@ public:
     virtual const char* getName() const = 0;
     virtual QString toString() const = 0;
 
+    virtual int create(lua_State *lua);
+
 protected:
 
     // Hilfsfunktionen
@@ -58,6 +60,8 @@ private:
     static int __index(lua_State *lua);
     static int __newindex(lua_State *lua);
     static int __tostring(lua_State *lua);
+    static int __call(lua_State *lua);
+
 };
 
 #endif

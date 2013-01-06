@@ -267,7 +267,8 @@ SOURCES += main.cpp\
     luabind/ILuaTable.cpp \
     luabind/LuaExtensions.cpp \
     luabind/LuaTabSys.cpp \
-    luabind/ILuaAction.cpp
+    luabind/ILuaAction.cpp \
+    luabind/LuaTabMessageBox.cpp
 
 HEADERS  += \
     IFile.h \
@@ -429,7 +430,8 @@ HEADERS  += \
     luabind/LuaExtensions.h \
     luabind/LuaTabSys.h \
     luabind/ILuaAction.h \
-    ISyncContext.h
+    ISyncContext.h \
+    luabind/LuaTabMessageBox.h
 
 FORMS    += \
     DlgSettings.ui \

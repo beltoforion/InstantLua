@@ -32,8 +32,6 @@ private:
     // Lua function callbacks
     //---------------------------------------------------------------------------------------------
 
-    static int create(lua_State *pState);
-    static int finalize(lua_State *pState);
 
     //---------------------------------------------------------------------------------------------
     // Lua Property callbacks

@@ -26,7 +26,6 @@ const ILuaTable::SFunction* LuaTabWindow::getFunctions() const
 {
     static const SFunction func[] =
                     {
-                        { "new", LuaTabWindow::create },
                         { NULL, NULL }
                     };
     return func;
@@ -49,21 +48,6 @@ QString LuaTabWindow::toString() const
 // Lua function callbacks
 //
 //-------------------------------------------------------------------------------------------------
-
-int LuaTabWindow::create(lua_State *pState)
-{
-    int argc = lua_gettop(pState);
-    if (argc != 0)
-        return luaL_error(pState, "Got %d arguments expected none.", argc);
-
-    return 0;
-}
-
-//-------------------------------------------------------------------------------------------------
-int LuaTabWindow::finalize(lua_State *pState)
-{
-    return 0;
-}
 
 //-------------------------------------------------------------------------------------------------
 //
