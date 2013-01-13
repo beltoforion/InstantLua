@@ -106,8 +106,9 @@ WndMain::WndMain(QWidget *parent)
     connect(m_pFrmFileExplorer, SIGNAL(checkFile(const IFile*)), m_pLuaWorker, SLOT(on_checkFile(const IFile*)));
     connect(this, SIGNAL(doFile(IFile*)), m_pLuaWorker, SLOT(on_doFile(IFile*)));
 
-
     m_thLua->start();
+
+
 }
 
 //-------------------------------------------------------------------------------------------------

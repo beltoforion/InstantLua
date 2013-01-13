@@ -1,12 +1,9 @@
 #include "LuaTabMessageBox.h"
 
 //--- Standard includes ---------------------------------------------------------------------------
-#include <ctime>
 #include <cassert>
 
 //--- QT Lib includes -----------------------------------------------------------------------------
-#include <QDateTime>
-#include <QThread>
 #include <QMessageBox>
 
 //--- Lua includes --------------------------------------------------------------------------------
@@ -55,7 +52,7 @@ LuaTabMessageBox::ActCreate::ActCreate()
 //-------------------------------------------------------------------------------------------------
 void LuaTabMessageBox::ActCreate::execute_impl()
 {
-    msgbox = new QMessageBox;
+    msgbox = new QMessageBox();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -130,31 +127,25 @@ int LuaTabMessageBox::show(lua_State *L)
     // Parameter 1 muss eine Lua Tabelle sein
     luaL_checktype(L, 1, LUA_TTABLE);
 
-
-
-    if (luaL_getmetafield(L, 1, "this_ptr"))
-    {
-        LuaTabMessageBox *pTable = (LuaTabMessageBox*)lua_touserdata(L, -1);
-        lua_pop(L, 1);
-
-        if (pTable==NULL)
-            return luaL_error(L, "Internal error in LuaTabMessageBox::show(...): No MessageBox object found on the stack");
-
-        lua_getfield(L, 1, "text");
-        actShow.text = luaL_checkstring(L, -1);
-        lua_pop(L, 1);
-
-        lua_getfield(L, 1, "detailed_text");
-        actShow.detailed_text = luaL_checkstring(L, -1);
-        lua_pop(L, 1);
-
-        actShow.msgbox = pTable->m_pMessageBox;
-        ILuaTable::s_pSyncContext->doAction(&actShow);
-    }
-    else
-    {
+    if (!luaL_getmetafield(L, 1, "this_ptr"))
         return luaL_error(L, "Internal error in LuaTabMessageBox::show(...): No meta table found.");
-    }
+
+    LuaTabMessageBox *pTable = (LuaTabMessageBox*)lua_touserdata(L, -1);
+    lua_pop(L, 1);
+
+    if (pTable==NULL)
+        return luaL_error(L, "Internal error in LuaTabMessageBox::show(...): No MessageBox object found on the stack");
+
+    lua_getfield(L, 1, "text");
+    actShow.text = luaL_checkstring(L, -1);
+    lua_pop(L, 1);
+
+    lua_getfield(L, 1, "detailed_text");
+    actShow.detailed_text = luaL_checkstring(L, -1);
+    lua_pop(L, 1);
+
+    actShow.msgbox = pTable->m_pMessageBox;
+    ILuaTable::s_pSyncContext->doAction(&actShow);
 
     return 0;
 }

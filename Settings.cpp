@@ -26,7 +26,7 @@ Settings& Settings::Instance()
 
 //-------------------------------------------------------------------------------------------------
 Settings::Settings()
-    :m_settings(QSettings::IniFormat, QSettings::UserScope, "beltoforion.de", "Luanda")
+    :m_settings(QSettings::IniFormat, QSettings::UserScope, "beltoforion.de", "InstantLua")
     ,m_bEnableLineNumbers(true)
     ,m_bEnableSourceFolding(true)
     ,m_nFontSize(10)

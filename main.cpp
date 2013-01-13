@@ -5,6 +5,13 @@
 #include "Exceptions.h"
 
 
+#include <QGraphicsScene>
+#include <QGraphicsEllipseItem>
+#include <QGraphicsView>
+
+#include <WndCanvas.h>
+
+
 int main(int argc, char *argv[])
 {
     try
@@ -13,6 +20,9 @@ int main(int argc, char *argv[])
         a.setOrganizationName("beltoforion");
         a.setOrganizationDomain("beltoforion.de");
         a.setApplicationName("luanda");
+
+//        WndCanvas w(600, 600, "My Canvas");
+//        w.show();
 
         QSplashScreen *splash = new QSplashScreen;
         splash->setPixmap(QPixmap(":/images/res/splash.png"));

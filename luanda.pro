@@ -268,7 +268,9 @@ SOURCES += main.cpp\
     luabind/LuaExtensions.cpp \
     luabind/LuaTabSys.cpp \
     luabind/ILuaAction.cpp \
-    luabind/LuaTabMessageBox.cpp
+    luabind/LuaTabMessageBox.cpp \
+    luabind/LuaTabCanvas.cpp \
+    WndCanvas.cpp
 
 HEADERS  += \
     IFile.h \
@@ -431,7 +433,9 @@ HEADERS  += \
     luabind/LuaTabSys.h \
     luabind/ILuaAction.h \
     ISyncContext.h \
-    luabind/LuaTabMessageBox.h
+    luabind/LuaTabMessageBox.h \
+    luabind/LuaTabCanvas.h \
+    WndCanvas.h
 
 FORMS    += \
     DlgSettings.ui \
@@ -442,7 +446,8 @@ FORMS    += \
     DlgAbout.ui \
     FrmConsole.ui \
     QGradientPanel.ui \
-    QSelection.ui
+    QSelection.ui \
+    WndCanvas.ui
 
 INCLUDEPATH += $$PWD/3rdparty/QScintilla-gpl-2.7/Qt4Qt5 \
     $$PWD/3rdparty/QScintilla-gpl-2.7/include \

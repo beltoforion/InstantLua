@@ -18,6 +18,7 @@
 #include "LuaTabWindow.h"
 #include "LuaTabSys.h"
 #include "LuaTabMessageBox.h"
+#include "LuaTabCanvas.h"
 
 //-------------------------------------------------------------------------------------------------
 LuaWorker::LuaWorker(IConsole *pConsole)
@@ -39,6 +40,7 @@ LuaWorker::LuaWorker(IConsole *pConsole)
     m_vLuaTables.push_back(new LuaTabWindow());
     m_vLuaTables.push_back(new LuaTabSys());
     m_vLuaTables.push_back(new LuaTabMessageBox());
+    m_vLuaTables.push_back(new LuaTabCanvas());
 
 
     init();
