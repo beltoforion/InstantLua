@@ -13,6 +13,7 @@
 #include "LuaExtensions.h"
 #include "ILuaAction.h"
 #include "ISyncContext.h"
+#include "Exceptions.h"
 
 
 using namespace std;
@@ -78,30 +79,6 @@ void LuaTabCanvas::ActDelete::execute_impl()
 }
 
 //-------------------------------------------------------------------------------------------------
-//  LuaTabCanvas::ActMoveTo
-//-------------------------------------------------------------------------------------------------
-
-LuaTabCanvas::ActMoveTo LuaTabCanvas::actMoveTo;
-
-//-------------------------------------------------------------------------------------------------
-LuaTabCanvas::ActMoveTo::ActMoveTo()
-    :IAction(IAction::SYNC)
-    ,canvas(NULL)
-    ,x(0)
-    ,y(0)
-{}
-
-//-------------------------------------------------------------------------------------------------
-void LuaTabCanvas::ActMoveTo::execute_impl()
-{
-    Q_ASSERT(canvas!=NULL);
-    if (canvas==NULL)
-        return;
-
-    canvas->moveTo(x, y);
-}
-
-//-------------------------------------------------------------------------------------------------
 //  class LuaTabCanvas
 //-------------------------------------------------------------------------------------------------
 
@@ -146,22 +123,22 @@ QString LuaTabCanvas::toString() const
 
 //-------------------------------------------------------------------------------------------------
 int LuaTabCanvas::moveTo(lua_State *L)
+TRY
 {
-    int argc = lua_gettop(L);
-    if (argc!=3)
-        return luaL_error(L, "Error in Canvas:moveTo(x, y): Invalid number of arguments.");
+    LuaTabCanvas *pTable = (LuaTabCanvas*)checkArguments(L, 3, "Canvas:moveTo(x, y)");
 
-    // Parameter 1 muss eine Lua Tabelle sein
-    luaL_checktype(L, 1, LUA_TTABLE);
+    struct ActMoveTo : IAction
+    {
+        virtual void execute_impl()
+        {
+            if (canvas!=NULL)
+                canvas->moveTo(x, y);
+        }
 
-    if (!luaL_getmetafield(L, 1, "this_ptr"))
-        return luaL_error(L, "Internal error in Canvas:moveTo(x, y): No meta table found.");
-
-    LuaTabCanvas *pTable = (LuaTabCanvas*)lua_touserdata(L, -1);
-    lua_pop(L, 1);
-
-    if (pTable==NULL)
-        return luaL_error(L, "Internal error in Canvas:moveTo(x, y): No Canvas object found on the stack");
+        WndCanvas *canvas;
+        double x;
+        double y;
+    } static actMoveTo;
 
     actMoveTo.canvas = pTable->m_pCanvas;
     actMoveTo.x = luaL_checknumber(L, 2);
@@ -170,32 +147,16 @@ int LuaTabCanvas::moveTo(lua_State *L)
 
     return 0;
 }
+CATCH
 
 //-------------------------------------------------------------------------------------------------
 int LuaTabCanvas::drawTo(lua_State *L)
+TRY
 {
-    int argc = lua_gettop(L);
-    if (argc!=3)
-        return luaL_error(L, "Error in Canvas:drawTo(x, y): Invalid number of arguments.");
-
-    // Parameter 1 muss eine Lua Tabelle sein
-    luaL_checktype(L, 1, LUA_TTABLE);
-
-    if (!luaL_getmetafield(L, 1, "this_ptr"))
-        return luaL_error(L, "Internal error in Canvas:drawTo(x, y): No meta table found.");
-
-    LuaTabCanvas *pTable = (LuaTabCanvas*)lua_touserdata(L, -1);
-    lua_pop(L, 1);
-
-    if (pTable==NULL)
-        return luaL_error(L, "Internal error in Canvas:drawTo(x, y): No Canvas object found on the stack");
+    LuaTabCanvas *pTable = (LuaTabCanvas*)checkArguments(L, 3, "Canvas:drawTo(x, y)");
 
     struct ActDrawTo : IAction
     {
-        ActDrawTo()
-            :IAction(IAction::SYNC)
-        {}
-
         virtual void execute_impl()
         {
             if (canvas)
@@ -213,6 +174,91 @@ int LuaTabCanvas::drawTo(lua_State *L)
 
     return 0;
 }
+CATCH
+
+//-------------------------------------------------------------------------------------------------
+int LuaTabCanvas::drawEllipse(lua_State *L)
+TRY
+{
+    LuaTabCanvas *pTable = (LuaTabCanvas*)checkArguments(L, 5, "Canvas:drawEllipse(x, y)");
+
+    struct ActDrawEllipse : IAction
+    {
+        virtual void execute_impl()
+        {
+            if (canvas)
+                canvas->drawEllipse(x1, y1, x2, y2);
+        }
+
+        double x1, y1, x2, y2;
+        WndCanvas *canvas;
+    } static actDrawEllipse;
+
+    actDrawEllipse.canvas = pTable->m_pCanvas;
+    actDrawEllipse.x1 = luaL_checknumber(L, 2);
+    actDrawEllipse.y1 = luaL_checknumber(L, 3);
+    actDrawEllipse.x2 = luaL_checknumber(L, 4);
+    actDrawEllipse.y2 = luaL_checknumber(L, 5);
+    ILuaTable::s_pSyncContext->doAction(&actDrawEllipse);
+
+    return 0;
+}
+CATCH
+
+//-------------------------------------------------------------------------------------------------
+int LuaTabCanvas::drawCircle(lua_State *L)
+TRY
+{
+    LuaTabCanvas *pTable = (LuaTabCanvas*)checkArguments(L, 4, "Canvas:drawCircle(x, y, r)");
+
+    struct ActDrawCicrle : IAction
+    {
+        virtual void execute_impl()
+        {
+            if (canvas)
+                canvas->drawCircle(x, y, r);
+        }
+
+        double x, y, r;
+        WndCanvas *canvas;
+    } static actDrawCircle;
+
+    actDrawCircle.canvas = pTable->m_pCanvas;
+    actDrawCircle.x = luaL_checknumber(L, 2);
+    actDrawCircle.y = luaL_checknumber(L, 3);
+    actDrawCircle.r = luaL_checknumber(L, 4);
+    ILuaTable::s_pSyncContext->doAction(&actDrawCircle);
+
+    return 0;
+}
+CATCH
+
+//-------------------------------------------------------------------------------------------------
+int LuaTabCanvas::drawPoint(lua_State *L)
+TRY
+{
+    LuaTabCanvas *pTable = (LuaTabCanvas*)checkArguments(L, 3, "Canvas:drawPoint(x, y)");
+
+    struct ActDrawPoint : IAction
+    {
+        virtual void execute_impl()
+        {
+            if (canvas)
+                canvas->drawPoint(x, y);
+        }
+
+        double x, y;
+        WndCanvas *canvas;
+    } static actDrawPoint;
+
+    actDrawPoint.canvas = pTable->m_pCanvas;
+    actDrawPoint.x = luaL_checknumber(L, 2);
+    actDrawPoint.y = luaL_checknumber(L, 3);
+    ILuaTable::s_pSyncContext->doAction(&actDrawPoint);
+
+    return 0;
+}
+CATCH
 
 //-------------------------------------------------------------------------------------------------
 int LuaTabCanvas::create(lua_State *L)
@@ -246,6 +292,15 @@ int LuaTabCanvas::create(lua_State *L)
 
     lua_pushcfunction(L, LuaTabCanvas::drawTo);
     lua_setfield(L, -2, "drawTo");
+
+    lua_pushcfunction(L, LuaTabCanvas::drawEllipse);
+    lua_setfield(L, -2, "drawEllipse");
+
+    lua_pushcfunction(L, LuaTabCanvas::drawCircle);
+    lua_setfield(L, -2, "drawCircle");
+
+    lua_pushcfunction(L, LuaTabCanvas::drawPoint);
+    lua_setfield(L, -2, "drawPoint");
 
     // Metatabelle eintrichten und this_ptr darin abspeichern
     lua_newtable(L);

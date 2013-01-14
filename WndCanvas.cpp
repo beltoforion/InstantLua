@@ -35,10 +35,7 @@ WndCanvas::~WndCanvas()
 void WndCanvas::setSceneSize(int w, int h)
 {
     resize(w + 2*geometry().x() + 5, h + geometry().y() + 5);
-
     m_scene.setSceneRect(0, 0, w, h);
-    QGraphicsEllipseItem *pEllipse = new QGraphicsEllipseItem(NULL, &m_scene);
-    pEllipse->setRect(0,0,w,h);
 }
 
 //-----------------------------------------------------------------------------
@@ -50,8 +47,29 @@ void WndCanvas::moveTo(double x, double y)
 //-----------------------------------------------------------------------------
 void WndCanvas::drawTo(double x, double y)
 {
-    QGraphicsLineItem *pLine = new QGraphicsLineItem(NULL, &m_scene);
-    pLine->setLine(m_pos.x(), m_pos.y(), x, y);
+    m_scene.addLine(m_pos.x(), m_pos.y(), x, y);
+    m_pos = QPoint(x, y);
+}
+
+//-----------------------------------------------------------------------------
+void WndCanvas::drawPoint(double x, double y)
+{
+    m_scene.addLine(x, y, x, y);
+    m_pos = QPoint(x, y);
+}
+
+//-----------------------------------------------------------------------------
+void WndCanvas::drawEllipse(double x1, double y1, double x2, double y2)
+{
+    m_scene.addEllipse(x1, y1, x2, y2);
+    m_pos = QPoint(x2, y2);
+}
+
+//-----------------------------------------------------------------------------
+void WndCanvas::drawCircle(double x, double y, double rad)
+{
+    double r_2 = 2*rad;
+    m_scene.addEllipse(x-rad, y-rad, r_2, r_2);
     m_pos = QPoint(x, y);
 }
 

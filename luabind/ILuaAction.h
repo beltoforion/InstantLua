@@ -19,7 +19,7 @@ public:
         ASYNC
     };
 
-    IAction(EActionType eType = IAction::ASYNC);
+    IAction(EActionType eType = IAction::SYNC);
     virtual ~IAction();
     virtual void execute_impl() = 0;
 

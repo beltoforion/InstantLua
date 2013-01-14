@@ -59,21 +59,14 @@ private:
     } static actDelete;
 
     //---------------------------------------------------------------------------------------------
-    struct ActMoveTo : IAction
-    {
-        ActMoveTo();
-        virtual void execute_impl();
-        WndCanvas *canvas;
-        double x;
-        double y;
-    } static actMoveTo;
-
-    //---------------------------------------------------------------------------------------------
     // Lua function callbacks
     //---------------------------------------------------------------------------------------------
 
     static int moveTo(lua_State *L);
     static int drawTo(lua_State *L);
+    static int drawEllipse(lua_State *L);
+    static int drawCircle(lua_State *L);
+    static int drawPoint(lua_State *L);
 
     //---------------------------------------------------------------------------------------------
     // Lua Property callbacks
