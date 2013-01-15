@@ -61,15 +61,14 @@ void WndCanvas::drawPoint(double x, double y)
 //-----------------------------------------------------------------------------
 void WndCanvas::drawEllipse(double x1, double y1, double x2, double y2)
 {
-    m_scene.addEllipse(x1, y1, x2, y2);
+    m_scene.addEllipse(x1, y1, x2-x1, y2-y1);
     m_pos = QPoint(x2, y2);
 }
 
 //-----------------------------------------------------------------------------
-void WndCanvas::drawCircle(double x, double y, double rad)
+void WndCanvas::drawCircle(double x, double y, double r)
 {
-    double r_2 = 2*rad;
-    m_scene.addEllipse(x-rad, y-rad, r_2, r_2);
+    m_scene.addEllipse(x-r, y-r, 2*r, 2*r);
     m_pos = QPoint(x, y);
 }
 
@@ -77,20 +76,13 @@ void WndCanvas::drawCircle(double x, double y, double rad)
 void WndCanvas::wheelEvent(QWheelEvent* event)
 {
     QTransform t = transform();
+/*
     qDebug() << "m11=" << t.m11() << "; m22=" << t.m22();
     qDebug() << "scene_width=" << m_scene.width() << "; scene_height=" << m_scene.height();
     qDebug() << "width=" << geometry().width() << "; height=" << geometry().height();
-
+*/
     double fx = (event->delta() > 0) ? 1.1 : 1.0/1.1,
            fy = fx;
-
-/*
-    if (t.m11()*m_scene.width()<geometry().width())
-        fx = 1;
-
-    if (t.m22()*m_scene.height()<geometry().height())
-        fy = 1;
-*/
 
     scale(fx, fy);
 }

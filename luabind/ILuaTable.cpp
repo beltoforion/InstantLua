@@ -64,6 +64,28 @@ ILuaTable* ILuaTable::checkArguments(lua_State *L, int argRequired, const QStrin
 }
 
 //-------------------------------------------------------------------------------------------------
+void* ILuaTable::checkAndUnwrap(lua_State *L, int argRequired, const QString& sFunName)
+{
+    int argc = lua_gettop(L);
+    if (argc!=argRequired)
+        throw Exception(QString("Error in Canvas:moveTo(x, y): Invalid number of arguments.").arg(sFunName));
+
+    // Parameter 1 muss eine Lua Tabelle sein
+    luaL_checktype(L, 1, LUA_TTABLE);
+
+    if (!luaL_getmetafield(L, 1, "wrapped_ptr"))
+        throw Exception(QString("Internal error in %1: No meta table found.").arg(sFunName).toAscii());
+
+    void *pTable = lua_touserdata(L, -1);
+    lua_pop(L, 1);
+
+    if (pTable==NULL)
+        throw Exception(QString("Internal error in %1: No meta table found.").arg(sFunName).toAscii());
+
+    return pTable;
+}
+
+//-------------------------------------------------------------------------------------------------
 /** \brief Implementierung von Property read-only zugriffen durch implementieren der
            Lua eigenen __index metafunktion.
 */

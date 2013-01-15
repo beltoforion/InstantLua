@@ -18,46 +18,7 @@
 
 using namespace std;
 
-LuaTabCanvas::ActShow LuaTabCanvas::actShow;
 
-//-------------------------------------------------------------------------------------------------
-LuaTabCanvas::ActShow::ActShow()
-    :IAction(IAction::SYNC)
-    ,text("")
-    ,detailed_text("")
-    ,canvas(NULL)
-{}
-
-//-------------------------------------------------------------------------------------------------
-void LuaTabCanvas::ActShow::execute_impl()
-{
-    if (canvas!=NULL)
-    {
-        canvas->show();
-    }
-}
-
-//-------------------------------------------------------------------------------------------------
-//  LuaTabCanvas::ActCreate
-//-------------------------------------------------------------------------------------------------
-
-LuaTabCanvas::ActCreate LuaTabCanvas::actCreate;
-
-//-------------------------------------------------------------------------------------------------
-LuaTabCanvas::ActCreate::ActCreate()
-    :IAction(IAction::SYNC)
-    ,canvas(NULL)
-    ,width(500)
-    ,height(500)
-    ,title("Name to be defined")
-{}
-
-//-------------------------------------------------------------------------------------------------
-void LuaTabCanvas::ActCreate::execute_impl()
-{
-    canvas = new WndCanvas(width, height, title);
-    canvas->show();
-}
 
 //-------------------------------------------------------------------------------------------------
 //  LuaTabCanvas::ActDelete
@@ -84,7 +45,6 @@ void LuaTabCanvas::ActDelete::execute_impl()
 
 LuaTabCanvas::LuaTabCanvas()
     :ILuaTable()
-    ,m_pCanvas(NULL)
 {}
 
 //-------------------------------------------------------------------------------------------------
@@ -125,7 +85,7 @@ QString LuaTabCanvas::toString() const
 int LuaTabCanvas::moveTo(lua_State *L)
 TRY
 {
-    LuaTabCanvas *pTable = (LuaTabCanvas*)checkArguments(L, 3, "Canvas:moveTo(x, y)");
+    WndCanvas *pCanvas = (WndCanvas*)checkAndUnwrap(L, 3, "Canvas:moveTo(x, y)");
 
     struct ActMoveTo : IAction
     {
@@ -140,7 +100,7 @@ TRY
         double y;
     } static actMoveTo;
 
-    actMoveTo.canvas = pTable->m_pCanvas;
+    actMoveTo.canvas = pCanvas;
     actMoveTo.x = luaL_checknumber(L, 2);
     actMoveTo.y = luaL_checknumber(L, 3);
     ILuaTable::s_pSyncContext->doAction(&actMoveTo);
@@ -153,7 +113,7 @@ CATCH
 int LuaTabCanvas::drawTo(lua_State *L)
 TRY
 {
-    LuaTabCanvas *pTable = (LuaTabCanvas*)checkArguments(L, 3, "Canvas:drawTo(x, y)");
+    WndCanvas *pCanvas = (WndCanvas*)checkAndUnwrap(L, 3, "Canvas:drawTo(x, y)");
 
     struct ActDrawTo : IAction
     {
@@ -167,7 +127,7 @@ TRY
         WndCanvas *canvas;
     } static actDrawTo;
 
-    actDrawTo.canvas = pTable->m_pCanvas;
+    actDrawTo.canvas = pCanvas;
     actDrawTo.x = luaL_checknumber(L, 2);
     actDrawTo.y = luaL_checknumber(L, 3);
     ILuaTable::s_pSyncContext->doAction(&actDrawTo);
@@ -180,7 +140,7 @@ CATCH
 int LuaTabCanvas::drawEllipse(lua_State *L)
 TRY
 {
-    LuaTabCanvas *pTable = (LuaTabCanvas*)checkArguments(L, 5, "Canvas:drawEllipse(x, y)");
+    WndCanvas *pCanvas = (WndCanvas*)checkAndUnwrap(L, 5, "Canvas:drawEllipse(x, y)");
 
     struct ActDrawEllipse : IAction
     {
@@ -194,7 +154,7 @@ TRY
         WndCanvas *canvas;
     } static actDrawEllipse;
 
-    actDrawEllipse.canvas = pTable->m_pCanvas;
+    actDrawEllipse.canvas = pCanvas;
     actDrawEllipse.x1 = luaL_checknumber(L, 2);
     actDrawEllipse.y1 = luaL_checknumber(L, 3);
     actDrawEllipse.x2 = luaL_checknumber(L, 4);
@@ -209,7 +169,7 @@ CATCH
 int LuaTabCanvas::drawCircle(lua_State *L)
 TRY
 {
-    LuaTabCanvas *pTable = (LuaTabCanvas*)checkArguments(L, 4, "Canvas:drawCircle(x, y, r)");
+    WndCanvas *pCanvas = (WndCanvas*)checkAndUnwrap(L, 4, "Canvas:drawCircle(x, y, r)");
 
     struct ActDrawCicrle : IAction
     {
@@ -223,7 +183,7 @@ TRY
         WndCanvas *canvas;
     } static actDrawCircle;
 
-    actDrawCircle.canvas = pTable->m_pCanvas;
+    actDrawCircle.canvas = pCanvas;
     actDrawCircle.x = luaL_checknumber(L, 2);
     actDrawCircle.y = luaL_checknumber(L, 3);
     actDrawCircle.r = luaL_checknumber(L, 4);
@@ -237,7 +197,7 @@ CATCH
 int LuaTabCanvas::drawPoint(lua_State *L)
 TRY
 {
-    LuaTabCanvas *pTable = (LuaTabCanvas*)checkArguments(L, 3, "Canvas:drawPoint(x, y)");
+    WndCanvas *pCanvas = (WndCanvas*)checkAndUnwrap(L, 3, "Canvas:drawPoint(x, y)");
 
     struct ActDrawPoint : IAction
     {
@@ -251,7 +211,7 @@ TRY
         WndCanvas *canvas;
     } static actDrawPoint;
 
-    actDrawPoint.canvas = pTable->m_pCanvas;
+    actDrawPoint.canvas = pCanvas;
     actDrawPoint.x = luaL_checknumber(L, 2);
     actDrawPoint.y = luaL_checknumber(L, 3);
     ILuaTable::s_pSyncContext->doAction(&actDrawPoint);
@@ -307,23 +267,32 @@ int LuaTabCanvas::create(lua_State *L)
 
     lua_pushstring(L, "this_ptr");
     lua_pushlightuserdata(L, (void*)this);
-
     lua_settable(L, -3);
 
-    lua_setmetatable(L, -2);
-
-    // Anlegen bzw. Zerstören des Graphikfensters
-    if (m_pCanvas!=NULL)
+    struct ActCreate : IAction
     {
-        actDelete.canvas = m_pCanvas;
-        ILuaTable::s_pSyncContext->doAction(&actDelete);
-    }
+        virtual void execute_impl()
+        {
+            canvas = new WndCanvas(width, height, title);
+            canvas->show();
+        }
+
+        WndCanvas *canvas;
+        int width;
+        int height;
+        QString title;
+    } static actCreate;
 
     actCreate.width = width;
     actCreate.height = height;
     actCreate.title = szTitle;
     ILuaTable::s_pSyncContext->doAction(&actCreate);
-    m_pCanvas = actCreate.canvas;
+
+    lua_pushstring(L, "wrapped_ptr");
+    lua_pushlightuserdata(L, actCreate.canvas);
+    lua_settable(L, -3);
+
+    lua_setmetatable(L, -2);
 
     return 1;
 }

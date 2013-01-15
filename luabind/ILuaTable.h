@@ -60,6 +60,7 @@ protected:
     // Hilfsfunktionen
     static ILuaTable* getTableFromStack(lua_State *pState, int idx);
     static ILuaTable* checkArguments(lua_State *L, int argRequired, const QString& sFunName);
+    static void* checkAndUnwrap(lua_State *L, int argRequired, const QString& sFunName);
     static ISyncContext *s_pSyncContext;
 
 private:

@@ -245,7 +245,7 @@ void LuaWorker::init()
 
     // folgender code stammt aus linit.c:
     const luaL_Reg lualibs[] = {
-                                {"", luaopen_base},
+                                {"base",          luaopen_base},
                                 {LUA_LOADLIBNAME, luaopen_package},
                                 {LUA_TABLIBNAME,  luaopen_table},
                                 {LUA_IOLIBNAME,   luaopen_io},
@@ -257,11 +257,10 @@ void LuaWorker::init()
                                };
 
     const luaL_Reg *lib = lualibs;
-    for (; lib->func; lib++)
+    for (lib = lualibs; lib->func; lib++)
     {
-        lua_pushcfunction(m_luaState, lib->func);
-        lua_pushstring(m_luaState, lib->name);
-        lua_call(m_luaState, 1, 0);
+        luaL_requiref(m_luaState, lib->name, lib->func, 1);
+        lua_pop(m_luaState, 1);  /* remove lib */
     }
 }
 

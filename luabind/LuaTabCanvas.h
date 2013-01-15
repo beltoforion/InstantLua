@@ -24,31 +24,9 @@ public:
 
 private:
 
-    WndCanvas *m_pCanvas;
-
     //---------------------------------------------------------------------------------------------
     // Aktionen für Qt Lib funktionen, die im Hauptthread ausgeführt werden müssen
     //---------------------------------------------------------------------------------------------
-
-    struct ActShow : IAction
-    {
-        ActShow();
-        virtual void execute_impl();
-        const char *text;
-        const char *detailed_text;
-        WndCanvas *canvas;
-    } static actShow;
-
-    //---------------------------------------------------------------------------------------------
-    struct ActCreate : IAction
-    {
-        ActCreate();
-        virtual void execute_impl();
-        WndCanvas *canvas;
-        int width;
-        int height;
-        QString title;
-    } static actCreate;
 
     //---------------------------------------------------------------------------------------------
     struct ActDelete : IAction
