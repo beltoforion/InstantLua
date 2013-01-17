@@ -1,6 +1,9 @@
 #include "ILuaAction.h"
 
 #include <cassert>
+#include <QDebug>
+#include <QThread>
+#include <QMutexLocker>
 
 
 //-------------------------------------------------------------------------------------------------
@@ -24,15 +27,20 @@ void IAction::execute()
 {
     try
     {
+        QMutexLocker lock(&m_mtxAction);
         execute_impl();
 
         if (m_eType==IAction::SYNC)
+        {
             m_wait.wakeAll();
+        }
     }
     catch(...)
     {
         if (m_eType==IAction::SYNC)
+        {
             m_wait.wakeAll();
+        }
 
         throw;
     }
@@ -58,6 +66,11 @@ ActionWaiter::ActionWaiter(IAction *pAction)
 //-------------------------------------------------------------------------------------------------
 ActionWaiter::~ActionWaiter()
 {
-    m_pAction->m_wait.wait(&m_pAction->m_mtxAction);
+    bool bStat = m_pAction->m_wait.wait(&m_pAction->m_mtxAction, 20000);
+    if (!bStat)
+    {
+        qDebug("%d: FAIL:  Action waiter timeout: Wait for WaitCondition.", reinterpret_cast<int>(QThread::currentThreadId()));
+    }
+
     m_pAction->m_mtxAction.unlock();
 }

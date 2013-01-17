@@ -2,7 +2,7 @@
 #define WNDCANVAS_H
 
 #include <QGraphicsView>
-
+#include <QGraphicsItemPointList.h>
 
 namespace Ui {
 class WndCanvas;
@@ -29,6 +29,8 @@ public:
 private:
     Ui::WndCanvas *ui;
     QGraphicsScene m_scene;
+    QGraphicsItemPointList *m_pPointList;
+
     QPoint m_pos;
 };
 

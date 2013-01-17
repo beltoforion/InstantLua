@@ -238,6 +238,7 @@ INPUT(
 ./build\release\.obj\LuaTabMessageBox.o
 ./build\release\.obj\LuaTabCanvas.o
 ./build\release\.obj\WndCanvas.o
+./build\release\.obj\QGraphicsItemPointList.o
 ./build\release\.obj\moc_DlgSettings.o
 ./build\release\.obj\moc_FrmSourceEdit.o
 ./build\release\.obj\moc_FrmProjectExplorer.o

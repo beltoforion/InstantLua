@@ -348,8 +348,6 @@ void WndMain::on_lua_error(QString sErr)
 //-------------------------------------------------------------------------------------------------
 void WndMain::on_lua_exec_in_main_thread(IAction *pAction)
 {
-    qDebug() << "Executing action in main thread\n";
-
     if (pAction!=NULL)
         pAction->execute();
 }

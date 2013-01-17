@@ -270,7 +270,8 @@ SOURCES += main.cpp\
     luabind/ILuaAction.cpp \
     luabind/LuaTabMessageBox.cpp \
     luabind/LuaTabCanvas.cpp \
-    WndCanvas.cpp
+    WndCanvas.cpp \
+    QGraphicsItemPointList.cpp
 
 HEADERS  += \
     IFile.h \
@@ -435,7 +436,8 @@ HEADERS  += \
     ISyncContext.h \
     luabind/LuaTabMessageBox.h \
     luabind/LuaTabCanvas.h \
-    WndCanvas.h
+    WndCanvas.h \
+    QGraphicsItemPointList.h
 
 FORMS    += \
     DlgSettings.ui \

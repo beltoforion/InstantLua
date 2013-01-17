@@ -5,6 +5,8 @@
 #include <QWheelEvent>
 #include <QDebug>
 
+#include <QGraphicsItemPointList.h>
+
 //-------------------------------------------------------------------------------------------------
 WndCanvas::WndCanvas(int width, int height, QString title)
     :QGraphicsView((QWidget*)0)
@@ -12,6 +14,8 @@ WndCanvas::WndCanvas(int width, int height, QString title)
     ,m_pos(0,0)
 {
     ui->setupUi(this);
+
+    m_pPointList = new QGraphicsItemPointList(&m_scene);
 
     setWindowTitle(title);
     setScene(&m_scene);
@@ -54,8 +58,13 @@ void WndCanvas::drawTo(double x, double y)
 //-----------------------------------------------------------------------------
 void WndCanvas::drawPoint(double x, double y)
 {
-    m_scene.addLine(x, y, x, y);
+    m_pPointList->add((qreal)x, (qreal)y);
+//    QGraphicsLineItem *pLine = new QGraphicsLineItem(NULL, &m_scene);
+//    pLine->setLine(x, y, x, y);
     m_pos = QPoint(x, y);
+
+//    m_scene.addLine(x, y, x, y);
+//    m_pos = QPoint(x, y);
 }
 
 //-----------------------------------------------------------------------------

@@ -117,6 +117,7 @@ FrmSourceEdit::FrmSourceEdit(FrmFileExplorer *pParent, IFile::ptr_type pFile)
 
         m_pSrcEdit->setLexer(pLexer);
         m_pSrcEdit->setFolding(QsciScintilla::BoxedTreeFoldStyle, 2 /* margin */);
+        m_pSrcEdit->setEolMode(QsciScintilla::EolUnix);
 
         // Margins
         m_pSrcEdit->setMarginWidth(0, 40);
@@ -214,7 +215,8 @@ void FrmSourceEdit::updateFile(bool bSetModifiedFlag)
     qDebug() << "clearing buffered content of file " << m_pFile->getName();
     for (int i=0; i<nLines; ++i)
     {
-        m_pFile->addLine(m_pSrcEdit->text(i));
+        QString sLine = m_pSrcEdit->text(i);
+        m_pFile->addLine(sLine);
     }
     qDebug() << "content of file " << m_pFile->getName() << "updated";
 

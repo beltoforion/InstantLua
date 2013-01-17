@@ -111,7 +111,8 @@ void FileLua::saveImpl()
     QTextStream stream( &file );
     for (int i=0; i<m_vLines.size(); ++i)
     {
-        stream << m_vLines[i];
+        QString sLine = m_vLines[i];
+        stream << m_vLines[i]; //sLine;
     }
     file.close();
 }
