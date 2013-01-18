@@ -1,3 +1,9 @@
+function foo.bar()
+end
+
+function foo.bar2()
+end
+
 -- require "messagebox"
 
 print("Starting test script")

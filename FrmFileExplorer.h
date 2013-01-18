@@ -28,6 +28,7 @@ public:
 
     void addFile(IFile::ptr_type pFile);
     void saveAll(bool bModifiedOnly);
+    void saveActiveFileAs(const QString &sFile);
 
     void dropEvent(QDropEvent *evt);
     void dragEnterEvent(QDragEnterEvent *event);
@@ -46,7 +47,8 @@ public:
     virtual void notifyBeforeFileSave(IFile *pFile);
     virtual void notifyFileModified(const IFile *pFile);
     virtual void notifyFileLineSelected(const IFile *pFile, int nLine, ETextMarker eMarker);
-
+    virtual void notifyFileLinesChanged(const IFile *pFile);
+    virtual void notifyPathChanged(const IFile *pFile);
 
 private:
     Ui::FrmFileExplorer *ui;

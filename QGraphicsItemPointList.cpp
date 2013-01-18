@@ -46,7 +46,9 @@ void QGraphicsItemPointList::paint(QPainter *painter,
     for (int i=0; i<m_vPoints.size(); ++i)
     {
         const SPoint &s = m_vPoints[i];
-        painter->drawPoint(s.x, s.y);
+        //painter->drawPoint(s.x, s.y);
+        painter->drawLine(s.x-1, s.y,   s.x+1, s.y);
+        painter->drawLine(s.x,   s.y-1, s.x,   s.y+1);
     }
 }
 

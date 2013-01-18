@@ -221,14 +221,7 @@ void WndMain::openFile(QString sFile)
     m_pFrmFileExplorer->addFile(pFile);
     pFile->load();
 
-    // update recent file list
-    m_recentFiles.removeAll(sFile);
-    m_recentFiles.prepend(sFile);
-
-    while (m_recentFiles.size() > MaxRecentFiles)
-        m_recentFiles.removeLast();
-
-    updateRecentFileActions();
+    addRecentFileAction(sFile);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -239,6 +232,23 @@ void WndMain::on_actionSave_triggered()
     m_pFrmInfo->setSubTitle("please wait...");
     m_pFrmInfo->show(2000);
     m_pFrmFileExplorer->saveAll(true);
+}
+
+//-------------------------------------------------------------------------------------------------
+/** \brief Speichert die geöffnete Datei unter einem anderen Namen ab. */
+void WndMain::on_actionSave_as_triggered()
+{
+    QString sFile = QFileDialog::getSaveFileName(this,
+                                                 tr("Save file as"),
+                                                 m_pFrmExplorer->getProjectPath().absolutePath(),
+                                                 tr("LUA Files (*.lua)"));
+
+    if (sFile.length()>0)
+    {
+        m_pFrmFileExplorer->saveActiveFileAs(sFile);
+        addRecentFileAction(sFile);
+    }
+
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -391,6 +401,19 @@ void WndMain::openRecentFile()
 }
 
 //-------------------------------------------------------------------------------------------------
+void WndMain::addRecentFileAction(const QString &sFile)
+{
+    // update recent file list
+    m_recentFiles.removeAll(sFile);
+    m_recentFiles.prepend(sFile);
+
+    while (m_recentFiles.size() > MaxRecentFiles)
+        m_recentFiles.removeLast();
+
+    updateRecentFileActions();
+}
+
+//-------------------------------------------------------------------------------------------------
 void WndMain::updateRecentFileActions()
 {
     int nRecentFiles = qMin(m_recentFiles.size(), (int)MaxRecentFiles);
@@ -432,3 +455,4 @@ void WndMain::on_actionStop_triggered()
     if (m_pLuaWorker!=NULL)
         m_pLuaWorker->stop();
 }
+

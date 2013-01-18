@@ -5,6 +5,7 @@
 #include <QVector>
 #include <QRegExp>
 #include <QDebug>
+#include <QMessageBox>
 
 //--- Luanda framework ----------------------------------------------------------------------------
 #include "IFile.h"
@@ -99,20 +100,31 @@ void FrmProjectExplorer::notifyFileActivate(const IFile *pFile)
 {
     try
     {
+        if (m_pActiveFile!=pFile)
+        {
+            updateOutline(pFile);
+        }
         m_pActiveFile = pFile;
-        updateOutline(pFile);
     }
-    catch(std::exception exc)
+    catch(const Exception &exc)
     {
+        QMessageBox msgBox;
+        msgBox.setText(exc.getMessage());
+        msgBox.exec();
     }
     catch(...)
     {
+        QMessageBox msgBox;
+        msgBox.setText("Internal error in FrmProjectExplorer::notifyFileActivate");
+        msgBox.exec();
     }
 }
 
 //-------------------------------------------------------------------------------------------------
 void FrmProjectExplorer::notifyFileLoad(const IFile *pFile)
-{}
+{
+    updateOutline(pFile);
+}
 
 //-------------------------------------------------------------------------------------------------
 void FrmProjectExplorer::notifyBeforeFileSave(IFile *pFile)
@@ -125,6 +137,18 @@ void FrmProjectExplorer::notifyFileModified(const IFile *pFile)
 //-------------------------------------------------------------------------------------------------
 void FrmProjectExplorer::notifyFileLineSelected(const IFile *pFile, int nLine, ETextMarker eMarker)
 {}
+
+//-------------------------------------------------------------------------------------------------
+void FrmProjectExplorer::notifyFileLinesChanged(const IFile *pFile)
+{
+    updateOutline(pFile);
+}
+
+//-------------------------------------------------------------------------------------------------
+void FrmProjectExplorer::notifyPathChanged(const IFile *pFile)
+{
+    updateOutline(pFile);
+}
 
 //-------------------------------------------------------------------------------------------------
 //

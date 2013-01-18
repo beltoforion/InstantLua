@@ -74,6 +74,7 @@ private:
     void resizeEvent(QResizeEvent *);
     void createRecentFileMenus();
     void updateRecentFileActions();
+    void addRecentFileAction(const QString &sFile);
     void openFile(QString sFile);
 
     // ISettingsProvide
@@ -108,6 +109,8 @@ private slots:
 
 
     void on_actionStop_triggered();
+
+    void on_actionSave_as_triggered();
 
 private:
     std::streambuf *m_pConsoleStreamBuf;

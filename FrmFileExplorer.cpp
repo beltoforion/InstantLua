@@ -102,13 +102,24 @@ void FrmFileExplorer::saveAll(bool bModifiedOnly)
 }
 
 //-------------------------------------------------------------------------------------------------
+void FrmFileExplorer::saveActiveFileAs(const QString &sFile)
+{
+    IFile *pActiveFile = getActiveFile();
+    if (pActiveFile!=NULL)
+    {
+        pActiveFile->setPath(sFile);
+        pActiveFile->save();
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
 void FrmFileExplorer::notifyFileActivate(const IFile *pFile)
 {
     int i = getTabIndex(pFile);
     if (i>=0)
     {
         ui->tcProject->setCurrentIndex(i);
-        ui->paCaption->setInfo(1, QString("File: %1    ").arg(pFile->path()));
+        ui->paCaption->setInfo(1, QString("File: %1    ").arg(pFile->getPath()));
     }
 }
 
@@ -164,6 +175,21 @@ void FrmFileExplorer::notifyFileLineSelected(const IFile *pFile, int nLine, ETex
 }
 
 //-------------------------------------------------------------------------------------------------
+void FrmFileExplorer::notifyFileLinesChanged(const IFile *pFile)
+{}
+
+//-------------------------------------------------------------------------------------------------
+void FrmFileExplorer::notifyPathChanged(const IFile *pFile)
+{
+    int i = getTabIndex(pFile);
+    if (i>=0)
+    {
+        ui->tcProject->setTabText(i, pFile->getName());
+        ui->paCaption->setInfo(1, QString("File: %1    ").arg(pFile->getPath()));
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
 /** \brief Sucht zu einem gegebenen Pfad die passende Datei des Explorers.
 */
 IFile* FrmFileExplorer::findFile(const QString &sPath)
@@ -172,7 +198,7 @@ IFile* FrmFileExplorer::findFile(const QString &sPath)
     {
       FrmSourceEdit *pEdit = static_cast<FrmSourceEdit*>(ui->tcProject->widget(i));
       IFile::ptr_type pFile = pEdit->getFile();
-      if (pFile->path()==sPath)
+      if (pFile->getPath()==sPath)
       {
           return pFile.data();
       }
@@ -190,10 +216,9 @@ IFile* FrmFileExplorer::findFile(const QString &sPath)
 */
 void FrmFileExplorer::addFile(IFile::ptr_type pFile)
 {
-
     // rausfinden, ob es bereits ein File mit der gleichen Pfadangabe gibt, wenn
     // ja wird kein neuer reiter angelegt, sondern das "alte" file neu geladen.
-    IFile *ptr = findFile(pFile->path());
+    IFile *ptr = findFile(pFile->getPath());
     if (ptr)
     {
         ptr->load();
@@ -210,7 +235,7 @@ void FrmFileExplorer::addFile(IFile::ptr_type pFile)
         pFile->attachObserver(this);
 
         int idx = ui->tcProject->addTab(pSrcEdit, pFile->getName());
-        ui->tcProject->setTabToolTip(idx, pFile->path());
+        ui->tcProject->setTabToolTip(idx, pFile->getPath());
         ui->tcProject->setTabIcon(idx, QIcon(":/images/res/file_ok.ico"));
 
         // Sicher stellen, das der Tabsheet des neuen Files angezeigt wird
@@ -238,7 +263,7 @@ void FrmFileExplorer::writeSettings(QSettings &settings)
     {
         FrmSourceEdit *pEdit = static_cast<FrmSourceEdit*>(ui->tcProject->widget(i));
         IFile::ptr_type pFile = pEdit->getFile();
-        settings.setValue(QString("file") + QString::number(i), pFile->path());
+        settings.setValue(QString("file") + QString::number(i), pFile->getPath());
     }
     settings.endGroup();
 }

@@ -37,20 +37,23 @@ public:
     virtual IProject* getProject() = 0;
     virtual const QFileInfo* getFileInfo() const = 0;
 
-    virtual QString path() const = 0;
+    virtual QString getPath() const = 0;
 
     void activate() const;
     void load();
     void save();
+    void updateOutline() const;
     void navigateToLine(int nLine, ETextMarker eMarker) const;
+    void setPath(const QString &sPath);
 
     bool wasModified() const;
     void setModified(bool bStat)        ;
     void setObserver(IFileObserver *pObs);
 
 protected:
-    virtual void loadImpl();
-    virtual void saveImpl();
+    virtual void loadImpl() = 0;
+    virtual void saveImpl() = 0;
+    virtual void setPathImpl(const QString &sNewPath) = 0;
 
 private:
     QVector<IFileObserver*>  m_vObserver;

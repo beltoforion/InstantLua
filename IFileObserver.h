@@ -14,6 +14,8 @@ public:
     virtual void notifyBeforeFileSave(IFile *pFile) = 0;
     virtual void notifyFileModified(const IFile *pFile) = 0;
     virtual void notifyFileLineSelected(const IFile *pFile, int nLine, ETextMarker eMarker) = 0;
+    virtual void notifyFileLinesChanged(const IFile *pFile) = 0;
+    virtual void notifyPathChanged(const IFile *pFile) = 0;
 };
 
 #endif // IFILEOBSERVER_H

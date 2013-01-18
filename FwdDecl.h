@@ -33,5 +33,6 @@ class QTreeWidgetItem;
 class QModelIndex;
 class QIcon;
 class QWidget;
+class QString;
 
 #endif // FWDDECL_H

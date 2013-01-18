@@ -27,7 +27,7 @@ FileLua::~FileLua()
 {}
 
 //-------------------------------------------------------------------------------------------------
-QString FileLua::path() const
+QString FileLua::getPath() const
 {
     return m_fi.absoluteFilePath();
 }
@@ -115,6 +115,12 @@ void FileLua::saveImpl()
         stream << m_vLines[i]; //sLine;
     }
     file.close();
+}
+
+//-------------------------------------------------------------------------------------------------
+void FileLua::setPathImpl(const QString &sPath)
+{
+    m_fi.setFile(sPath);
 }
 
 //-------------------------------------------------------------------------------------------------

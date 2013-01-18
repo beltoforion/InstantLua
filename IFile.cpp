@@ -1,4 +1,5 @@
 #include "IFile.h"
+#include <QString>
 
 //-------------------------------------------------------------------------------------------------
 IFile::IFile()
@@ -37,14 +38,6 @@ bool IFile::wasModified() const
 }
 
 //-------------------------------------------------------------------------------------------------
-void IFile::loadImpl()
-{}
-
-//-------------------------------------------------------------------------------------------------
-void IFile::saveImpl()
-{}
-
-//-------------------------------------------------------------------------------------------------
 void IFile::activate() const
 {
     if (!hasObservers())
@@ -57,6 +50,18 @@ void IFile::activate() const
     }
 }
 
+//-------------------------------------------------------------------------------------------------
+void IFile::updateOutline() const
+{
+    if (!hasObservers())
+        return;
+
+    obs_list::const_iterator it = m_observer.begin();
+    for ( ; it!=m_observer.end(); ++it)
+    {
+        (*it)->notifyFileLinesChanged(this);
+    }
+}
 
 //-------------------------------------------------------------------------------------------------
 /** \brief Anzeigen und gegebenenfalls markieren einer bestimmten Zeile.
@@ -93,9 +98,6 @@ void IFile::load()
 //-------------------------------------------------------------------------------------------------
 void IFile::save()
 {
-    if (!hasObservers())
-        return;
-
     obs_list::iterator it = m_observer.begin();
     for ( ; it!=m_observer.end(); ++it)
     {
@@ -105,3 +107,18 @@ void IFile::save()
     saveImpl();
     m_bModified = false;
 }
+
+//-------------------------------------------------------------------------------------------------
+void IFile::setPath(const QString &sNewPath)
+{
+    setPathImpl(sNewPath);
+
+    obs_list::iterator it = m_observer.begin();
+    for ( ; it!=m_observer.end(); ++it)
+    {
+        (*it)->notifyPathChanged(this);
+    }
+}
+
+
+

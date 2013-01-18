@@ -229,8 +229,11 @@ void FrmSourceEdit::updateFile(bool bSetModifiedFlag)
 //-------------------------------------------------------------------------------------------------
 void FrmSourceEdit::linesChanged()
 {
-    // todo: outline aktualisieren
+    if (m_pFile==NULL)
+        return;
+
     qDebug() << "linesChanged()";
+    m_pFile->updateOutline();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -340,9 +343,23 @@ void FrmSourceEdit::notifyFileLineSelected(const IFile *pFile, int nLine, ETextM
         break;
     }
 
+    // Hack: Cursor zuerst auf ende, dann auf die zu markierende Zeile.
+    // Damit wird sichergestellt, das die Markierte Zeile die erste
+    // angezeigt Zeile ist.
+    m_pSrcEdit->setCursorPosition(m_pFile->getLines().size()-1, 0);
     m_pSrcEdit->setCursorPosition(nLineIdx, 0);
     m_pSrcEdit->ensureCursorVisible();
 }
+
+//-------------------------------------------------------------------------------------------------
+void FrmSourceEdit::notifyFileLinesChanged(const IFile *pFile)
+{
+    // Ignorieren: Diese Komponente löst den Event aus.
+}
+
+//-------------------------------------------------------------------------------------------------
+void FrmSourceEdit::notifyPathChanged(const IFile *pFile)
+{}
 
 //-------------------------------------------------------------------------------------------------
 void FrmSourceEdit::deleteMarker(ETextMarker eMarker)
@@ -392,7 +409,7 @@ void FrmSourceEdit::updateFromSettings()
     const Settings &settings = Settings::Instance();
     m_pSrcEdit->setMarginWidth(0, (settings.hasLineNumbers()) ? 40 :0);
     m_pSrcEdit->setFolding( (settings.hasSourceFolding()) ? QsciScintilla::BoxedTreeFoldStyle
-                                                          :  QsciScintilla::NoFoldStyle, 2);
+                                                          : QsciScintilla::NoFoldStyle, 2);
 
     m_pSrcEdit->lexer()->setFont(QFont("Courier New", settings.getFontSize()));
     m_pSrcEdit->setTabWidth(settings.getTabIndent());

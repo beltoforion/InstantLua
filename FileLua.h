@@ -34,17 +34,18 @@ public:
     virtual IProject* getProject();
     virtual const QFileInfo* getFileInfo() const;
 
+
     virtual const QString& getLine(std::size_t i) const;
-    virtual QString path() const;
+    virtual QString getPath() const;
 
     // ILockable interface
-
     virtual void lock() const;
     virtual void unlock() const;
 
 protected:
     virtual void loadImpl();
     virtual void saveImpl();
+    virtual void setPathImpl(const QString &sNewPath);
 
 private:
 

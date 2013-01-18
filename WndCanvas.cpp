@@ -59,12 +59,7 @@ void WndCanvas::drawTo(double x, double y)
 void WndCanvas::drawPoint(double x, double y)
 {
     m_pPointList->add((qreal)x, (qreal)y);
-//    QGraphicsLineItem *pLine = new QGraphicsLineItem(NULL, &m_scene);
-//    pLine->setLine(x, y, x, y);
     m_pos = QPoint(x, y);
-
-//    m_scene.addLine(x, y, x, y);
-//    m_pos = QPoint(x, y);
 }
 
 //-----------------------------------------------------------------------------
@@ -85,11 +80,6 @@ void WndCanvas::drawCircle(double x, double y, double r)
 void WndCanvas::wheelEvent(QWheelEvent* event)
 {
     QTransform t = transform();
-/*
-    qDebug() << "m11=" << t.m11() << "; m22=" << t.m22();
-    qDebug() << "scene_width=" << m_scene.width() << "; scene_height=" << m_scene.height();
-    qDebug() << "width=" << geometry().width() << "; height=" << geometry().height();
-*/
     double fx = (event->delta() > 0) ? 1.1 : 1.0/1.1,
            fy = fx;
 
