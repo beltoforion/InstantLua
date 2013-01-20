@@ -18,14 +18,14 @@ function iterate(cv, m, n)
 	local p = { math.random(), math.random() }
 
 	for i=1,n do
-		cv:drawPoint(500*p[1], 500*p[2])
+		cv:drawPoint(1000*p[1], 1000*p[2])
 		p = transform(m, p)	
 	end
 end
 
 -- Initialize the function system
 function execute()
-	local cv = Canvas(500, 500, "Iteriertes Funktionssystem")
+	local cv = Canvas(1000, 1000, "Iteriertes Funktionssystem")
 	math.randomseed(os.time())
 
 	-- Sierpinsky triangle

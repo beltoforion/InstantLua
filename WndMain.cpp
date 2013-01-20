@@ -14,6 +14,7 @@
 #include "Settings.h"
 #include "FileLua.h"
 #include "DlgSettings.h"
+#include "DlgNewFile.h"
 #include "ProjectLua.h"
 #include "Exceptions.h"
 
@@ -456,3 +457,10 @@ void WndMain::on_actionStop_triggered()
         m_pLuaWorker->stop();
 }
 
+
+//-------------------------------------------------------------------------------------------------
+void WndMain::on_actionNew_triggered()
+{
+    DlgNewFile dlgNewFile(NULL, Settings::Instance());
+    dlgNewFile.exec();
+}

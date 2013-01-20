@@ -112,6 +112,8 @@ private slots:
 
     void on_actionSave_as_triggered();
 
+    void on_actionNew_triggered();
+
 private:
     std::streambuf *m_pConsoleStreamBuf;
     std::streambuf *m_pOriginalStreamBuf;

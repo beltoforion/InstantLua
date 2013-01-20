@@ -271,7 +271,8 @@ SOURCES += main.cpp\
     luabind/LuaTabMessageBox.cpp \
     luabind/LuaTabCanvas.cpp \
     WndCanvas.cpp \
-    QGraphicsItemPointList.cpp
+    QGraphicsItemPointList.cpp \
+    DlgNewFile.cpp
 
 HEADERS  += \
     IFile.h \
@@ -437,7 +438,8 @@ HEADERS  += \
     luabind/LuaTabMessageBox.h \
     luabind/LuaTabCanvas.h \
     WndCanvas.h \
-    QGraphicsItemPointList.h
+    QGraphicsItemPointList.h \
+    DlgNewFile.h
 
 FORMS    += \
     DlgSettings.ui \
@@ -449,7 +451,8 @@ FORMS    += \
     FrmConsole.ui \
     QGradientPanel.ui \
     QSelection.ui \
-    WndCanvas.ui
+    WndCanvas.ui \
+    DlgNewFile.ui
 
 INCLUDEPATH += $$PWD/3rdparty/QScintilla-gpl-2.7/Qt4Qt5 \
     $$PWD/3rdparty/QScintilla-gpl-2.7/include \

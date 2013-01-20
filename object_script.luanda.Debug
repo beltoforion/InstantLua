@@ -239,6 +239,7 @@ INPUT(
 ./build\debug\.obj\LuaTabCanvas.o
 ./build\debug\.obj\WndCanvas.o
 ./build\debug\.obj\QGraphicsItemPointList.o
+./build\debug\.obj\DlgNewFile.o
 ./build\debug\.obj\moc_DlgSettings.o
 ./build\debug\.obj\moc_FrmSourceEdit.o
 ./build\debug\.obj\moc_FrmProjectExplorer.o
@@ -294,5 +295,6 @@ INPUT(
 ./build\debug\.obj\moc_qsciapis.o
 ./build\debug\.obj\moc_qsciabstractapis.o
 ./build\debug\.obj\moc_WndCanvas.o
+./build\debug\.obj\moc_DlgNewFile.o
 ./build\debug\.obj\qrc_luanda.o
 );

@@ -309,8 +309,6 @@ void FrmSourceEdit::notifyFileLineSelected(const IFile *pFile, int nLine, ETextM
 {
     deleteMarker(tmHIGHLIGHT);
 
-    qDebug() << "FrmSourceEdit::notifyFileLineSelected:" << QString::number(nLine) << "\n";
-
     int nLineIdx = nLine - 1;
     if (nLineIdx<0)
         return;
