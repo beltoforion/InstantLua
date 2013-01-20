@@ -19,7 +19,7 @@ class FileLua : public IFile
 {
 public:
 
-    static IFile::ptr_type Create(const QString &sPath);
+    static IFile::ptr_type create(const QString &sPath);
 
     virtual ~FileLua();
 

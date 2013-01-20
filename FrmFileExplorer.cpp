@@ -279,7 +279,7 @@ void FrmFileExplorer::readSettings(QSettings &settings)
         QString sKey = QString("file") + QString::number(i);
         QString sFile = settings.value(sKey, "").toString();
 
-        IFile::ptr_type pFile = FileLua::Create(sFile);
+        IFile::ptr_type pFile = FileLua::create(sFile);
         addFile(pFile);
         pFile->load();
     }
@@ -313,7 +313,7 @@ void FrmFileExplorer::dropEvent(QDropEvent *evt)
     if (sExt!="lua")
         return;
 
-    IFile::ptr_type pFile = FileLua::Create(fileName);
+    IFile::ptr_type pFile = FileLua::create(fileName);
     addFile(pFile);
     pFile->load();
     pFile->activate();

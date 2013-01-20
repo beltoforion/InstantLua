@@ -9,9 +9,11 @@ QT       += core gui
 
 # Lua sollte nicht mit gcc compiliert werden!
 
+# to force compilation of c files as c++ with gcc:
+# (no longer needed as lua files were renamed to cpp)
 QMAKE_CC = g++
 
-TARGET = luanda
+TARGET = InstantLua
 TEMPLATE = app
 DEFINES += _CRT_SECURE_NO_WARNINGS \
     QT \
@@ -33,38 +35,38 @@ CONFIG(debug, debug|release) {
 }
 
 SOURCES += main.cpp\
-    3rdparty/lua-5.2.1/src/lzio.c \
-    3rdparty/lua-5.2.1/src/lvm.c \
-    3rdparty/lua-5.2.1/src/lundump.c \
-    3rdparty/lua-5.2.1/src/ltm.c \
-    3rdparty/lua-5.2.1/src/ltablib.c \
-    3rdparty/lua-5.2.1/src/ltable.c \
-    3rdparty/lua-5.2.1/src/lstrlib.c \
-    3rdparty/lua-5.2.1/src/lstring.c \
-    3rdparty/lua-5.2.1/src/lstate.c \
-    3rdparty/lua-5.2.1/src/lparser.c \
-    3rdparty/lua-5.2.1/src/loslib.c \
-    3rdparty/lua-5.2.1/src/lopcodes.c \
-    3rdparty/lua-5.2.1/src/lobject.c \
-    3rdparty/lua-5.2.1/src/loadlib.c \
-    3rdparty/lua-5.2.1/src/lmem.c \
-    3rdparty/lua-5.2.1/src/lmathlib.c \
-    3rdparty/lua-5.2.1/src/llex.c \
-    3rdparty/lua-5.2.1/src/liolib.c \
-    3rdparty/lua-5.2.1/src/linit.c \
-    3rdparty/lua-5.2.1/src/lgc.c \
-    3rdparty/lua-5.2.1/src/lfunc.c \
-    3rdparty/lua-5.2.1/src/ldump.c \
-    3rdparty/lua-5.2.1/src/ldo.c \
-    3rdparty/lua-5.2.1/src/ldebug.c \
-    3rdparty/lua-5.2.1/src/ldblib.c \
-    3rdparty/lua-5.2.1/src/lctype.c \
-    3rdparty/lua-5.2.1/src/lcorolib.c \
-    3rdparty/lua-5.2.1/src/lcode.c \
-    3rdparty/lua-5.2.1/src/lbitlib.c \
-    3rdparty/lua-5.2.1/src/lbaselib.c \
-    3rdparty/lua-5.2.1/src/lauxlib.c \
-    3rdparty/lua-5.2.1/src/lapi.c \
+    3rdparty/lua-5.2.1/src/lzio.cpp \
+    3rdparty/lua-5.2.1/src/lvm.cpp \
+    3rdparty/lua-5.2.1/src/lundump.cpp \
+    3rdparty/lua-5.2.1/src/ltm.cpp \
+    3rdparty/lua-5.2.1/src/ltablib.cpp \
+    3rdparty/lua-5.2.1/src/ltable.cpp \
+    3rdparty/lua-5.2.1/src/lstrlib.cpp \
+    3rdparty/lua-5.2.1/src/lstring.cpp \
+    3rdparty/lua-5.2.1/src/lstate.cpp \
+    3rdparty/lua-5.2.1/src/lparser.cpp \
+    3rdparty/lua-5.2.1/src/loslib.cpp \
+    3rdparty/lua-5.2.1/src/lopcodes.cpp \
+    3rdparty/lua-5.2.1/src/lobject.cpp \
+    3rdparty/lua-5.2.1/src/loadlib.cpp \
+    3rdparty/lua-5.2.1/src/lmem.cpp \
+    3rdparty/lua-5.2.1/src/lmathlib.cpp \
+    3rdparty/lua-5.2.1/src/llex.cpp \
+    3rdparty/lua-5.2.1/src/liolib.cpp \
+    3rdparty/lua-5.2.1/src/linit.cpp \
+    3rdparty/lua-5.2.1/src/lgc.cpp \
+    3rdparty/lua-5.2.1/src/lfunc.cpp \
+    3rdparty/lua-5.2.1/src/ldump.cpp \
+    3rdparty/lua-5.2.1/src/ldo.cpp \
+    3rdparty/lua-5.2.1/src/ldebug.cpp \
+    3rdparty/lua-5.2.1/src/ldblib.cpp \
+    3rdparty/lua-5.2.1/src/lctype.cpp \
+    3rdparty/lua-5.2.1/src/lcorolib.cpp \
+    3rdparty/lua-5.2.1/src/lcode.cpp \
+    3rdparty/lua-5.2.1/src/lbitlib.cpp \
+    3rdparty/lua-5.2.1/src/lbaselib.cpp \
+    3rdparty/lua-5.2.1/src/lauxlib.cpp \
+    3rdparty/lua-5.2.1/src/lapi.cpp \
     IFile.cpp \
     Settings.cpp \
     FileLua.cpp \

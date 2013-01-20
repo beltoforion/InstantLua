@@ -10,7 +10,7 @@
 
 
 //-------------------------------------------------------------------------------------------------
-IFile::ptr_type FileLua::Create(const QString &sPath)
+IFile::ptr_type FileLua::create(const QString &sPath)
 {
     return IFile::ptr_type(new FileLua(sPath));
 }

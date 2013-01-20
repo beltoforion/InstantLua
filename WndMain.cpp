@@ -218,7 +218,7 @@ void WndMain::openFile(QString sFile)
     if (sFile.isNull() || sFile.isEmpty())
         return;
 
-    IFile::ptr_type pFile = FileLua::Create(sFile);
+    IFile::ptr_type pFile = FileLua::create(sFile);
     m_pFrmFileExplorer->addFile(pFile);
     pFile->load();
 
@@ -462,5 +462,11 @@ void WndMain::on_actionStop_triggered()
 void WndMain::on_actionNew_triggered()
 {
     DlgNewFile dlgNewFile(NULL, Settings::Instance());
-    dlgNewFile.exec();
+    int state = dlgNewFile.exec();
+    if (state==QDialog::Accepted)
+    {
+        IFile::ptr_type pFile = FileLua::create(dlgNewFile.getFileName());
+        m_pFrmFileExplorer->addFile(pFile);
+    }
+
 }
