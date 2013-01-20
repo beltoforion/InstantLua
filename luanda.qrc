@@ -7,8 +7,6 @@
         <file alias="ico_open_prj">res/document-open-7.ico</file>
         <file alias="ico_info">res/document-properties.ico</file>
         <file alias="ico_save_all">res/document-save-3.ico</file>
-        <file>res/file_ok.ico</file>
-        <file>res/file_save.ico</file>
         <file alias="ico_save_as">res/document-save-as-3.ico</file>
         <file>res/tab-close-3.ico</file>
         <file>res/tab-close-other.ico</file>

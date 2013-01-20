@@ -441,7 +441,8 @@ HEADERS  += \
     luabind/LuaTabCanvas.h \
     WndCanvas.h \
     QGraphicsItemPointList.h \
-    DlgNewFile.h
+    DlgNewFile.h \
+    TryCatch.h
 
 FORMS    += \
     DlgSettings.ui \

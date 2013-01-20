@@ -16,7 +16,7 @@
 #define TRY  \
         try
 
-#define CATCH \
+#define CATCH_TO_LUA_ERROR \
     catch(Exception &exc)                                    \
     {                                                        \
         return luaL_error(L, exc.getMessage().toAscii());    \

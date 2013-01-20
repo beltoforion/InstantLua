@@ -17,6 +17,7 @@
 #include "DlgNewFile.h"
 #include "ProjectLua.h"
 #include "Exceptions.h"
+#include "TryCatch.h"
 
 #include "luabind/LuaWorker.h"
 
@@ -180,6 +181,7 @@ void WndMain::resizeEvent(QResizeEvent *)
 /** \brief Opens a new Lua File in the editor.
 */
 void WndMain::on_actionOpenFile_triggered()
+TRY
 {
     QString sFile = QFileDialog::getOpenFileName(this,
                                                 tr("Select File of project to open"),
@@ -191,11 +193,13 @@ void WndMain::on_actionOpenFile_triggered()
         openFile(sFile);
     }
 }
+CATCH
 
 //-------------------------------------------------------------------------------------------------
 /** \brief Öffnen eines Projektverzeichnisses.
 */
 void WndMain::on_actionOpenProject_triggered()
+TRY
 {
     // Es gibt drei Möglichkeiten für das Projektöffnen
     // 1.) Angeben eines Verzeichnisses, Wenn im Verzeichnis ein Projektfile liegt, wird dieses geladen
@@ -210,6 +214,7 @@ void WndMain::on_actionOpenProject_triggered()
         QSharedPointer<ProjectLua> pProject(new ProjectLua(sPath));
     }
 }
+CATCH
 
 //-------------------------------------------------------------------------------------------------
 /** \brief Opens a new file in the editor. */
@@ -228,16 +233,19 @@ void WndMain::openFile(QString sFile)
 //-------------------------------------------------------------------------------------------------
 /** \brief Speichert all offenen Dateien ab, die als geändert markiert sind. */
 void WndMain::on_actionSave_triggered()
+TRY
 {
     m_pFrmInfo->setTitle("Saving files");
     m_pFrmInfo->setSubTitle("please wait...");
     m_pFrmInfo->show(2000);
     m_pFrmFileExplorer->saveAll(true);
 }
+CATCH
 
 //-------------------------------------------------------------------------------------------------
 /** \brief Speichert die geöffnete Datei unter einem anderen Namen ab. */
 void WndMain::on_actionSave_as_triggered()
+TRY
 {
     QString sFile = QFileDialog::getSaveFileName(this,
                                                  tr("Save file as"),
@@ -251,28 +259,35 @@ void WndMain::on_actionSave_as_triggered()
     }
 
 }
+CATCH
 
 //-------------------------------------------------------------------------------------------------
 /** \brief Quit the application.
 */
 void WndMain::on_actionQuit_triggered()
+TRY
 {
     Settings::Instance().writeSettings();
     QApplication::exit(0);
 }
+CATCH
 
 //-------------------------------------------------------------------------------------------------
 /** \brief Open the settings window. */
 void WndMain::on_actionPreferences_triggered()
+TRY
 {
     m_pDlgSettings->exec();
 }
+CATCH
 
 //-------------------------------------------------------------------------------------------------
 void WndMain::on_actionAbout_triggered()
+TRY
 {
     m_pDlgAbout->exec();
 }
+CATCH
 
 //-------------------------------------------------------------------------------------------------
 void WndMain::readSettings(QSettings &settings)
@@ -332,12 +347,14 @@ void WndMain::updateFromSettings()
 /** \brief Anzeigen bzw. Verstecken des Konsolenframes.
   */
 void WndMain::on_actionConsole_triggered()
+TRY
 {
     if (m_pFrmConsole->isVisible())
         m_pFrmConsole->hide();
     else
         m_pFrmConsole->show();
 }
+CATCH
 
 //-------------------------------------------------------------------------------------------------
 /** \brief Ein Fehler ist aufgetreten.
@@ -345,6 +362,7 @@ void WndMain::on_actionConsole_triggered()
     Lua wurde bereits angehalten.
 */
 void WndMain::on_lua_error(QString sErr)
+TRY
 {
     IConsole *pConsole = m_pFrmConsole->getConsole();
     if (pConsole!=NULL)
@@ -355,32 +373,42 @@ void WndMain::on_lua_error(QString sErr)
         qDebug("on_lua_error(%s); thread id: %d", sErr.toStdString().c_str(), reinterpret_cast<int>(QThread::currentThreadId()));
     }
 }
+CATCH
 
 //-------------------------------------------------------------------------------------------------
 void WndMain::on_lua_exec_in_main_thread(IAction *pAction)
+TRY
 {
     if (pAction!=NULL)
         pAction->execute();
 }
+CATCH
 
 //-------------------------------------------------------------------------------------------------
 void WndMain::on_lua_syntax_check_fail(const IFile *pFile, QString sErr)
+TRY
 {
     qDebug() << "Syntax check failed\n";
 }
+CATCH
 
 //-------------------------------------------------------------------------------------------------
 void WndMain::on_lua_syntax_check_success(const IFile *pFile)
+TRY
 {
     qDebug() << "on_lua_syntax_check_success(" << pFile->getName() << "): Syntax check successfull\n";
 }
+CATCH
 
 //-------------------------------------------------------------------------------------------------
 void WndMain::on_lua_functionCall()
+TRY
 {}
+CATCH
 
 //-------------------------------------------------------------------------------------------------
 void WndMain::on_lua_scriptError(const LuaException &exc)
+TRY
 {
     const IFile *pFile = exc.getFile();
     if (pFile==NULL)
@@ -389,6 +417,7 @@ void WndMain::on_lua_scriptError(const LuaException &exc)
     pFile->activate();
     pFile->navigateToLine(exc.getLine(), tmERROR);
 }
+CATCH
 
 //-------------------------------------------------------------------------------------------------
 void WndMain::openRecentFile()
@@ -435,6 +464,7 @@ void WndMain::updateRecentFileActions()
 
 //-------------------------------------------------------------------------------------------------
 void WndMain::on_actionRun_triggered()
+TRY
 {
     if (m_thLua==NULL)
         return;
@@ -447,19 +477,23 @@ void WndMain::on_actionRun_triggered()
         emit doFile(pFile);
     }
 }
+CATCH
 
 //-------------------------------------------------------------------------------------------------
 void WndMain::on_actionStop_triggered()
+TRY
 {
     Q_ASSERT(m_pLuaWorker!=NULL);
 
     if (m_pLuaWorker!=NULL)
         m_pLuaWorker->stop();
 }
+CATCH
 
 
 //-------------------------------------------------------------------------------------------------
 void WndMain::on_actionNew_triggered()
+TRY
 {
     DlgNewFile dlgNewFile(NULL, Settings::Instance());
     int state = dlgNewFile.exec();
@@ -470,3 +504,4 @@ void WndMain::on_actionNew_triggered()
     }
 
 }
+CATCH

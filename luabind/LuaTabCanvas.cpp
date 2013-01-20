@@ -108,7 +108,7 @@ TRY
 
     return 0;
 }
-CATCH
+CATCH_TO_LUA_ERROR
 
 //-------------------------------------------------------------------------------------------------
 int LuaTabCanvas::drawTo(lua_State *L)
@@ -135,7 +135,7 @@ TRY
 
     return 0;
 }
-CATCH
+CATCH_TO_LUA_ERROR
 
 //-------------------------------------------------------------------------------------------------
 int LuaTabCanvas::drawEllipse(lua_State *L)
@@ -164,7 +164,7 @@ TRY
 
     return 0;
 }
-CATCH
+CATCH_TO_LUA_ERROR
 
 //-------------------------------------------------------------------------------------------------
 int LuaTabCanvas::drawCircle(lua_State *L)
@@ -192,7 +192,7 @@ TRY
 
     return 0;
 }
-CATCH
+CATCH_TO_LUA_ERROR
 
 //-------------------------------------------------------------------------------------------------
 int LuaTabCanvas::drawPoint(lua_State *L)
@@ -219,7 +219,7 @@ TRY
 
     return 0;
 }
-CATCH
+CATCH_TO_LUA_ERROR
 
 //-------------------------------------------------------------------------------------------------
 int LuaTabCanvas::create(lua_State *L)

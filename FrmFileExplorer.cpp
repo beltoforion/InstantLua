@@ -236,7 +236,7 @@ void FrmFileExplorer::addFile(IFile::ptr_type pFile)
 
         int idx = ui->tcProject->addTab(pSrcEdit, pFile->getName());
         ui->tcProject->setTabToolTip(idx, pFile->getPath());
-        ui->tcProject->setTabIcon(idx, QIcon(":/images/res/file_ok.ico"));
+        ui->tcProject->setTabIcon(idx, QIcon(":/images/res/ok.ico"));
 
         // Sicher stellen, das der Tabsheet des neuen Files angezeigt wird
         pFile->activate();
