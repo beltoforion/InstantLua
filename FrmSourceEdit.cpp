@@ -18,10 +18,11 @@ FrmSourceEdit::FrmSourceEdit(FrmFileExplorer *pParent, IFile::ptr_type pFile)
     ,m_pSrcEdit(NULL)
     ,m_pFile(pFile)
     ,m_pFileExplorer(pParent)
-    ,m_nMarkerBreakPoint(0)
+    ,m_nMarkerBreakpoint(0)
     ,m_nMarkerCIP(0)
     ,m_nMarkerLine(0)
     ,m_nMarkerError(0)
+    ,m_nMarkerPotentialBreakpoint(0)
     ,m_vMarkedLines()
     ,m_nErrorLine(-1)
     ,m_nNumberIndicator(0)
@@ -146,9 +147,12 @@ FrmSourceEdit::FrmSourceEdit(FrmFileExplorer *pParent, IFile::ptr_type pFile)
         m_pSrcEdit->setEdgeMode(QsciScintilla::EdgeLine);
 
         // Marker definieren (Haltepunkte und Instruktionpointer)
-        m_nMarkerBreakPoint = m_pSrcEdit->markerDefine(QsciScintilla::Circle);
-        m_pSrcEdit->setMarkerForegroundColor(QColor("black"), m_nMarkerBreakPoint);
-        m_pSrcEdit->setMarkerBackgroundColor(QColor("red"),   m_nMarkerBreakPoint);
+        m_nMarkerPotentialBreakpoint = m_pSrcEdit->markerDefine(QsciScintilla::FullRectangle);
+        m_pSrcEdit->setMarkerBackgroundColor(QColor(200, 200, 210), m_nMarkerPotentialBreakpoint);
+
+        m_nMarkerBreakpoint = m_pSrcEdit->markerDefine(QsciScintilla::Circle);
+        m_pSrcEdit->setMarkerForegroundColor(QColor("black"), m_nMarkerBreakpoint);
+        m_pSrcEdit->setMarkerBackgroundColor(QColor("red"),   m_nMarkerBreakpoint);
 
         m_nMarkerCIP = m_pSrcEdit->markerDefine(QsciScintilla::RightArrow);
         m_pSrcEdit->setMarkerForegroundColor(QColor("black"), m_nMarkerCIP);
@@ -160,6 +164,8 @@ FrmSourceEdit::FrmSourceEdit(FrmFileExplorer *pParent, IFile::ptr_type pFile)
 //        m_nMarkerError = m_pSrcEdit->markerDefine(QsciScintilla::Background);
         m_nMarkerError = m_pSrcEdit->markerDefine(QsciScintilla::Underline);
         m_pSrcEdit->setMarkerBackgroundColor(QColor(255, 180, 180), m_nMarkerError);
+
+        m_pSrcEdit->setMarginMarkerMask(1, 255);
 
         // Indikatoren
         m_nNumberIndicator = m_pSrcEdit->indicatorDefine(QsciScintilla::StrikeIndicator /*RoundBoxIndicator*/);
@@ -227,12 +233,61 @@ void FrmSourceEdit::updateFile(bool bSetModifiedFlag)
 }
 
 //-------------------------------------------------------------------------------------------------
+/** \brief Update the markers indicating possible breakpoints. */
+void FrmSourceEdit::updateBreakpointIndicators()
+{
+    int nLines = m_pFile->getNumLines();
+    for (int i=0; i<nLines; ++i)
+    {
+        if (lineAcceptsBreakpoints(i))
+        {
+            m_pSrcEdit->markerAdd(i, m_nMarkerPotentialBreakpoint);
+        }
+        else
+        {
+            m_pSrcEdit->markerDelete(i, m_nMarkerPotentialBreakpoint);
+        }
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
+bool FrmSourceEdit::lineAcceptsBreakpoints(int nLine)
+{
+    int nLines = m_pFile->getNumLines();
+    if (nLine>nLines)
+        return false;
+
+    QString sLine = m_pFile->getLine(nLine).trimmed();
+
+    // Einzeiliger Lua Kommentar
+    if (sLine[0]=='-' && sLine[1]=='-')
+        return false;
+
+    // leere Zeile
+    if (sLine.length()==0)
+        return false;
+
+    // Wenn die vorhergehende Zeile mit einem Komma endet kann kein
+    // Haltepunkt gesetzt werden.
+    if (nLine>1)
+    {
+        QString sPrevLine = m_pFile->getLine(nLine-1).trimmed();
+        if (sPrevLine.length()>0 && sPrevLine[sPrevLine.length()-1]==',')
+            return false;
+    }
+
+    return true;
+}
+
+//-------------------------------------------------------------------------------------------------
 void FrmSourceEdit::linesChanged()
 {
     if (m_pFile==NULL)
         return;
 
     qDebug() << "linesChanged()";
+    updateBreakpointIndicators();
+
     m_pFile->updateOutline();
 }
 
@@ -243,18 +298,21 @@ void FrmSourceEdit::marginClicked(int nMargin, int nLine, Qt::KeyboardModifiers 
     {
         m_pSrcEdit->fillIndicatorRange(1, 10, 0, 0, m_nNumberIndicator);
 
-        // Schon Haltepunkt gesetzt?
         int nMarkers = m_pSrcEdit->markersAtLine(nLine);
-        if ((nMarkers & 1)!=0)
+
+        // Dürfen Haltepunkte gesetzt werden?
+        if ((nMarkers & 1<<m_nMarkerPotentialBreakpoint)==0)
+            return;
+
+        // Schon Haltepunkt gesetzt?
+        if ((nMarkers & 1<<m_nMarkerBreakpoint)!=0)
         {
-            m_pSrcEdit->markerDelete(nLine, m_nMarkerBreakPoint);
+            m_pSrcEdit->markerDelete(nLine, m_nMarkerBreakpoint);
         }
         else
         {
-            m_pSrcEdit->markerAdd(nLine, m_nMarkerBreakPoint);
+            m_pSrcEdit->markerAdd(nLine, m_nMarkerBreakpoint);
         }
-
-        qDebug() << "marginClicked(" << nMargin << "," << nLine << ", " << eState << ")";
     }
 }
 
@@ -319,6 +377,13 @@ void FrmSourceEdit::notifyFileLineSelected(const IFile *pFile, int nLine, ETextM
         // es können mehrere Zeilen hervorgehoben sein
         m_pSrcEdit->markerAdd(nLineIdx, m_nMarkerLine);
         m_vMarkedLines.push_back(nLineIdx);
+
+        // Hack: Cursor zuerst auf ende, dann auf die zu markierende Zeile.
+        // Damit wird sichergestellt, das die Markierte Zeile die erste
+        // angezeigt Zeile ist.
+        m_pSrcEdit->setCursorPosition(m_pFile->getLines().size()-1, 0);
+        m_pSrcEdit->setCursorPosition(nLineIdx, 0);
+        m_pSrcEdit->ensureCursorVisible();
         break;
 
     case tmERROR:
@@ -327,7 +392,7 @@ void FrmSourceEdit::notifyFileLineSelected(const IFile *pFile, int nLine, ETextM
         {
             // Es scheint ein Redrawproblem zu geben, wenn der
             // cursor nicht in der Zeile steht
-            m_pSrcEdit->setCursorPosition(m_nErrorLine, 0);
+//            m_pSrcEdit->setCursorPosition(m_nErrorLine, 0);
             m_pSrcEdit->markerDelete(m_nErrorLine, m_nMarkerError);
         }
 
@@ -341,12 +406,7 @@ void FrmSourceEdit::notifyFileLineSelected(const IFile *pFile, int nLine, ETextM
         break;
     }
 
-    // Hack: Cursor zuerst auf ende, dann auf die zu markierende Zeile.
-    // Damit wird sichergestellt, das die Markierte Zeile die erste
-    // angezeigt Zeile ist.
-    m_pSrcEdit->setCursorPosition(m_pFile->getLines().size()-1, 0);
-    m_pSrcEdit->setCursorPosition(nLineIdx, 0);
-    m_pSrcEdit->ensureCursorVisible();
+
 }
 
 //-------------------------------------------------------------------------------------------------

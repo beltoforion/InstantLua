@@ -46,7 +46,7 @@ public:
 signals:
     void finished();
     void error(QString sErr);
-    void syntaxCheckFail(const IFile *pFile, QString sErr);
+    void syntaxCheckFail(const IFile *pFile, QString sErr, int nLine);
     void syntaxCheckSuccess(const IFile *pFile);
     void checkSyntax(const IFile *pFile);
     void execInMainThread(IAction *pAction);

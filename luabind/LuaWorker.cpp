@@ -211,19 +211,19 @@ void LuaWorker::on_checkFile(const IFile *pFile)
 
         QString sMsg = QString("%1 in Line %2").arg(exc.getMessage())
                                                .arg(exc.getLine());
-        emit syntaxCheckFail(pFile, sMsg);
+        emit syntaxCheckFail(pFile, sMsg, (int)exc.getLine());
     }
     catch(Exception &exc)
     {
-        emit syntaxCheckFail(pFile, exc.getMessage());
+        emit syntaxCheckFail(pFile, exc.getMessage(), -1);
     }
     catch(std::exception &exc)
     {
-        emit syntaxCheckFail(pFile, exc.what());
+        emit syntaxCheckFail(pFile, exc.what(), -1);
     }
     catch(...)
     {
-        emit syntaxCheckFail(pFile, "Internal error: FrmConsole::executeCommand");
+        emit syntaxCheckFail(pFile, "Internal error: FrmConsole::executeCommand", -1);
     }
 }
 

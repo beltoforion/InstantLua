@@ -90,7 +90,7 @@ private slots:
     void openRecentFile();
 
     void on_lua_error(QString sMsg);
-    void on_lua_syntax_check_fail(const IFile *pFile, QString sMsg);
+    void on_lua_syntax_check_fail(const IFile *pFile, QString sMsg, int nLine);
     void on_lua_syntax_check_success(const IFile *pFile);
 
     void on_lua_functionCall();

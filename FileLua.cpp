@@ -7,6 +7,8 @@
 #include <QTextStream>
 #include <QFile>
 #include <QString>
+#include <QDir>
+#include <QDebug>
 
 
 //-------------------------------------------------------------------------------------------------
@@ -46,7 +48,6 @@ std::size_t FileLua::getNumLines() const
 
 //-------------------------------------------------------------------------------------------------
 /** \brief Löscht den zwischengepufferten Dateiinhalt.
-
 */
 void FileLua::clear()
 {
@@ -104,11 +105,17 @@ void FileLua::loadImpl()
 /** \brief Abspeichern der Datei. */
 void FileLua::saveImpl()
 {
-    QFile file( m_fi.filePath());
+    if (!m_fi.absoluteDir().exists())
+    {
+        qDebug() << "creating path: " << m_fi.absolutePath();
+        QDir().mkpath(m_fi.absolutePath());
+    }
+
+    QFile file(m_fi.filePath());
     if ( !file.open( QIODevice::WriteOnly | QIODevice::Text ) )
         throw std::runtime_error("Can't save file");
 
-    QTextStream stream( &file );
+    QTextStream stream(&file);
     for (int i=0; i<m_vLines.size(); ++i)
     {
         QString sLine = m_vLines[i];

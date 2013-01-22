@@ -19,18 +19,14 @@ int main(int argc, char *argv[])
         QApplication a(argc, argv);
         a.setOrganizationName("beltoforion");
         a.setOrganizationDomain("beltoforion.de");
-        a.setApplicationName("luanda");
-
-//        WndCanvas w(600, 600, "My Canvas");
-//        w.show();
+        a.setApplicationName("InstantLua");
+        a.setApplicationVersion(APP_VERSION);
 
         QSplashScreen *splash = new QSplashScreen;
         splash->setPixmap(QPixmap(":/images/res/splash.png"));
         splash->show();
 
         WndMain w;
-        //w.show();
-
         QTimer::singleShot(2500, splash, SLOT(close()));
         QTimer::singleShot(2500, &w, SLOT(show()));
 

@@ -34,6 +34,8 @@ public:
     void dragEnterEvent(QDragEnterEvent *event);
     void setCursorInfo(int nLine, int nIndex);
 
+    void markActiveFileError(int nLine, const QString &sMsg);
+
     IFile* getActiveFile() const;
 
     // ISettingsprovider

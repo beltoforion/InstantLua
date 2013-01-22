@@ -95,8 +95,8 @@ WndMain::WndMain(QWidget *parent)
     connect(m_pLuaWorker, SIGNAL(finished()),
             m_thLua,      SLOT(quit()));
 
-    connect(m_pLuaWorker, SIGNAL(syntaxCheckFail(const IFile*, QString)),
-            this,         SLOT(on_lua_syntax_check_fail(const IFile*, QString)));
+    connect(m_pLuaWorker, SIGNAL(syntaxCheckFail(const IFile*, QString, int)),
+            this,         SLOT(on_lua_syntax_check_fail(const IFile*, QString, int)));
 
     connect(m_pLuaWorker, SIGNAL(syntaxCheckSuccess(const IFile*)),
             this,         SLOT(on_lua_syntax_check_success(const IFile*)));
@@ -385,10 +385,11 @@ TRY
 CATCH
 
 //-------------------------------------------------------------------------------------------------
-void WndMain::on_lua_syntax_check_fail(const IFile *pFile, QString sErr)
+void WndMain::on_lua_syntax_check_fail(const IFile *pFile, QString sErr, int nLine)
 TRY
 {
-    qDebug() << "Syntax check failed\n";
+    m_pFrmConsole->getConsole()->addLine(sErr);
+    m_pFrmFileExplorer->markActiveFileError(nLine, sErr);
 }
 CATCH
 

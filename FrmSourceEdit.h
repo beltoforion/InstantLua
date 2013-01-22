@@ -58,10 +58,11 @@ private:
     FrmFileExplorer *m_pFileExplorer;
 
     // Marker
-    int m_nMarkerBreakPoint;
+    int m_nMarkerBreakpoint;
     int m_nMarkerCIP;
     int m_nMarkerLine;
     int m_nMarkerError;
+    int m_nMarkerPotentialBreakpoint;
 
     QVector<int> m_vMarkedLines;
     int m_nErrorLine;
@@ -69,8 +70,10 @@ private:
     // Indikatoren
     int m_nNumberIndicator;
 
+    bool lineAcceptsBreakpoints(int nLine);
     void clearMarkedLines();
     void updateFile(bool bModifiedFlag);
+    void updateBreakpointIndicators();
     void deleteMarker(ETextMarker eMarker);
 };
 

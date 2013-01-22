@@ -176,7 +176,8 @@ void FrmFileExplorer::notifyFileLineSelected(const IFile *pFile, int nLine, ETex
 
 //-------------------------------------------------------------------------------------------------
 void FrmFileExplorer::notifyFileLinesChanged(const IFile *pFile)
-{}
+{
+}
 
 //-------------------------------------------------------------------------------------------------
 void FrmFileExplorer::notifyPathChanged(const IFile *pFile)
@@ -373,3 +374,13 @@ void FrmFileExplorer::setCursorInfo(int nLine, int nIndex)
     ui->paCaption->setInfo(0, tr("Line: %1, Column: %2  ").arg(nLine).arg(nIndex));
 }
 
+//-------------------------------------------------------------------------------------------------
+void FrmFileExplorer::markActiveFileError(int nLine, const QString &sMsg)
+{
+    FrmSourceEdit *pEdit = getSourceEdit(getActiveFile());
+    if (pEdit==NULL)
+        return;
+
+    pEdit->notifyFileLineSelected(getActiveFile(), nLine, tmERROR);
+
+}

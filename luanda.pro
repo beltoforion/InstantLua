@@ -13,11 +13,13 @@ QT       += core gui
 # (no longer needed as lua files were renamed to cpp)
 QMAKE_CC = g++
 
+VERSION = 0.1.0.0
 TARGET = InstantLua
 TEMPLATE = app
 DEFINES += _CRT_SECURE_NO_WARNINGS \
     QT \
-    SCI_LEXER
+    SCI_LEXER \
+    APP_VERSION=\\\"$$VERSION\\\"
 
 # set up custom build directory
 CONFIG(debug, debug|release) {

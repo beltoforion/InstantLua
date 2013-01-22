@@ -54,7 +54,7 @@ function execute()
 	local m6 = { { a=-0.5, b=0.5, c=-0.5, d=-0.5, e= 0.0, f= 0.0, p=0.5 },
 							 { a=-0.5, b=0.5, c=-0.5, d=-0.5, e=-1.0, f=-1.0, p=0.5 } }
 
-	iterate(cv, m1, 40000)
+	iterate(cv, m1, 10000)
 end
 
 execute()
