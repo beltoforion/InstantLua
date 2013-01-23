@@ -42,7 +42,7 @@ WndMain::WndMain(QWidget *parent)
     // Explorer Fenster anlegen, die Reihenfolge ist wichtig, da gegenseitige Abhängigkeiten
     // bestehen!
     m_pFrmExplorer = new FrmProjectExplorer(this);
-    m_pFrmExplorer->setMaximumWidth(300);
+    m_pFrmExplorer->setMaximumWidth(500);
 
     m_pFrmFileExplorer = new FrmFileExplorer(this);
 
@@ -93,7 +93,7 @@ WndMain::WndMain(QWidget *parent)
             this,         SLOT(on_lua_error(QString)));
 
     connect(m_pLuaWorker, SIGNAL(finished()),
-            m_thLua,      SLOT(quit()));
+            this,         SLOT(on_lua_finished()));
 
     connect(m_pLuaWorker, SIGNAL(syntaxCheckFail(const IFile*, QString, int)),
             this,         SLOT(on_lua_syntax_check_fail(const IFile*, QString, int)));
@@ -385,6 +385,45 @@ TRY
 CATCH
 
 //-------------------------------------------------------------------------------------------------
+void WndMain::updateDebugActions(ELuaWorkerState eState)
+{
+    switch(eState)
+    {
+    case lsEXECUTING:
+            ui->actionRun->setEnabled(false);
+            ui->actionStop->setEnabled(true);
+            ui->actionStepOut->setEnabled(false);
+            ui->actionStepOver->setEnabled(false);
+            ui->actionStepInto->setEnabled(false);
+            break;
+
+    case lsDEBUGGING:
+            ui->actionRun->setEnabled(false);
+            ui->actionStop->setEnabled(true);
+            ui->actionStepOut->setEnabled(false);
+            ui->actionStepOver->setEnabled(false);
+            ui->actionStepInto->setEnabled(false);
+            break;
+
+    case lsWAITING:
+            ui->actionRun->setEnabled(true);
+            ui->actionStop->setEnabled(false);
+            ui->actionStepOut->setEnabled(true);
+            ui->actionStepOver->setEnabled(true);
+            ui->actionStepInto->setEnabled(true);
+            break;
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
+void WndMain::on_lua_finished()
+TRY
+{
+    updateDebugActions(lsWAITING);
+}
+CATCH
+
+//-------------------------------------------------------------------------------------------------
 void WndMain::on_lua_syntax_check_fail(const IFile *pFile, QString sErr, int nLine)
 TRY
 {
@@ -467,15 +506,22 @@ void WndMain::updateRecentFileActions()
 void WndMain::on_actionRun_triggered()
 TRY
 {
-    if (m_thLua==NULL)
-        return;
-
-    // Aktives File heraussuchen
-    IFile *pFile = m_pFrmFileExplorer->getActiveFile();
-    if (pFile!=NULL)
+    try
     {
-        // Notification absenden
-        emit doFile(pFile);
+        if (m_thLua==NULL)
+            return;
+
+        updateDebugActions(lsEXECUTING);
+        IFile *pFile = m_pFrmFileExplorer->getActiveFile();
+        if (pFile!=NULL)
+        {
+            emit doFile(pFile);
+        }
+    }
+    catch(...)
+    {
+        updateDebugActions(lsWAITING);
+        throw;
     }
 }
 CATCH

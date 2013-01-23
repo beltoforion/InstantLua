@@ -152,7 +152,7 @@ FrmSourceEdit::FrmSourceEdit(FrmFileExplorer *pParent, IFile::ptr_type pFile)
 
         m_nMarkerBreakpoint = m_pSrcEdit->markerDefine(QsciScintilla::Circle);
         m_pSrcEdit->setMarkerForegroundColor(QColor("black"), m_nMarkerBreakpoint);
-        m_pSrcEdit->setMarkerBackgroundColor(QColor("red"),   m_nMarkerBreakpoint);
+        m_pSrcEdit->setMarkerBackgroundColor(QColor(150, 50, 50),   m_nMarkerBreakpoint);
 
         m_nMarkerCIP = m_pSrcEdit->markerDefine(QsciScintilla::RightArrow);
         m_pSrcEdit->setMarkerForegroundColor(QColor("black"), m_nMarkerCIP);

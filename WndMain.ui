@@ -99,9 +99,9 @@
    <addaction name="actionConsole"/>
    <addaction name="separator"/>
    <addaction name="actionRun"/>
-   <addaction name="actionActionStep"/>
-   <addaction name="actionActionStepOver"/>
-   <addaction name="actionActionStepOut"/>
+   <addaction name="actionStepInto"/>
+   <addaction name="actionStepOver"/>
+   <addaction name="actionStepOut"/>
    <addaction name="actionStop"/>
   </widget>
   <action name="actionOpenFile">
@@ -244,7 +244,7 @@
     <string>Run</string>
    </property>
   </action>
-  <action name="actionActionStep">
+  <action name="actionStepInto">
    <property name="icon">
     <iconset resource="luanda.qrc">
      <normaloff>:/run_and_debug/res/debug-step-into.png</normaloff>:/run_and_debug/res/debug-step-into.png</iconset>
@@ -256,7 +256,7 @@
     <string>Step</string>
    </property>
   </action>
-  <action name="actionActionStepOver">
+  <action name="actionStepOver">
    <property name="icon">
     <iconset resource="luanda.qrc">
      <normaloff>:/run_and_debug/res/debug-step-over.png</normaloff>:/run_and_debug/res/debug-step-over.png</iconset>
@@ -268,7 +268,7 @@
     <string>Step Over</string>
    </property>
   </action>
-  <action name="actionActionStepOut">
+  <action name="actionStepOut">
    <property name="icon">
     <iconset resource="luanda.qrc">
      <normaloff>:/run_and_debug/res/debug-step-out.png</normaloff>:/run_and_debug/res/debug-step-out.png</iconset>

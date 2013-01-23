@@ -74,6 +74,7 @@ private:
     void resizeEvent(QResizeEvent *);
     void createRecentFileMenus();
     void updateRecentFileActions();
+    void updateDebugActions(ELuaWorkerState eState);
     void addRecentFileAction(const QString &sFile);
     void openFile(QString sFile);
 
@@ -97,6 +98,7 @@ private slots:
     void on_lua_scriptError(const LuaException &exc);
 
     void on_lua_exec_in_main_thread(IAction *pAction);
+    void on_lua_finished();
 
     void on_actionConsole_triggered();
     void on_actionPreferences_triggered();

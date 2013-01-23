@@ -2,7 +2,12 @@
 #define TYPES_H
 
 
-
+enum ELuaWorkerState
+{
+    lsEXECUTING,
+    lsDEBUGGING,
+    lsWAITING
+};
 
 /** \brief Enumerator for indicating relative or absolute paths.
 */

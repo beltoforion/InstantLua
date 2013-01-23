@@ -107,6 +107,7 @@ void LuaWorker::on_doString(const QString &sCmd)
     try
     {
         doString(sCmd, "command_line_chunk");
+        emit finished();
     }
     catch(Exception &exc)
     {
@@ -120,8 +121,6 @@ void LuaWorker::on_doString(const QString &sCmd)
     {
         emit error("Internal error: FrmConsole::executeCommand");
     }
-
-    //emit finished();
 }
 
 
@@ -148,7 +147,7 @@ void LuaWorker::on_doFile(IFile *pFile)
             throw LuaException(QString("Can't execute Lua code fragment \"%1\": Lua state is not initialized").arg(sScript));
 
         doString(sScript, pFile->getName());
-        //emit finished();
+        emit finished();
     }
     catch(LuaException &exc)
     {
